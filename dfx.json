@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "dfx": "0.10.0",
+  "canisters": {
+    "DoubleEndedIter": {
+      "type": "motoko",
+      "main": "src/DoubleEndedIter/main.mo"
+    },
+    "DoubleEndedIter_assets": {
+      "type": "assets",
+      "source": [
+        "src/DoubleEndedIter_assets/assets"
+      ],
+      "dependencies": [
+        "DoubleEndedIter"
+      ]
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "",
+      "args": ""
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  }
+}
