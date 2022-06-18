@@ -6,7 +6,7 @@ List of functions:
 
 ### PeekableIter
 
-- [fromIter]()
+- [ ] [fromIter]()
 
 ### Deiter
 
@@ -50,62 +50,62 @@ List of functions:
 
 - [x] [zip]()
 
-- [] [advanceBy]()
+- [ ] [advanceBy]()
 
-- [] [all]()
+- [ ] [all]()
 
-- [] [any]()
+- [ ] [any]()
 
-- [] [borrow]()
+- [ ] [borrow]()
 
-- [] [cycle]()
+- [ ] [cycle]()
 
-- [] [filterMap]()
+- [ ] [filterMap]()
 
-- [] [find]()
+- [ ] [find]()
 
-- [] [fold]()
+- [ ] [fold]()
 
-- [] [inspect]()
+- [ ] [inspect]()
 
-- [] [isSorted]()
+- [ ] [isSorted]()
 
-- [] [isParititioned]()
+- [ ] [isParititioned]()
 
-- [] [addSeperator/intersperse]()
+- [ ] [addSeperator/intersperse]()
 
-- [] [addSeperator/interleave]()
+- [ ] [addSeperator/interleave]()
 
-- [] [mapWhile]()
+- [ ] [mapWhile]()
 
-- [] [merge]()
+- [ ] [merge]()
 
-- [] [merge]()
+- [ ] [merge]()
 
-- [] [sortedMerge]()
+- [ ] [sortedMerge]()
 
-- [] [max]()
+- [ ] [max]()
 
-- [] [min]()
+- [ ] [min]()
 
-- [] [minmax]()
+- [ ] [minmax]()
 
-- [] [nth]()
+- [ ] [nth]()
 
-- [] [partition]()
+- [ ] [partition]()
 
-- [] [partitionInPlace]()
+- [ ] [partitionInPlace]()
 
-- [] [step]()
+- [ ] [step]()
 
-- [] [skipWhile]()
+- [ ] [skipWhile]()
 
-- [] [successor/unfold]()
+- [ ] [successor/unfold]()
 
-- [] [takeWhile]()
+- [ ] [takeWhile]()
 
-- [] [unzip]()
+- [ ] [unzip]()
 
-- [] [zipLongest]()
+- [ ] [zipLongest]()
 
-- [] [multiZip]()
+- [ ] [multiZip]()
