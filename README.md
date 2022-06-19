@@ -10,9 +10,9 @@ List of functions:
 
 ### Deiter - Double Ended Iterator
 
-- [x] range
-
 - [x] rev
+
+- [x] range / intRange
 
 - [x] fromArray / toArray
 
@@ -46,6 +46,14 @@ List of functions:
 
 - [x] filterMap
 
+- [x] max
+
+- [x] min
+
+- [x] minmax
+
+- [x] nth
+
 - [x] peekable
 
 - [x] ref
@@ -59,6 +67,8 @@ List of functions:
 - [x] tee
 
 - [x] zip
+
+- [x] zip3
 
 - [ ] advanceBy
 
@@ -84,14 +94,6 @@ List of functions:
 
 - [ ] sortedMerge
 
-- [ ] max
-
-- [ ] min
-
-- [ ] minmax
-
-- [ ] nth
-
 - [ ] partition
 
 - [ ] partitionInPlace
@@ -107,5 +109,3 @@ List of functions:
 - [ ] unzip
 
 - [ ] zipLongest
-
-- [ ] multiZip

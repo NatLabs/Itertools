@@ -1,52 +1,9 @@
+import Order "mo:base/Order";
+import Prelude "mo:base/Prelude";
+
 import PeekableIter "PeekableIter";
 
 module {
-
-    /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.
-    ///  
-    /// ### Example
-    /// - An example calculating the running sum of a iterator of integers:
-    ///
-    /// ```motoko
-    ///    
-    ///     let vals = [1, 2, 3, 4].vals();
-    ///     let it = Itertools.accumulate(vals, func(a, b) { a + b });
-    ///
-    ///     assert it.next() == ?1;
-    ///     assert it.next() == ?3;
-    ///     assert it.next() == ?6;
-    ///     assert it.next() == ?10;
-    ///     assert it.next() == ?null;
-    /// ```
-    ///
-    /// - An example calculating the running product of a iterator of integers:
-    ///
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4].vals();
-    ///     let it = Itertools.accumulate(vals, func(a, b) { a * b });
-    ///
-    ///     assert it.next() == ?1;
-    ///     assert it.next() == ?2;
-    ///     assert it.next() == ?6;
-    ///     assert it.next() == ?24;
-    ///     assert it.next() == ?null;
-    /// ```
-
-    public func accumulate(iter: Iter.Iter<Int>, predicate: (Int, Int) -> Int): Iter.Iter<Int>{
-        var acc:Int = 0;
-        return object{
-            public func next(): ?Int{
-                switch(iter.next()){
-                    case (null) null;
-                    case (?n){
-                        acc := predicate(acc, n);
-                        return ?acc;  
-                    };
-                }
-            }
-        };
-    };
 
     /// Consumes an iterator of integers and returns the sum of all values.
     /// An empty iterator returns 0.
@@ -84,6 +41,60 @@ module {
             acc := acc * n;
         };
         return acc;
+    };
+
+    /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.
+    ///  
+    /// ### Example
+    /// - An example calculating the running sum of a iterator:
+    ///
+    /// ```motoko
+    ///    
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let it = Itertools.accumulate(vals, func(a, b) { a + b });
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?3;
+    ///     assert it.next() == ?6;
+    ///     assert it.next() == ?10;
+    ///     assert it.next() == ?null;
+    /// ```
+    ///
+    /// - An example calculating the running product of a iterator:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let it = Itertools.accumulate(vals, func(a, b) { a * b });
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?2;
+    ///     assert it.next() == ?6;
+    ///     assert it.next() == ?24;
+    ///     assert it.next() == ?null;
+    /// ```
+
+    public func accumulate<A>(iter: Iter.Iter<A>, predicate: (A, A) -> A): Iter.Iter<A>{
+        var acc = iter.next();
+
+        return object{
+            public func next(): ?A{
+                switch(acc, iter.next()){
+                    case (?_acc, ?n){
+                        let tmp = acc;
+                        acc := ?predicate(_acc, n);
+                        return tmp;  
+                    };
+                    case (?_acc, null) { 
+                        acc := null;
+                        return ?_acc;
+                    };
+                    case(_, _){
+                        return null;
+                    };
+                }
+            }
+        };
     };
 
     /// Checks if all elements in the iterable satisfy the predicate.
@@ -134,8 +145,6 @@ module {
         };
         return false;
     };
-
-    
 
     /// Chains two iterators of the same type together, so that the elements produced by the 
     /// second come after the elements produced by the first.
@@ -252,7 +261,6 @@ module {
         }
     };
 
-
     /// Creates an iterator that loops infinitely over the values of a
     /// given iterator.
     /// 
@@ -368,6 +376,180 @@ module {
         return mappedIter;
     };
 
+    /// Returns the maximum value in an iterator.
+    /// A null value is returned if the iterator is empty.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [8, 4, 6, 9].vals();
+    ///     let max = Itertools.max(vals);
+    ///
+    ///     assert max == ?9;
+    /// ```
+    ///
+    /// - max on an empty iterator
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [].vals();
+    ///     let max = Itertools.max(vals);
+    ///
+    ///     assert max == null;
+    /// ```
+    public func max<A>(iter: Iter.Iter<A>, cmp: (A, A)-> Order.Order ): ?A{
+        var max: ?A = null;
+
+        for (val in iter){
+            switch(max){
+                case (?m) {
+                    if (cmp(val, m) == #greater){
+                        max := ?val;
+                    }
+                };
+                case (null){
+                    max := ?val;
+                }
+            }
+        };
+
+        return max;
+    };
+
+    /// Returns the minimum value in an iterator.
+    /// A null value is returned if the iterator is empty.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [8, 4, 6, 9].vals();
+    ///     let min = Itertools.min(vals, Nat.compare);
+    ///
+    ///     assert min == ?4;
+    /// ```
+    ///
+    /// - min on an empty iterator
+    ///
+    /// ```motoko
+    ///
+    ///     let vals: [Nat] = [].vals();
+    ///     let min = Itertools.min(vals, Nat.compare);
+    ///
+    ///     assert min == null;
+    /// ```
+    public func min<A>(iter: Iter.Iter<A>, cmp: (A, A)-> Order.Order ): ?A{
+        var min: ?A = null;
+
+        for (val in iter){
+            switch(min){
+                case (?m) {
+                    if (cmp(val, m) ==  #less ){
+                        min := ?val;
+                    }
+                };
+                case (null){
+                    min := ?val;
+                }
+            }
+        };
+
+        return min;
+    };
+
+    /// Returns a tuple of the minimum and maximum value in an iterator.
+    /// The first element is the minimum, the second the maximum.
+    ///
+    /// A null value is returned if the iterator is empty.
+    ///
+    /// If the iterator contains only one element, then it is returned as both
+    /// the minimum and the maximum.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [8, 4, 6, 9].vals();
+    ///     let minmax = Itertools.minMax(vals);
+    ///
+    ///     assert minmax == ?(4, 9);
+    /// ```
+    ///
+    /// - minMax on an empty iterator
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [].vals();
+    ///     let minmax = Itertools.minMax(vals);
+    ///
+    ///     assert minmax == null;
+    /// ```
+    /// - minMax on an iterator with one element
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [8].vals();
+    ///     let minmax = Itertools.minMax(vals);
+    ///
+    ///     assert minmax == ?(8, 8);
+    /// ```
+    public func minMax<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): ?(A, A){
+        var (min, max) = switch(iter.next()){
+            case (?a) {
+                switch (iter.next()){
+                    case (?b) {
+                        switch(cmp(a, b)){
+                            case (#less) {
+                                (a, b)
+                            }
+                            case (_){
+                                (b, a)
+                            }
+                        }
+                    }
+                    case (_) {
+                        ?(a, a)
+                    };
+                }
+            };
+            case (_) {
+                return null;
+                Prelude.unreachable();
+            };
+        };
+
+        for (val in iter){
+            if (cmp(val, min) == #less){
+                min := val;
+            }else if (cmp(val, max) == #greater){
+                max := val;
+            }
+        };
+
+        ?(min, max)
+
+    };
+
+    /// Returns the nth element of an iterator.
+    /// Consumes the first n elements of the iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [8, 4, 6, 9].vals();
+    ///     let nth = Itertools.nth(vals, 2);
+    ///
+    ///     assert nth == ?6;
+    /// ```
+    ///
+    public func nth<A>(iter: Iter.Iter<A>, n: Int): ?A{
+        skip(iter, n);
+        return iter.next();
+    };
+
+
     /// Returns a peekable iterator.
     /// The iterator has a `peek` method that returns the next value 
     /// without consuming the iterator.
@@ -424,7 +606,6 @@ module {
     ///     assert iter.next() == ?1;
     ///     assert iter.next() == null;
     /// ```
-    s
     public func repeat<A>(item: A, n: Nat): Iter.Iter<A>{
         var i = 0;
         return object{
@@ -550,6 +731,35 @@ module {
                 switch(a.next(), b.next()){
                     case(?valueA, ?valueB) ?(valueA, valueB);
                     case(_, _) null;
+                }
+            }
+        }
+    };
+
+    /// Zips three iterators into one iterator of tuples
+    /// The length of the zipped iterator is equal to the length
+    /// of the shorter iterator
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter1 = [1, 2, 3, 4, 5].vals();
+    ///     let iter2 = "abc".chars();
+    ///     let iter3 = [1.35, 2.92, 3.74, 4.12, 5.93].vals();
+    ///
+    ///     let zipped = Itertools.zip3(iter1, iter2, iter3);
+    ///
+    ///     assert zipped.next() == ?(1, "a", 1.35);
+    ///     assert zipped.next() == ?(2, "b", 2.92);
+    ///     assert zipped.next() == ?(3, "c", 3.74);
+    ///     assert zipped.next() == null;
+    /// ```
+    public func zip3<A, B, C>(a: Iter.Iter<A>, b:Iter.Iter<B>, c:Iter.Iter<C>): Iter.Iter<(A, B, C)>{
+        object{
+            public func next(): ?(A, B, C){
+                switch(a.next(), b.next(), c.next()){
+                    case(?valueA, ?valueB, ?valueC) ?(valueA, valueB, valueC);
+                    case(_, _, _) null;
                 }
             }
         }

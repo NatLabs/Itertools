@@ -6,8 +6,7 @@ import Deque "mo:base/Deque";
 
 /// Double Ended Iterator Implementation
 /// Allows for both forward and backward iteration
-/// This can be very useful for iterating over a list in reverse
-
+/// Usefull for iterating over an array in reverse without allocating a new array
 module {
 
   /// Double Ended Iterator Type
