@@ -6,106 +6,106 @@ List of functions:
 
 ### PeekableIter
 
-- [ ] [fromIter]()
+- [x] fromIter
 
-### Deiter
+### Deiter - Double Ended Iterator
 
-- [x] [range]()
+- [x] range
 
-- [x] [rev]()
+- [x] rev
 
-- [x] [fromArray / toArray]()
+- [x] fromArray / toArray
 
-- [x] [fromArrayMut / toArrayMut]()
+- [x] fromArrayMut / toArrayMut
 
-- [x] [fromDeque / toDeque]()
+- [x] fromDeque / toDeque
 
 ### Iter
 
 #### Integer Iterator
 
-- [x] [accumulate]()
+- [x] accumulate
 
-- [x] [sum]()
+- [x] sum
 
-- [x] [product]()
+- [x] product
 
 #### Generic Data Type Iterator
 
-- [x] [chain]()
+- [x] all
 
-- [x] [chunk]()
+- [x] any
 
-- [x] [duplicate]()
+- [x] chain
 
-- [x] [enumerate]()
+- [x] chunk
 
-- [x] [peekable]()
+- [x] cycle
 
-- [x] [repeat]()
+- [x] enumerate
 
-- [x] [skip]()
+- [x] filterMap
 
-- [x] [take]()
+- [x] peekable
 
-- [x] [zip]()
+- [x] ref
 
-- [ ] [advanceBy]()
+- [x] repeat
 
-- [ ] [all]()
+- [x] skip
 
-- [ ] [any]()
+- [x] take
 
-- [ ] [borrow]()
+- [x] tee
 
-- [ ] [cycle]()
+- [x] zip
 
-- [ ] [filterMap]()
+- [ ] advanceBy
 
-- [ ] [find]()
+- [ ] find
 
-- [ ] [fold]()
+- [ ] fold
 
-- [ ] [inspect]()
+- [ ] inspect
 
-- [ ] [isSorted]()
+- [ ] isSorted
 
-- [ ] [isParititioned]()
+- [ ] isParititioned
 
-- [ ] [addSeperator/intersperse]()
+- [ ] addSeperator/intersperse
 
-- [ ] [addSeperator/interleave]()
+- [ ] addSeperator/interleave
 
-- [ ] [mapWhile]()
+- [ ] mapWhile
 
-- [ ] [merge]()
+- [ ] merge
 
-- [ ] [merge]()
+- [ ] merge
 
-- [ ] [sortedMerge]()
+- [ ] sortedMerge
 
-- [ ] [max]()
+- [ ] max
 
-- [ ] [min]()
+- [ ] min
 
-- [ ] [minmax]()
+- [ ] minmax
 
-- [ ] [nth]()
+- [ ] nth
 
-- [ ] [partition]()
+- [ ] partition
 
-- [ ] [partitionInPlace]()
+- [ ] partitionInPlace
 
-- [ ] [step]()
+- [ ] step
 
-- [ ] [skipWhile]()
+- [ ] skipWhile
 
-- [ ] [successor/unfold]()
+- [ ] successor/unfold
 
-- [ ] [takeWhile]()
+- [ ] takeWhile
 
-- [ ] [unzip]()
+- [ ] unzip
 
-- [ ] [zipLongest]()
+- [ ] zipLongest
 
-- [ ] [multiZip]()
+- [ ] multiZip

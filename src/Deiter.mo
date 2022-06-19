@@ -111,26 +111,10 @@ module {
     Iter.toArrayMut<T>(deiter)
   };
 
-  
-  public func fromIter<T>(iter: Iter.Iter<T>): Deiter<T> {
-    let arr = Iter.toArray<T>(iter);
-    return fromArray<T>(arr);
-  };
-
   /// Deiter are interchangable with Iter types so there 
   /// is no need to convert them. 
   public func toIter<T>(iter: Iter.Iter<T>): Iter<T> {
     iter
-  };
-
-
-  public func fromList<T>(list: List.List<T>): Deiter<T> {
-    let arr = List.toArray<T>(list);
-    return fromArray<T>(arr);
-  };
-
-  public func toList<T>(deiter: Deiter<T>): List.List<T> {
-    Iter.toList<T>(deiter)
   };
 
   /// Returns an iterator for a deque.
