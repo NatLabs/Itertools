@@ -106,7 +106,7 @@ List of functions:
 
 - [ ] merge
 
-- [ ] merge
+- [ ] kmerge
 
 - [ ] sortedMerge
 
