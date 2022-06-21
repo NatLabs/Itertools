@@ -1,30 +1,23 @@
 import Iter "mo:base/Iter";
 
 module {
-    type PeekableIter<T> = {
-        peek: () -> T;
-        next: () -> T;
+    public type PeekableIter<T> = {
+        peek: () -> ?T;
+        next: () -> ?T;
     };
 
     public func fromIter<T>(iter: Iter.Iter<T>): PeekableIter<T>{
-        var next: ?T = iter.next();
+        var next_item = iter.next();
 
         return object {
-            public func peek() -> T {
-                switch(next){
-                    case(?val){
-                        ?val
-                    };
-                    case(null){
-                        null
-                    };
-                }
+            public func peek() : ?T {
+                next_item
             };
 
-            public func next() -> T {
-                switch(next){
+            public func next() : ?T {
+                switch(next_item){
                     case(?val){
-                        next  = iter.next();
+                        next_item  := iter.next();
                         ?val
                     };
                     case(null){

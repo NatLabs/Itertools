@@ -1,4 +1,9 @@
 import Order "mo:base/Order";
+import Buffer "mo:base/Buffer";
+import Int "mo:base/Int";
+import Iter "mo:base/Iter";
+import Char "mo:base/Char";
+import Text "mo:base/Text";
 import Prelude "mo:base/Prelude";
 
 import PeekableIter "PeekableIter";
@@ -17,8 +22,8 @@ module {
     ///     assert sum == 10;
     /// ```
     public func sum(iter: Iter.Iter<Int>): Int{
-        var acc:T = 0;
-        for(var n: ?T in iter){
+        var acc : Int = 0;
+        for(n in iter){
             acc := acc + n;
         };
         return acc;
@@ -36,8 +41,8 @@ module {
     ///     assert prod == 24;
     /// ```
     public func product(iter: Iter.Iter<Int>): Int{
-        var acc:T = 1;
-        for(var n: ?T in iter){
+        var acc : Int = 1;
+        for(n in iter){
             acc := acc * n;
         };
         return acc;
@@ -73,7 +78,23 @@ module {
     ///     assert it.next() == ?24;
     ///     assert it.next() == ?null;
     /// ```
-
+    ///
+    /// - An example with a record type:
+    ///
+    /// ```motoko
+    ///
+    ///     type Point = { x: Int, y: Int };
+    ///
+    ///     let vals: [Point] = [{ x = 1, y = 2 }, { x = 3, y = 4 }].vals();
+    ///     
+    ///     let it = Itertools.accumulate<Point>(vals, func(a, b) { 
+    ///         return { x = a.x + b.x, y = a.y + b.y };
+    ///     });
+    ///
+    ///     assert it.next() == ?{ x = 1, y = 2 };
+    ///     assert it.next() == ?{ x = 4, y = 6 };
+    ///     assert it.next() == null;
+    /// ```
     public func accumulate<A>(iter: Iter.Iter<A>, predicate: (A, A) -> A): Iter.Iter<A>{
         var acc = iter.next();
 
@@ -107,7 +128,7 @@ module {
     ///     let a = [1, 2, 3, 4].vals();
     ///     let b = [2, 4, 6, 8].vals();
     ///
-    ///     let isEven = func(a) { a % 2 == 0 };
+    ///     let isEven = func(a: Int): Bool { a % 2 == 0 };
     ///
     ///     assert Itertools.all(a, isEven) == false;
     ///     assert Itertools.all(b, isEven) == true;
@@ -115,7 +136,7 @@ module {
 
     public func all<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): Bool{
         for ( item in iter ){
-            if(!predicate(item)){
+            if(not predicate(item)){
                 return false;
             };
         };
@@ -132,7 +153,7 @@ module {
     ///     let a = [1, 2, 3, 4].vals();
     ///     let b = [1, 3, 5, 7].vals();
     ///
-    ///     let isEven = func(a) { a % 2 == 0 };
+    ///     let isEven = func(a: Nat) : Bool { a % 2 == 0 };
     ///
     ///     assert Itertools.any(a, isEven) == true;
     ///     assert Itertools.any(b, isEven) == false;
@@ -154,7 +175,7 @@ module {
     /// 
     ///    let iter1 = [1, 2].vals();
     ///    let iter2 = [3, 4].vals();
-    ///    chained = Itertools.chain(iter1, iter2);
+    ///    let chained = Itertools.chain(iter1, iter2);
     ///
     ///     assert chained.next() == ?1
     ///     assert chained.next() == ?2
@@ -283,8 +304,9 @@ module {
     ///     // ...
     /// ```
     public func cycle<A>(iter: Iter.Iter<A>): Iter.Iter<A>{
-        var buf = Buffer.Buffer<A>();
-        
+        var buf = Buffer.Buffer<A>(1);
+        var i = 0;
+
         return object{
             public func next(): ?A{
                 switch(iter.next()){
@@ -358,8 +380,8 @@ module {
     ///
     ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
     ///     
-    ///     let isEven = func(x){x % 2 == 0};
-    ///     let square = func(x){x * x};
+    ///     let isEven = func( x : Nat ) : Bool { x % 2 == 0};
+    ///     let square = func( x : Nat ) : Nat {x * x};
     ///     let it = Itertools.filterMap(vals, isEven, square);
     ///
     ///     assert it.next() == ?4
@@ -376,6 +398,53 @@ module {
         return mappedIter;
     };
 
+    /// Looks for an element in an iterator that matches a predicate.
+    ///
+    /// ### Example
+    /// - An example finding the first even number in an iterator:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///
+    ///     let isEven = func( x : Int ) : Bool {x % 2 == 0};
+    ///     let res = Itertools.find(vals, isEven);
+    ///
+    ///     assert res == ?2
+    /// ```
+    public func find<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): ?A{
+        for (val in iter){
+            if (predicate(val)){
+                return ?val
+            };
+        };
+        return null;
+    };
+
+    /// Return the index of an element in an iterator that matches a predicate.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///
+    ///     let isEven = func( x : Int ) : Bool {x % 2 == 0};
+    ///     let res = Itertools.findIndex(vals, isEven);
+    ///
+    ///     assert res == ?1
+    /// ```
+    public func findIndex<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): ?Nat{
+        var i = 0;
+        for (val in iter){
+            if (predicate(val)){
+                return ?i
+            };
+            i+=1;
+        };
+        return null;
+    };
+
     /// Returns the maximum value in an iterator.
     /// A null value is returned if the iterator is empty.
     ///
@@ -383,10 +452,10 @@ module {
     ///
     /// ```motoko
     ///
-    ///     let vals = [8, 4, 6, 9].vals();
-    ///     let max = Itertools.max(vals);
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let max = Itertools.max(vals, Nat.compare);
     ///
-    ///     assert max == ?9;
+    ///     assert max == ?5;
     /// ```
     ///
     /// - max on an empty iterator
@@ -394,7 +463,7 @@ module {
     /// ```motoko
     ///
     ///     let vals = [].vals();
-    ///     let max = Itertools.max(vals);
+    ///     let max = Itertools.max(vals, Nat.compare);
     ///
     ///     assert max == null;
     /// ```
@@ -471,58 +540,61 @@ module {
     /// ```motoko
     ///
     ///     let vals = [8, 4, 6, 9].vals();
-    ///     let minmax = Itertools.minMax(vals);
+    ///     let minmax = Itertools.minmax(vals);
     ///
     ///     assert minmax == ?(4, 9);
     /// ```
     ///
-    /// - minMax on an empty iterator
+    /// - minmax on an empty iterator
     ///
     /// ```motoko
     ///
     ///     let vals = [].vals();
-    ///     let minmax = Itertools.minMax(vals);
+    ///     let minmax = Itertools.minmax(vals);
     ///
     ///     assert minmax == null;
     /// ```
-    /// - minMax on an iterator with one element
+    /// - minmax on an iterator with one element
     ///
     /// ```motoko
     ///
     ///     let vals = [8].vals();
-    ///     let minmax = Itertools.minMax(vals);
+    ///     let minmax = Itertools.minmax(vals);
     ///
     ///     assert minmax == ?(8, 8);
     /// ```
-    public func minMax<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): ?(A, A){
-        var (min, max) = switch(iter.next()){
+    public func minmax<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): ?(A, A){
+        let (_min, _max) = switch(iter.next()){
             case (?a) {
                 switch (iter.next()){
                     case (?b) {
                         switch(cmp(a, b)){
                             case (#less) {
                                 (a, b)
-                            }
+                            };
                             case (_){
                                 (b, a)
-                            }
+                            };
                         }
-                    }
-                    case (_) {
-                        ?(a, a)
                     };
-                }
+                    case (_) {
+                        (a, a)
+                    };
+                };
             };
             case (_) {
                 return null;
-                Prelude.unreachable();
             };
         };
 
+        var min = _min;
+        var max = _max;
+
         for (val in iter){
-            if (cmp(val, min) == #less){
+            let order = cmp(val, min);
+            if (order == #less){
                 min := val;
-            }else if (cmp(val, max) == #greater){
+            }else if (order == #greater){
                 max := val;
             }
         };
@@ -538,17 +610,38 @@ module {
     ///
     /// ```motoko
     ///
-    ///     let vals = [8, 4, 6, 9].vals();
-    ///     let nth = Itertools.nth(vals, 2);
+    ///     let vals = [0, 1, 2, 3, 4, 5].vals();
+    ///     let nth = Itertools.nth(vals, 3);
     ///
-    ///     assert nth == ?6;
+    ///     assert nth == ?3;
     /// ```
     ///
-    public func nth<A>(iter: Iter.Iter<A>, n: Int): ?A{
-        skip(iter, n);
+    public func nth<A>(iter: Iter.Iter<A>, n: Nat): ?A{
+        skip<A>(iter, n);
         return iter.next();
     };
 
+    /// Returns the nth elements of an iterator or a given default value.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [0, 1, 2, 3, 4, 5].vals();
+    ///
+    ///     assert Itertools.nthOr(vals, 3, -1) == ?3;
+    ///     assert Itertools.nthOr(vals, 3, -1) == ?-1;
+    /// ```
+    public func nthOr<A>(iter: Iter.Iter<A>, n: Nat, defaultValue: A): A{
+        switch(nth<A>(iter, n)){
+            case (?a) {
+                return a;
+            };
+            case (_) {
+                return defaultValue;
+            };
+        };
+    };
 
     /// Returns a peekable iterator.
     /// The iterator has a `peek` method that returns the next value 
@@ -557,24 +650,87 @@ module {
     /// ### Example
     /// ```motoko
     ///     
-    ///     let iter = Iter.fromArray([1, 2]);
-    ///     let peekIter = Itertools.peekable(iter);
+    ///     let vals = Iter.fromArray([1, 2]);
+    ///     let peekIter = Itertools.peekable(vals);
     ///     
-    ///     assert iter.peek() == ?1;
-    ///     assert iter.next() == ?1;
+    ///     assert peekIter.peek() == ?1;
+    ///     assert peekIter.next() == ?1;
     ///
-    ///     assert iter.peek() == ?2;
-    ///     assert iter.peek() == ?2;
-    ///     assert iter.next() == ?2;
+    ///     assert peekIter.peek() == ?2;
+    ///     assert peekIter.peek() == ?2;
+    ///     assert peekIter.next() == ?2;
     ///
-    ///     assert iter.peek() == null;
-    ///     assert iter.next() == null;
+    ///     assert peekIter.peek() == null;
+    ///     assert peekIter.next() == null;
     /// ```
-    public func peekable<T>(iter: Iter<T>) -> PeekableIter<T> {
+    public func peekable<T>(iter: Iter.Iter<T>) : PeekableIter.PeekableIter<T> {
         PeekableIter.fromIter<T>(iter)
     };
 
+    /// Returns a `Nat` iterator that yields numbers in range [start, end).
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let iter = Itertools.range(1, 5);
+    ///
+    ///     assert iter.next() == ?1;
+    ///     assert iter.next() == ?2;
+    ///     assert iter.next() == ?3;
+    ///     assert iter.next() == ?4;
+    ///     assert iter.next() == null;
+    /// ```
+    public func range(start: Nat, end: Nat): Iter.Iter<Nat>{
+        var i: Int = start;
+
+        return object {
+            public func next(): ?Nat {
+                if (i < end ) {
+                    i += 1;
+                    return ?Int.abs(i - 1);
+                } else {
+                    return null;
+                }
+            };
+        };
+    };
+
+    /// Returns a `Int` iterator that yields numbers in range [start, end).
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let iter = Itertools.intRange(1, 4);
+    ///
+    ///     assert iter.next() == ?1;
+    ///     assert iter.next() == ?2;
+    ///     assert iter.next() == ?3;
+    ///     assert iter.next() == null;
+    /// ```
+    public func intRange(start: Int, end: Int): Iter.Iter<Int>{
+        var i: Int = start;
+
+        return object {
+            public func next(): ?Int {
+                if (i < end ) {
+                    i += 1;
+                    return ?i;
+                } else {
+                    return null;
+                }
+            };
+        };
+    };
+
     /// Returns a reference to the iterator
+    ///
+    /// Instead of using this method you could copy the ptr directly:
+    /// ```motoko
+    ///     let iter = Itertools.range(1, 5);
+    ///     let ref = iter;
+    /// ```
     ///
     /// #### Example
     /// ```motoko
@@ -647,10 +803,102 @@ module {
         }
     };
 
+    /// Returns a tuple of iterators where the first element is the first n elements of the iterator, and the second element is the remaining elements.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter = [1, 2, 3, 4, 5].vals();
+    ///     let (first, rest) = Itertools.splitAt(iter, 3);
+    ///
+    ///     assert first.next() == ?1;
+    ///     assert rest.next() == ?4;
+    ///
+    ///     assert first.next() == ?2;
+    ///     assert rest.next() == ?5;
+    ///
+    ///     assert first.next() == ?3;
+    ///
+    ///     assert first.next() == null;
+    ///     assert rest.next() == null;
+    /// ```
+    public func splitAt<A>(iter: Iter.Iter<A>, n: Nat): (Iter.Iter<A>, Iter.Iter<A>) {
+        var first = Iter.toArray(take(iter, n)).vals();
+        (first, iter)
+    };
+
+    /// Returns a tuple of iterators where the first element is an iterator with a copy of 
+    /// the first n elements of the iterator, and the second element is the original iterator
+    /// with all the elements
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let (copy, iter) = Itertools.spy(vals, 3);
+    ///
+    ///     assert copy.next() == ?1;  
+    ///     assert copy.next() == ?2;
+    ///     assert copy.next() == ?3;
+    ///     assert copy.next() == null;
+    ///
+    ///     assert vals.next() == ?1;
+    ///     assert vals.next() == ?2;
+    ///     assert vals.next() == ?3;
+    ///     assert vals.next() == ?4;
+    ///     assert vals.next() == ?5;
+    ///     assert vals.next() == null;
+    /// ```
+
+    public func spy<A>(iter: Iter.Iter<A>, n: Nat): (Iter.Iter<A>, Iter.Iter<A>) {
+        var copy = Iter.toArray(take(iter, n));
+        (copy.vals(), chain(copy.vals(), iter))
+    };
+
+    /// Returns every nth element of the iterator.
+    /// n must be greater than zero.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter = [1, 2, 3, 4, 5].vals();
+    ///     let iter = Itertools.step(iter, 2);
+    ///
+    ///     assert iter.next() == ?1;
+    ///     assert iter.next() == ?3;
+    ///     assert iter.next() == ?5;
+    ///     assert iter.next() == null;
+    /// ```
+    public func step<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
+        assert n > 0;
+
+        var i = 0;
+        var opt = iter.next();
+
+        return object{
+            public func next(): ?A{
+                switch(opt){
+                    case (?item){
+                        skip(iter, Int.abs(n - 1));
+                        opt := iter.next();
+                        ?item
+                    };
+                    case (_){
+                        return null;
+                    };
+                };
+            }
+        };
+    };
+
     /// Returns an iterator with the first n elements of the given iter
     /// > Be aware that this returns a ref to the original iterator so
     /// > using it will cause the original iterator to be skipped.
     /// 
+    /// If you want to keep the original iterator, use `spy` instead.
+    /// 
+    /// Note that using the returned iterator and the given iterator at the same time will cause the values in both iterators to be skipped.
+    ///
     /// ### Example
     /// ```motoko
     ///
@@ -707,6 +955,30 @@ module {
         let array = Iter.toArray(iter);
         return (Iter.fromArray(array), Iter.fromArray(array));
     };
+
+    /// Unzips an iterator of tuples into a tuple of arrays.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter = [(1, 'a'), (2, 'b'), (3, 'c')].vals();
+    ///     let (arr1, arr2) = Itertools.unzip(iter);
+    ///
+    ///     assert arr1 == [1, 2, 3];
+    ///     assert arr2 == ['a', 'b', 'c'];
+    /// ```
+    public func unzip<A>(iter: Iter.Iter<(A, A)>): ([A], [A]){
+        var buf1 = Buffer.Buffer<A>(1);
+        var buf2 = Buffer.Buffer<A>(1);
+
+        for ((a, b) in iter){
+            buf1.add(a);
+            buf2.add(b);
+        };
+
+        (buf1.toArray(), buf2.toArray())
+    };
+
 
     /// Zips two iterators into one iterator of tuples 
     /// The length of the zipped iterator is equal to the length 

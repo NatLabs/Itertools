@@ -1,14 +1,14 @@
 # Itertools
 
-A library with datastructures, functions and tools for utilising and working efficiently with iterators
+A library with data structures, functions and tools for utilizing and working efficiently with iterators
 
 List of functions:
 
 ### PeekableIter
 
 - [x] fromIter
-
-### Deiter - Double Ended Iterator
+  
+### Deiter - Double-Ended Iterator
 
 - [x] rev
 
@@ -24,13 +24,13 @@ List of functions:
 
 #### Integer Iterator
 
-- [x] accumulate
-
 - [x] sum
 
 - [x] product
 
 #### Generic Data Type Iterator
+
+- [x] accumulate
 
 - [x] all
 
@@ -44,6 +44,10 @@ List of functions:
 
 - [x] enumerate
 
+- [x] find
+
+- [x] findIndex
+
 - [x] filterMap
 
 - [x] max
@@ -54,7 +58,13 @@ List of functions:
 
 - [x] nth
 
+- [x] nthOr
+
 - [x] peekable
+
+- [x] range
+
+- [x] intRange
 
 - [x] ref
 
@@ -62,17 +72,23 @@ List of functions:
 
 - [x] skip
 
+- [x] splitAt
+
+- [x] spy
+
+- [x] step
+
 - [x] take
 
 - [x] tee
+
+- [x] unzip
 
 - [x] zip
 
 - [x] zip3
 
 - [ ] advanceBy
-
-- [ ] find
 
 - [ ] fold
 
@@ -98,14 +114,10 @@ List of functions:
 
 - [ ] partitionInPlace
 
-- [ ] step
-
 - [ ] skipWhile
 
 - [ ] successor/unfold
 
 - [ ] takeWhile
-
-- [ ] unzip
 
 - [ ] zipLongest

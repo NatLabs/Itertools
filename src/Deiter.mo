@@ -10,7 +10,7 @@ import Deque "mo:base/Deque";
 module {
 
   /// Double Ended Iterator Type
-  type Deiter<T> = {
+  public type Deiter<T> = {
     next: () -> ?T;
     next_back : () -> ?T;
   };
@@ -19,7 +19,7 @@ module {
   public func range(start: Nat, end: Nat): Deiter<Nat> {
     let intIter = intRange(start, end);
     
-    func optIntToNat(optInt: ?Int) -> ?Nat {
+    func optIntToNat(optInt: ?Int) : ?Nat {
        switch(optInt) {
           case (null) null;
           case (?val) ?Int.abs(val);
@@ -112,7 +112,12 @@ module {
 
   /// Deiter are interchangable with Iter types so there 
   /// is no need to convert them. 
-  public func toIter<T>(iter: Iter.Iter<T>): Iter<T> {
+  /// This function casts a Deiter to an Iter type.
+  /// So you won't be able to use the next_back function after calling this function.
+  /// So if you want to get the values in reverse order you need 
+  /// to use the `rev` function before calling this function.
+
+  public func toIter<T>(iter: Iter.Iter<T>): Iter.Iter<T> {
     iter
   };
 
@@ -149,8 +154,8 @@ module {
 
     label l loop {
         switch(deiter.next_back()){
-          case (?(val, next)){
-            deq := Deque.pushFront(next, val);
+          case (?val){
+            deq := Deque.pushFront(deq, val);
           };
           case (null) break l;
         }
