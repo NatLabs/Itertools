@@ -95,14 +95,15 @@ in aviate_labs # additions
 ## Contributing
 Any contributions to this library are welcome. 
 Ways you can contribute:
-- Fix a bug
+- Fix a bug or typo
+- Improve the documentation
 - Implement a [function that hasn't been implemented yet](#unimplemented-methods)
 - Make a function more efficient
 - Suggest a new function to add to the library
   
 
 ## Documentation 
-For a complete lists of functions and data types, see the [Itertools documentation](https://tomijaga.github.io/Itertools.mo/index.html)
+For a complete list of functions and data types, see the [Itertools documentation](https://tomijaga.github.io/Itertools.mo/index.html)
 
 
 ### PeekableIter
