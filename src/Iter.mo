@@ -803,28 +803,106 @@ module {
         }
     };
 
+    /// Returns overlapping tuple pairs from the given iterator.
+    /// The first element of the iterator is paired with the second element, and the 
+    /// second is paired with the third element, and so on. 
+    /// ?(a, b), ?(b, c), ?(c, d), ...
+    ///
+    /// If the iterator has fewer than two elements, an null value is returned.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let pairs = Itertools.slidingTuples(vals);
+    ///
+    ///     assert pairs.next() == ?(1, 2);
+    ///     assert pairs.next() == ?(2, 3);
+    ///     assert pairs.next() == ?(3, 4);
+    ///     assert pairs.next() == ?(4, 5);
+    ///     assert pairs.next() == null;
+    /// ```
+    public func slidingTuples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A)>{
+        var prev = iter.next();
+
+        return object{
+            public func next(): ?(A, A){
+                switch(prev, iter.next()){
+                    case (?_prev, ?curr){
+                        let tmp = (_prev, curr);
+                        prev := ?curr;
+                        ?tmp
+                    };
+                    case(_){
+                        return null;
+                    };
+                };
+            };
+        };
+    };
+
+    /// Returns consecutive, overlapping triplets from the given iterator.
+    /// The iterator returns a tuple of three elements, which include the current element and the two proceeding ones.
+    /// ?(a, b, c), ?(b, c, d), ?(c, d, e), ...
+    ///
+    /// If the iterator has fewer than three elements, an null value is returned.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let triples = Itertools.slidingTriples(vals);
+    ///
+    ///     assert triples.next() == ?(1, 2, 3);
+    ///     assert triples.next() == ?(2, 3, 4);
+    ///     assert triples.next() == ?(3, 4, 5);
+    ///     assert triples.next() == null;
+    /// ```
+    public func slidingTriples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A, A)>{
+        var a = iter.next();
+        var b = iter.next();
+
+        return object{
+            public func next(): ?(A, A, A){
+                switch(a, b, iter.next()){
+                    case (?_a, ?_b, ?curr){
+                        let tmp = (_a, _b, curr);
+                        a := b;
+                        b := ?curr;
+                        ?tmp
+                    };
+                    case(_){
+                        return null;
+                    };
+                };
+            };
+        };
+    };
+
     /// Returns a tuple of iterators where the first element is the first n elements of the iterator, and the second element is the remaining elements.
     ///
     /// ### Example
     /// ```motoko
     ///
     ///     let iter = [1, 2, 3, 4, 5].vals();
-    ///     let (first, rest) = Itertools.splitAt(iter, 3);
+    ///     let (left, right) = Itertools.splitAt(iter, 3);
     ///
-    ///     assert first.next() == ?1;
-    ///     assert rest.next() == ?4;
+    ///     assert left.next() == ?1;
+    ///     assert right.next() == ?4;
     ///
-    ///     assert first.next() == ?2;
-    ///     assert rest.next() == ?5;
+    ///     assert left.next() == ?2;
+    ///     assert right.next() == ?5;
     ///
-    ///     assert first.next() == ?3;
+    ///     assert left.next() == ?3;
     ///
-    ///     assert first.next() == null;
-    ///     assert rest.next() == null;
+    ///     assert left.next() == null;
+    ///     assert right.next() == null;
     /// ```
     public func splitAt<A>(iter: Iter.Iter<A>, n: Nat): (Iter.Iter<A>, Iter.Iter<A>) {
-        var first = Iter.toArray(take(iter, n)).vals();
-        (first, iter)
+        var left = Iter.toArray(take(iter, n)).vals();
+        (left, iter)
     };
 
     /// Returns a tuple of iterators where the first element is an iterator with a copy of 
@@ -851,6 +929,7 @@ module {
     /// ```
 
     public func spy<A>(iter: Iter.Iter<A>, n: Nat): (Iter.Iter<A>, Iter.Iter<A>) {
+        // let firstN = 
         var copy = Iter.toArray(take(iter, n));
         (copy.vals(), chain(copy.vals(), iter))
     };
@@ -861,15 +940,15 @@ module {
     /// ### Example
     /// ```motoko
     ///
-    ///     let iter = [1, 2, 3, 4, 5].vals();
-    ///     let iter = Itertools.step(iter, 2);
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let iter = Itertools.stepBy(vals, 2);
     ///
     ///     assert iter.next() == ?1;
     ///     assert iter.next() == ?3;
     ///     assert iter.next() == ?5;
     ///     assert iter.next() == null;
     /// ```
-    public func step<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
+    public func stepBy<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
         assert n > 0;
 
         var i = 0;
@@ -930,6 +1009,46 @@ module {
         };
     };
 
+    /// Creates an iterator that returns returns elements from the given iter while the predicate is true.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = Iter.fromArray([1, 2, 3, 4, 5]);
+    ///
+    ///     let lessThan3 = func (x: Int) : Bool { x < 3 };
+    ///     let it = Itertools.takeWhile(vals, lessThan3);
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?2;
+    ///     assert it.next() == null;
+    /// ```
+    public func takeWhile<A>(iter: Iter.Iter<A>, predicate: A -> Bool): Iter.Iter<A>{
+        var iterate = true;
+        return object{
+            public func next(): ?A{
+                if (iterate){
+                    switch(iter.next()){
+                        case (?item){
+                            if (predicate(item)){
+                                ?item
+                            }else{
+                                iterate := false;
+                                null
+                            };
+                        };
+                        case (_){
+                            iterate := false;
+                            return null;
+                        };
+                    };
+                }else{
+                    return null;
+                }
+            }
+        };
+    };
+
     /// Consumes an iterator and returns a tuple of cloned iterators.
     ///
     /// ### Example
@@ -937,8 +1056,6 @@ module {
     ///
     ///     let iter = [1, 2, 3].vals();
     ///     let (iter1, iter2) = Itertools.tee(iter, 2);
-    ///
-    ///     assert iter.next() == null;
     ///
     ///     assert iter1.next() == ?1;
     ///     assert iter1.next() == ?2;
@@ -954,6 +1071,70 @@ module {
     public func tee<A>(iter: Iter.Iter<A>): (Iter.Iter<A>, Iter.Iter<A>){
         let array = Iter.toArray(iter);
         return (Iter.fromArray(array), Iter.fromArray(array));
+    };
+
+    /// Returns an iterator of consecutive, non-overlapping tuple pairs of elements from a single iter.
+    /// The first element is paired with the second element, the third element with the fourth, and so on.
+    /// ?(a, b), ?(c, d), ?(e, f) ...
+    ///
+    /// If the iterator has less than two elements, it will return a null.
+    /// > For overlappping pairs use slidingTuples.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let it = Itertools.tuples(vals);
+    ///
+    ///     assert it.next() == ?(1, 2);
+    ///     assert it.next() == ?(3, 4);
+    ///     assert it.next() == null;
+    /// 
+    /// ```
+    public func tuples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A)>{
+        return object{
+            public func next(): ?(A, A){
+                switch(iter.next(), iter.next()){
+                    case(?a, ?b){
+                        ?(a, b)
+                    };
+                    case(_){
+                        null
+                    };
+                };
+            }
+        };
+    };
+
+    /// Returns an iterator of consecutive, non-overlapping triplets of elements from a single iter.
+    /// ?(a, b, c), ?(d, e, f) ...
+    ///
+    /// If the iterator has less than three elements, it will return a null.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5, 6, 7].vals();
+    ///     let it = Itertools.triples(vals);
+    ///
+    ///     assert it.next() == ?(1, 2, 3);
+    ///     assert it.next() == ?(4, 5, 6);
+    ///     assert it.next() == null;
+    ///
+    /// ```
+    public func triples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A, A)>{
+        return object{
+            public func next(): ?(A, A, A){
+                switch(iter.next(), iter.next(), iter.next()){
+                    case(?a, ?b, ?c){
+                        ?(a, b, c)
+                    };
+                    case(_){
+                        null
+                    };
+                };
+            }
+        };
     };
 
     /// Unzips an iterator of tuples into a tuple of arrays.
@@ -991,9 +1172,9 @@ module {
     ///     let iter2 = "abc".chars();
     ///     let zipped = Itertools.zip(iter1, iter2);
     ///
-    ///     assert zipped.next() == ?(1, "a");
-    ///     assert zipped.next() == ?(2, "b");
-    ///     assert zipped.next() == ?(3, "c");
+    ///     assert zipped.next() == ?(1, 'a');
+    ///     assert zipped.next() == ?(2, 'b');
+    ///     assert zipped.next() == ?(3, 'c');
     ///     assert zipped.next() == null;
     /// ```
 
@@ -1021,9 +1202,9 @@ module {
     ///
     ///     let zipped = Itertools.zip3(iter1, iter2, iter3);
     ///
-    ///     assert zipped.next() == ?(1, "a", 1.35);
-    ///     assert zipped.next() == ?(2, "b", 2.92);
-    ///     assert zipped.next() == ?(3, "c", 3.74);
+    ///     assert zipped.next() == ?(1, 'a', 1.35);
+    ///     assert zipped.next() == ?(2, 'b', 2.92);
+    ///     assert zipped.next() == ?(3, 'c', 3.74);
     ///     assert zipped.next() == null;
     /// ```
     public func zip3<A, B, C>(a: Iter.Iter<A>, b:Iter.Iter<B>, c:Iter.Iter<C>): Iter.Iter<(A, B, C)>{
@@ -1042,8 +1223,8 @@ module {
     /// ### Example
     /// ```motoko
     ///
-    ///     let iter = "abc".chars();
-    ///     let text = Itertools.toText(iter);
+    ///     let chars = ['a', 'b', 'c'].vals();
+    ///     let text = Itertools.toText(chars);
     ///
     ///     assert text == "abc";
     /// ```

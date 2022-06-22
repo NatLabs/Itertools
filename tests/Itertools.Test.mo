@@ -262,6 +262,7 @@ let success = run([
                 Itertools.nthOr(vals, 3, -1) == -1
             ])
         }),
+        
         it("peekable", do{
             let vals = [1, 2].vals();
             let peekIter = Itertools.peekable(vals);
@@ -323,11 +324,199 @@ let success = run([
                 iter.next() == null
             ])
         }),
+        it("skip", do{
+            let iter = [1, 2, 3, 4, 5].vals();
+            Itertools.skip(iter, 3);
+
+            assertAllTrue([
+                iter.next() == ?4,
+                iter.next() == ?5,
+                iter.next() == null
+            ])
+        }),
+        it("slidingTuples", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let it = Itertools.slidingTuples(vals);
+    
+            assertAllTrue([
+                it.next() == ?(1, 2),
+                it.next() == ?(2, 3),
+                it.next() == ?(3, 4),
+                it.next() == ?(4, 5),
+                it.next() == null
+            ])
+        }),
+        it("slidingTriples", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let triples = Itertools.slidingTriples(vals);
+
+            assertAllTrue([
+                triples.next() == ?(1, 2, 3),
+                triples.next() == ?(2, 3, 4),
+                triples.next() == ?(3, 4, 5),
+                triples.next() == null,
+            ])
+           
+        }),
+        it("splitAt", do{
+            let iter = [1, 2, 3, 4, 5].vals();
+            let (left, right) = Itertools.splitAt(iter, 3);
+
+            assertAllTrue([
+                left.next() == ?1,
+                right.next() == ?4,
+        
+                left.next() == ?2,
+                right.next() == ?5,
+        
+                left.next() == ?3,
+        
+                left.next() == null,
+                right.next() == null,
+            ])
+        }),
+        it("spy", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let (copy, fullIter) = Itertools.spy(vals, 3);
+    
+            assertAllTrue([
+                copy.next() == ?1,  
+                copy.next() == ?2,
+                copy.next() == ?3,
+                copy.next() == null,
+        
+                fullIter.next() == ?1,
+                fullIter.next() == ?2,
+                fullIter.next() == ?3,
+                fullIter.next() == ?4,
+                fullIter.next() == ?5,
+                fullIter.next() == null
+            ])
+        
+           
+        }),
+        it("stepBy", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let iter = Itertools.stepBy(vals, 2);
+
+            assertAllTrue([
+                iter.next() == ?1,
+                iter.next() == ?3,
+                iter.next() == ?5,
+                iter.next() == null
+            ])
+        }),
+        it("take", do{
+            let iter = Iter.fromArray([1, 2, 3, 4, 5]);
+            let it = Itertools.take(iter, 3);
+
+            assertAllTrue([
+                it.next() == ?1,
+                it.next() == ?2,
+                it.next() == ?3,
+                it.next() == null,
+        
+                iter.next() == ?4,
+                iter.next() == ?5,
+                iter.next() == null
+            ])
+        }),
+        it("takeWhile", do{
+            let iter = [1, 2, 3, 4, 5].vals();
+            let lessThan3 = func(x: Nat): Bool { x < 3 };
+            let it = Itertools.takeWhile(iter, lessThan3);
+
+            assertAllTrue([
+                it.next() == ?1,
+                it.next() == ?2,
+                it.next() == null
+            ])
+        }),
+        it("tuples", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let it = Itertools.tuples(vals);
+
+            assertAllTrue([
+                it.next() == ?(1, 2),
+                it.next() == ?(3, 4),
+                it.next() == null
+            ])
+        }),
+        it ("triples", do{
+            let vals = [1, 2, 3, 4, 5, 6, 7].vals();
+            let it = Itertools.triples(vals);
+
+            assertAllTrue([
+                it.next() == ?(1, 2, 3),
+                it.next() == ?(4, 5, 6),
+                it.next() == null
+            ])
+        }),
+        it("tee", do{
+            let iter = [1, 2, 3].vals();
+            let (iter1, iter2) = Itertools.tee(iter);
+    
+            assertAllTrue([
+                iter1.next() == ?1,
+                iter1.next() == ?2,
+                iter1.next() == ?3,
+                iter1.next() == null,
+        
+                iter2.next() == ?1,
+                iter2.next() == ?2,
+                iter2.next() == ?3,
+                iter2.next() == null
+            ])
+        }),
+        it("unzip", do{
+            let iter = [(1, 'a'), (2, 'b'), (3, 'c')].vals();
+            let (arr1, arr2) = Itertools.unzip(iter);
+
+            assertAllTrue([
+                arr1 == [1, 2, 3],
+                arr2 == ['a', 'b', 'c']
+            ])
+        }),
+        
+        it("zip", do{
+            let iter1 = [1, 2, 3, 4, 5].vals();
+            let iter2 = "abc".chars();
+            let zipped = Itertools.zip(iter1, iter2);
+
+            assertAllTrue([
+                zipped.next() == ?(1, 'a'),
+                zipped.next() == ?(2, 'b'),
+                zipped.next() == ?(3, 'c'),
+                zipped.next() == null
+            ])
+        }),
+
+        it("zip3", do{
+            let iter1 = [1, 2, 3, 4, 5].vals();
+            let iter2 = "abc".chars();
+            let iter3 = [1.35, 2.92, 3.74, 4.12, 5.93].vals();
+    
+            let zipped = Itertools.zip3(iter1, iter2, iter3);
+
+            assertAllTrue([
+                zipped.next() == ?(1, 'a', 1.35),
+                zipped.next() == ?(2, 'b', 2.92),
+                zipped.next() == ?(3, 'c', 3.74),
+                zipped.next() == null
+            ])
+        }),
+
+        it("toText", do{
+            let chars = ['a', 'b', 'c'].vals();
+            let text = Itertools.toText(chars);
+
+            assertTrue( text == "abc" )
+        }),
     ])
 ]);
 
 if(success == false){
-  Debug.trap("\1b[48;2;31mTests failed\1b[0m");
+  Debug.trap("\1b[46;41mTests failed\1b[0m");
 }else{
     Debug.print("\1b[23;42;3m Success!\1b[0m");
 }

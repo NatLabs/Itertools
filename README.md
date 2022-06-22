@@ -71,16 +71,26 @@ List of functions:
 - [x] repeat
 
 - [x] skip
+  
+- [x] slidingTuples
+  
+- [x] slidingTriples
 
 - [x] splitAt
 
 - [x] spy
 
-- [x] step
+- [x] stepBy
 
 - [x] take
 
+- [x] takeWhile
+
 - [x] tee
+
+- [x] tuples
+
+- [x] triples
 
 - [x] unzip
 
@@ -89,6 +99,10 @@ List of functions:
 - [x] zip3
 
 - [ ] advanceBy
+  
+- [ ] combinations
+  
+- [ ] cartesianProduct
 
 - [ ] fold
 
@@ -98,9 +112,9 @@ List of functions:
 
 - [ ] isParititioned
 
-- [ ] addSeperator/intersperse
+- [ ] intersperse
 
-- [ ] addSeperator/interleave
+- [ ] interleave
 
 - [ ] mapWhile
 
@@ -108,16 +122,18 @@ List of functions:
 
 - [ ] kmerge
 
+- [ ] reduce
+
 - [ ] sortedMerge
 
 - [ ] partition
 
 - [ ] partitionInPlace
 
+- [ ] permutations
+
 - [ ] skipWhile
 
 - [ ] successor/unfold
-
-- [ ] takeWhile
 
 - [ ] zipLongest
