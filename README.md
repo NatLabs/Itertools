@@ -64,21 +64,16 @@ in aviate_labs # additions
  ```
 
 
- - An example, using multiple functions to retrieve the indices of all even numbers in an array:
+ - Splitting an array into chunks of size 3:
 
  ```motoko
      let vals = [1, 2, 3, 4, 5, 6].vals();
-     let iterWithIndices = Itertools.enumerate(vals);
+     let chunks = Itertools.chunks(vals, 3);
 
-     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
-     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-     let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
-
-     assert Iter.toArray(evenIndices) == [1, 3, 5];
+     assert Iter.toArray(chunks) == [[1, 2, 3], [4, 5, 6]];
  ```
 
-
- - An example to find the difference between consecutive elements in an array:
+ - Finding the difference between consecutive elements in an array:
 
  ```motoko
      let vals = [5, 3, 3, 7, 8, 10].vals();
