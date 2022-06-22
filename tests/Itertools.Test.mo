@@ -14,6 +14,34 @@ let {
 } = ActorSpec;
 
 let success = run([
+    describe("Custom Iterators", [
+        it("sum of 1 to 25", do{
+            let range = Itertools.range(1, 25 + 1);
+            let sum = Itertools.sum(range);
+
+            assertTrue( sum == ?325);
+        }),
+        it("find indices of elem that match a predicate", do{
+            let arr = [1, 2, 3, 4, 5, 6];
+            let iterWithIndices = Itertools.enumerate<Int>(arr.vals());
+
+            let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
+            let mapIndex = func (x : (Int, Int)) : Int { x.0 };
+            let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
+
+            assertTrue(Iter.toArray(evenIndices) == [1, 3, 5])
+        }),
+        it("diff between consecutive elem in an arr", do{
+            let vals = [5, 3, 3, 7, 8, 10].vals();
+
+            let tuples = Itertools.slidingTuples(vals);
+            
+            let diff = func (x : (Int, Int)) : Int { x.1 - x.0 };
+            let iter = Iter.map(tuples, diff);
+        
+            assertTrue(Iter.toArray(iter) == [-2, 0, 4, 1, 2])
+        })
+    ]),
     describe("Iter", [
         it("sum", do{
             let vals = [1, 2, 3, 4].vals();
@@ -254,12 +282,12 @@ let success = run([
 
             assertTrue(nth == ?3)
         }),
-        it("nthOr (-1)", do{
+        it("nthOrDefault (-1)", do{
              let vals = [0, 1, 2, 3, 4, 5].vals();
 
             assertAllTrue([
-                Itertools.nthOr(vals, 3, -1) == 3,
-                Itertools.nthOr(vals, 3, -1) == -1
+                Itertools.nthOrDefault(vals, 3, -1) == 3,
+                Itertools.nthOrDefault(vals, 3, -1) == -1
             ])
         }),
         

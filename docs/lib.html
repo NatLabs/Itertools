@@ -1,53 +1,6 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
-<p>See the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1"><code>Iter</code></a> module from the base lib for more information on the <code>Iter</code> type.</p>
-<h2 id="Getting-started">Getting started</h2>
-
-<p>To get started, you'll need to import the <code>Iter</code> module from both the base library and this one.</p>
-<pre class="motoko"><code class="motoko">    import Iter &quot;mo:base/Iter&quot;;
-    import Itertools &quot;mo:itertools/Iter&quot;;</code></pre>
-
-<p>Converting data types to iterators is the next step.</p>
-<ul><li>Array<ul><li><code>[1, 2, 3, 4, 5].vals()</code></li><li><code>Iter.fromArray([1, 2, 3, 4, 5])</code></li></ul></li></ul>
-
-<ul><li>List<ul><li><code>Iter.fromList(list)</code></li></ul></li></ul>
-
-<ul><li>Text<ul><li><code>&quot;Hello, world!&quot;.chars()</code></li><li><code>Text.split(&quot;a,b,c&quot;, #char ',')</code></li></ul></li></ul>
-
-<ul><li><a href="https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1">HashMap</a><ul><li><code>map.entries()</code></li></ul></li></ul>
-
-<p>For conversion of other data types to iterators, you can look in the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/array">base library</a> for the specific data type's documentation.</p>
-<p>Here are some examples of using the functions in this library to create simple and 
-efficient iterators for solving different problems:</p>
-<ul><li>An example, using <code>range</code> and <code>sum</code> to find the sum of values from 1 to 25:</li></ul>
-
-<pre class="motoko"><code class="motoko">    let range = Itertools.range(1, 25 + 1);
-    let sum = Itertools.sum(range);
-
-    assert sum == ?325;</code></pre>
-
-<ul><li>An example, using multiple functions to retrieve the indices of all even numbers in an array:</li></ul>
-
-<pre class="motoko"><code class="motoko">    let vals = [1, 2, 3, 4, 5, 6].vals();
-    let iterWithIndices = Itertools.enumerate(vals);
-
-    let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
-    let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-    let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
-
-    assert Iter.toArray(evenIndices) == [1, 3, 5];</code></pre>
-
-<ul><li>An example to find the difference between consecutive elements in an array:</li></ul>
-
-<pre class="motoko"><code class="motoko">    let vals = [5, 3, 3, 7, 8, 10].vals();
-    
-    let tuples = Itertools.slidingTuples(vals);
-    // Iter.toArray(tuples) == [(5, 3), (3, 7), (3, 8), (7, 10)]
-    
-    let diff = func (x : (Int, Int)) : Int { x.1 - x.0 };
-    let iter = Iter.map(tuples, diff);
-
-    assert Iter.toArray(iter) == [-2, 0, 4, 1, 2];</code></pre><div class="declaration"><h4 class="function" id="sum"><code><span class="keyword">public func </span><span class="fnname">sum</span>(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Int</span>&gt;) : ?<span class="type">Int</span></code></h4><p><p>Consumes an iterator of integers and returns the sum of all values.
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li><li><li><a href="lib.html">lib</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>lib</h1><p>Main module with utility functions for working with iterators.</p>
+<div class="declaration"><h4 class="function" id="sum"><code><span class="keyword">public func </span><span class="fnname">sum</span>(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Int</span>&gt;) : ?<span class="type">Int</span></code></h4><p><p>Consumes an iterator of integers and returns the sum of all values.
 An empty iterator returns <code>null</code>.</p>
 <h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
     let vals = [1, 2, 3, 4].vals();
@@ -301,8 +254,7 @@ without consuming the iterator.</p>
     assert peekIter.next() == ?2;
 
     assert peekIter.peek() == null;
-    assert peekIter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a <code>Nat</code> iterator that yields numbers in range [start, end).
-The base library provides a <code>range</code> function that returns an iterator from with start and end both inclusive.</p>
+    assert peekIter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a <code>Nat</code> iterator that yields numbers in range [start, end).</p>
 <h3 id="Example">Example</h3>
 
 <pre class="motoko"><code class="motoko">

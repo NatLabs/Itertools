@@ -1,4 +1,78 @@
-/// Main module with utility functions for working with iterators.
+/// Main module with utility functions for working efficiently with iterators.
+/// 
+/// See the [`Iter`](https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1) module from the base lib for more information on the `Iter` type.
+///
+///
+/// ## Getting started
+///
+/// To get started, you'll need to import the `Iter` module from both the base library and this one.
+///
+/// ```motoko
+///     import Iter "mo:base/Iter";
+///     import Itertools "mo:itertools/Iter";
+/// ```
+/// 
+/// Converting data types to iterators is the next step.
+/// - Array
+///     - `[1, 2, 3, 4, 5].vals()`
+///     - `Iter.fromArray([1, 2, 3, 4, 5])`
+///
+///
+/// - List
+///     - `Iter.fromList(list)`
+///
+///
+/// - Text
+///     - `"Hello, world!".chars()`
+///     - `Text.split("a,b,c", #char ',')`
+///
+///
+/// - [HashMap](https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1)
+///        - `map.entries()`
+///
+/// For conversion of other data types to iterators, you can look in the [base library](https://internetcomputer.org/docs/current/references/motoko-ref/array) for the specific data type's documentation.
+///
+///
+/// Here are some examples of using the functions in this library to create simple and 
+/// efficient iterators for solving different problems:
+///
+/// - An example, using `range` and `sum` to find the sum of values from 1 to 25:
+/// 
+/// ```motoko
+///     let range = Itertools.range(1, 25 + 1);
+///     let sum = Itertools.sum(range);
+///
+///     assert sum == ?325;
+/// ```
+///
+///
+/// - An example, using multiple functions to retrieve the indices of all even numbers in an array:
+///
+/// ```motoko
+///     let vals = [1, 2, 3, 4, 5, 6].vals();
+///     let iterWithIndices = Itertools.enumerate(vals);
+///
+///     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
+///     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
+///     let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
+///
+///     assert Iter.toArray(evenIndices) == [1, 3, 5];
+/// ```
+///
+///
+/// - An example to find the difference between consecutive elements in an array:
+///
+/// ```motoko
+///     let vals = [5, 3, 3, 7, 8, 10].vals();
+///     
+///     let tuples = Itertools.slidingTuples(vals);
+///     // Iter.toArray(tuples) == [(5, 3), (3, 7), (3, 8), (7, 10)]
+///     
+///     let diff = func (x : (Int, Int)) : Int { x.1 - x.0 };
+///     let iter = Iter.map(tuples, diff);
+/// 
+///     assert Iter.toArray(iter) == [-2, 0, 4, 1, 2];
+/// ```
 
 import Order "mo:base/Order";
 import Buffer "mo:base/Buffer";
@@ -649,10 +723,10 @@ module {
     ///
     ///     let vals = [0, 1, 2, 3, 4, 5].vals();
     ///
-    ///     assert Itertools.nthOr(vals, 3, -1) == ?3;
-    ///     assert Itertools.nthOr(vals, 3, -1) == ?-1;
+    ///     assert Itertools.nthOrDefault(vals, 3, -1) == ?3;
+    ///     assert Itertools.nthOrDefault(vals, 3, -1) == ?-1;
     /// ```
-    public func nthOr<A>(iter: Iter.Iter<A>, n: Nat, defaultValue: A): A{
+    public func nthOrDefault<A>(iter: Iter.Iter<A>, n: Nat, defaultValue: A): A{
         switch(nth<A>(iter, n)){
             case (?a) {
                 return a;
@@ -688,6 +762,7 @@ module {
     };
 
     /// Returns a `Nat` iterator that yields numbers in range [start, end).
+    /// The base library provides a `range` function that returns an iterator from with start and end both inclusive.
     ///
     /// ### Example
     ///
