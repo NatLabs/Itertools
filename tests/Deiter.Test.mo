@@ -5,7 +5,9 @@ import Nat "mo:base/Nat";
 
 import ActorSpec "./utils/ActorSpec";
 
-import DoubleEndedIter "../src/Deiter";
+import Deiter "../src/Deiter";
+import Itertools "../src/Iter";
+
 
 let {
     assertTrue; assertFalse; assertAllTrue; describe; it; skip; pending; run
@@ -22,10 +24,10 @@ func arrayToDeque(array: [Nat]) : Deque.Deque<Nat> {
 };
 
 let success = run([
-    describe("DoubleEndedIter", [
+    describe("Double Ended Iter", [
         it("fromArray", do {
             let arr = [1, 2, 3, 4, 5];
-            let deiter = DoubleEndedIter.fromArray<Nat>(arr);
+            let deiter = Deiter.fromArray<Nat>(arr);
 
             assertAllTrue([
                 deiter.next() == ?1,
@@ -39,7 +41,7 @@ let success = run([
         }),
         it("fromArrayMut", do {
             let arr = [var 1, 2, 3, 4, 5];
-            let deiter = DoubleEndedIter.fromArrayMut<Nat>(arr);
+            let deiter = Deiter.fromArrayMut<Nat>(arr);
 
             assertAllTrue([
                 deiter.next() == ?1,
@@ -53,7 +55,7 @@ let success = run([
         }), 
         it("fromDeque", do {
             let deque = arrayToDeque([1, 2, 3, 4, 5]);
-            let deiter = DoubleEndedIter.fromDeque<Nat>(deque);
+            let deiter = Deiter.fromDeque<Nat>(deque);
 
             assertAllTrue([
                 deiter.next() == ?1,
@@ -67,8 +69,8 @@ let success = run([
         }),
         it("rev", do {
             let deque = arrayToDeque([1, 2, 3, 4, 5]);
-            let deiter = DoubleEndedIter.fromDeque<Nat>(deque);
-            let revIter = DoubleEndedIter.rev(deiter);
+            let deiter = Deiter.fromDeque<Nat>(deque);
+            let revIter = Deiter.rev(deiter);
 
             assertAllTrue([
                 revIter.next() == ?5,
@@ -79,6 +81,22 @@ let success = run([
                 revIter.next_back() == null,
                 revIter.next() == null
             ])
+        }),
+        it("reverse chunks", do{
+            let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        
+            let deiter = Deiter.fromArray(arr);
+            let revDeiter = Deiter.rev(deiter);
+            let chunks = Itertools.chunks(revDeiter, 3);
+            
+            assertAllTrue([
+                chunks.next() == ?[10, 9, 8],
+                chunks.next() == ?[7, 6, 5],
+                chunks.next() == ?[4, 3, 2],
+                chunks.next() == ?[1],
+                chunks.next() == null
+            ])
+           
         }),
     ]),
 ]);

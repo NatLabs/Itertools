@@ -1,2 +1,22 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#type.PeekableIter">PeekableIter</a></li></li><li><li><a href="#fromIter">fromIter</a></li></li></ul></nav><div class="documentation"><h1>PeekableIter</h1><div class="declaration"><h4 class="type-declaration" id="type.PeekableIter"><span class="keyword">type </span><span class="type">PeekableIter</span>&lt;<span class="type">T</span>&gt; = { peek : () -&gt; ?<span class="type">T</span>; next : () -&gt; ?<span class="type">T</span> }</h4><p></p></div><div class="declaration"><h4 class="function" id="fromIter"><code><span class="keyword">public func </span><span class="fnname">fromIter</span>&lt;<span class="type">T</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">T</span>&gt;) : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">T</span>&gt;</code></h4><p></p></div></div></body></html>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#type.PeekableIter">PeekableIter</a></li></li><li><li><a href="#fromIter">fromIter</a></li></li></ul></nav><div class="documentation"><h1>PeekableIter</h1><p>Peekable Iterator</p>
+<p>An iterator equipped with a <code>peek</code> method that returns the next value without advancing the iterator.</p>
+<p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko 
+so it is compatible with all the function defined for the <code>Iter</code> type.</p>
+<div class="declaration"><h4 class="type-declaration" id="type.PeekableIter"><span class="keyword">type </span><span class="type">PeekableIter</span>&lt;<span class="type">T</span>&gt; = <span class="type">Iter.Iter</span>&lt;<span class="type">T</span>&gt; and { peek : () -&gt; ?<span class="type">T</span> }</h4><p><p>Peekable Iterator Type.</p>
+</p></div><div class="declaration"><h4 class="function" id="fromIter"><code><span class="keyword">public func </span><span class="fnname">fromIter</span>&lt;<span class="type">T</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">T</span>&gt;) : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">T</span>&gt;</code></h4><p><p>Creates a <code>PeekableIter</code> from an <code>Iter</code>.</p>
+<h4 id="Example">Example:</h4><pre><code>let vals = [1, 2].vals();
+let peekableIter = PeekableIter.fromIter(vals);
+
+assert peekableIter.peek() == ?1;
+assert peekableIter.peek() == ?1;
+assert peekableIter.next() == ?1;
+
+assert peekableIter.peek() == ?2;
+assert peekableIter.peek() == ?2;
+assert peekableIter.peek() == ?2;
+assert peekableIter.next() == ?2;
+
+assert peekableIter.peek() == null;
+assert peekableIter.next() == null;</code></pre><p>```</p>
+</p></div></div></body></html>

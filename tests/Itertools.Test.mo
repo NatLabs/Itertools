@@ -19,13 +19,13 @@ let success = run([
             let vals = [1, 2, 3, 4].vals();
             let sum = Itertools.sum(vals);
     
-            assertTrue(sum == 10)
+            assertTrue(sum == ?10)
         }),
         it("product", do{
             let vals = [1, 2, 3, 4].vals();
             let product = Itertools.product(vals);
     
-            assertTrue(product == 24)
+            assertTrue(product == ?24)
         }),
         describe("accumulate", [
             it("sum", do{

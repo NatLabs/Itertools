@@ -1,3 +1,5 @@
+/// Main module with utility functions for working with iterators.
+
 import Order "mo:base/Order";
 import Buffer "mo:base/Buffer";
 import Int "mo:base/Int";
@@ -11,7 +13,7 @@ import PeekableIter "PeekableIter";
 module {
 
     /// Consumes an iterator of integers and returns the sum of all values.
-    /// An empty iterator returns 0.
+    /// An empty iterator returns `null`.
     ///
     /// ### Example
     /// ```motoko
@@ -19,18 +21,27 @@ module {
     ///     let vals = [1, 2, 3, 4].vals();
     ///     let sum = Itertools.sum(vals);
     ///
-    ///     assert sum == 10;
+    ///     assert sum == ?10;
     /// ```
-    public func sum(iter: Iter.Iter<Int>): Int{
+    public func sum(iter: Iter.Iter<Int>): ?Int{
         var acc : Int = 0;
+        var i = 0;
         for(n in iter){
             acc := acc + n;
+            if (i==0){
+                i+=1;
+            }
         };
-        return acc;
+
+        if (i > 0){
+            ?acc
+        }else{
+            null
+        }
     };
 
     /// Consumes an iterator of integers and returns the product of all values.
-    /// An empty iterator returns 1.
+    /// An empty iterator returns null.
     ///
     /// ### Example
     /// ```motoko
@@ -38,14 +49,23 @@ module {
     ///     let vals = [1, 2, 3, 4].vals();
     ///     let prod = Itertools.product(vals);
     ///
-    ///     assert prod == 24;
+    ///     assert prod == ?24;
     /// ```
-    public func product(iter: Iter.Iter<Int>): Int{
+    public func product(iter: Iter.Iter<Int>): ?Int{
         var acc : Int = 1;
+        var i = 0;
         for(n in iter){
             acc := acc * n;
+            if (i==0){
+                i+=1;
+            }
         };
-        return acc;
+
+        if (i > 0){
+            ?acc
+        }else{
+            null
+        }
     };
 
     /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.

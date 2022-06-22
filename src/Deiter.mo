@@ -1,21 +1,54 @@
+/// Double Ended Iterator
+///
+/// This type of iterator allows for both forward and backward iteration
+/// Double Ended Iterators are useful for iterating over data structures in reverse without allocating extra space for the reverse iteration.
+///
+/// The `Deiter` type is an extension of the `Iter` type built in Motoko 
+/// so it is compatible with all the function defined for the `Iter` type.
+///
+///
+/// The `Deiter` is intended to be used with functions for the `Iter` type to avoid rewriting similar functions for both types.
+///
+/// - An example reversing a list of integers and breaking them into chunks of size `n`:
+///
+/// ```motoko
+/// 
+///   import Itertools "mo:itertools/Iter";
+///   import Deiter "mo:itertools/Deiter";
+///
+///   let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+/// 
+///   // create a double ended iterator from an array
+///   let deiter = Deiter.fromArray(arr);
+///
+///   // reverse double ended iterator
+///   let revDeiter = Deiter.rev(deiter);
+///
+///   // Double Ended Iter gets typecasted to an Iter typw
+///   let chunks = Itertools.chunks(revDeiter, 3);
+///   
+///   assert chunks.next() == ?[10, 9, 8];
+///   assert chunks.next() == ?[7, 6, 5];
+///   assert chunks.next() == ?[4, 3, 2];
+///   assert chunks.next() == ?[1];
+///   assert chunks.next() == null;
+///
+/// ```
+
+
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Int "mo:base/Int";
 import List "mo:base/List";
 import Deque "mo:base/Deque";
 
-/// Double Ended Iterator Implementation
-/// Allows for both forward and backward iteration
-/// Usefull for iterating over an array in reverse without allocating a new array
 module {
-
   /// Double Ended Iterator Type
-  public type Deiter<T> = {
-    next: () -> ?T;
+  public type Deiter<T> = Iter.Iter<T> and {
     next_back : () -> ?T;
   };
   
-  /// 
+  /// Returns a Double Ended Iterator over a range of natural, `Nat` numbers from [start, end)
   public func range(start: Nat, end: Nat): Deiter<Nat> {
     let intIter = intRange(start, end);
     
@@ -36,6 +69,7 @@ module {
     };
   };
 
+  /// Returns a Double Ended Iterator over a range of integers (`Int`) from [start, end)
   public func intRange(start: Int, end: Int): Deiter<Int> {
     var i = start;
     var j = end;
@@ -62,7 +96,27 @@ module {
   };
 
   /// Returns an iterator that iterates over the elements in reverse order.
-  /// #### Examples 
+  /// #### Example
+  ///
+  /// ```motoko
+  ///
+  ///   let arr = [1, 2, 3];
+  ///   let deiter = Deiter.fromArray(arr);
+  /// 
+  ///   assert deiter.next() == ?1;
+  ///   assert deiter.next() == ?2;
+  ///   assert deiter.next() == ?3;
+  ///   assert deiter.next() == null;
+  ///
+  ///   let deiter2 = Deiter.fromArray(arr);
+  ///   let revIter = Deiter.rev(deiter2);
+  ///
+  ///   assert revIter.next() == ?3;
+  ///   assert revIter.next() == ?2;
+  ///   assert revIter.next() == ?1;
+  ///   assert revIter.next() == null;
+  ///
+  /// ```
   public func rev<T>(deiter : Deiter<T>) : Deiter<T> {
     return object{
       public func next(): ?T {
@@ -74,6 +128,22 @@ module {
     };
   };
 
+  /// Creates an iterator for the elements of an array.
+  /// 
+  /// #### Example
+  ///
+  /// ```motoko
+  ///
+  ///   let arr = [1, 2, 3];
+  ///   let deiter = Deiter.fromArray(arr);
+  ///
+  ///   assert deiter.next() == ?1;
+  ///   assert deiter.next_back() == ?3;
+  ///   assert deiter.next_back() == ?2;  
+  ///   assert deiter.next_back() == null;
+  ///   assert deiter.next() == null;
+  ///
+  /// ```
   public func fromArray<T>(array: [T]): Deiter<T> {
     var left  =0;
     var right = array.size();
@@ -110,13 +180,7 @@ module {
     Iter.toArrayMut<T>(deiter)
   };
 
-  /// Deiter are interchangable with Iter types so there 
-  /// is no need to convert them. 
-  /// This function casts a Deiter to an Iter type.
-  /// So you won't be able to use the next_back function after calling this function.
-  /// So if you want to get the values in reverse order you need 
-  /// to use the `rev` function before calling this function.
-
+  /// Type Conversion from Deiter to Iter
   public func toIter<T>(iter: Iter.Iter<T>): Iter.Iter<T> {
     iter
   };
