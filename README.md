@@ -79,7 +79,7 @@ in aviate_labs # additions
      let vals = [5, 3, 3, 7, 8, 10].vals();
      
      let tuples = Itertools.slidingTuples(vals);
-     // Iter.toArray(tuples) == [(5, 3), (3, 7), (3, 8), (7, 10)]
+     // Iter.toArray(tuples) == [(5, 3), (3, 3), (3, 7), (7, 8), (8, 10)]
      
      let diff = func (x : (Int, Int)) : Int { x.1 - x.0 };
      let iter = Iter.map(tuples, diff);
