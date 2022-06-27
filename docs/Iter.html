@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
 <p>See the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1"><code>Iter</code></a> module from the base lib for more information on the <code>Iter</code> type.</p>
 <h2 id="Getting-started">Getting started</h2>
 
@@ -214,7 +214,31 @@ maps them to a new value based on the second argument.</p>
     let isEven = func( x : Int ) : Bool {x % 2 == 0};
     let res = Itertools.findIndex(vals, isEven);
 
-    assert res == ?1</code></pre></p></div><div class="declaration"><h4 class="function" id="max"><code><span class="keyword">public func </span><span class="fnname">max</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">cmp</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Order.Order</span>) : ?<span class="type">A</span></code></h4><p><p>Returns the maximum value in an iterator.
+    assert res == ?1</code></pre></p></div><div class="declaration"><h4 class="function" id="mapWhile"><code><span class="keyword">public func </span><span class="fnname">mapWhile</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">pred</span> : (<span class="type">A</span>) -&gt; ?<span class="type">B</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Returns an iterator that maps and yields elements while the 
+The predicate is true if it returns an optional value and false if it 
+returns null.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4, 5].vals();
+
+    let squareIntLessThan4 = func( x : Int ) : ?Int { 
+        if (x &lt; 4){
+            return ?(x * x);
+        }else{
+            return null;
+        };
+    };
+
+    let it = Itertools.mapWhile(vals, squareIntLessThan4);
+
+    assert it.next() == ?1;
+    assert it.next() == ?4;
+    assert it.next() == ?9;
+    assert it.next() == null;
+    assert it.next() == null;
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="max"><code><span class="keyword">public func </span><span class="fnname">max</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">cmp</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Order.Order</span>) : ?<span class="type">A</span></code></h4><p><p>Returns the maximum value in an iterator.
 A null value is returned if the iterator is empty.</p>
 <h3 id="Example">Example</h3>
 

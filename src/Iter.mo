@@ -539,6 +539,61 @@ module {
         return null;
     };
 
+    /// Returns an iterator that maps and yields elements while the 
+    // predicate is true.
+    /// The predicate is true if it returns an optional value and false if it 
+    /// returns null.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///
+    ///     let squareIntLessThan4 = func( x : Int ) : ?Int { 
+    ///         if (x < 4){
+    ///             return ?(x * x);
+    ///         }else{
+    ///             return null;
+    ///         };
+    ///     };
+    ///
+    ///     let it = Itertools.mapWhile(vals, squareIntLessThan4);
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?4;
+    ///     assert it.next() == ?9;
+    ///     assert it.next() == null;
+    ///     assert it.next() == null;
+    ///
+    /// ```
+    public func mapWhile<A, B>(iter: Iter.Iter<A>, pred: (A) -> ?B): Iter.Iter<B>{
+        var ctrl = true;
+        return object{
+            public func next(): ?B{
+                if (ctrl == false){
+                    return null;
+                };
+
+                switch( iter.next()) {
+                    case (?n) {
+                        switch (pred(n)){
+                            case (?v) {
+                                ?v
+                            };
+                            case (null) {
+                                ctrl := false;
+                                null
+                            };
+                        };
+                    };
+                    case (_) null;
+                };
+            }
+        };
+    };
+
+
     /// Returns the maximum value in an iterator.
     /// A null value is returned if the iterator is empty.
     ///

@@ -228,6 +228,27 @@ let success = run([
 
             assertTrue(res == ?1)
         }),
+        it("mapWhile", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+    
+            let squareIntLessThan4 = func( x : Int ) : ?Int { 
+                if (x < 4){
+                    return ?(x * x);
+                }else{
+                    return null;
+                };
+            };
+    
+            let it = Itertools.mapWhile(vals, squareIntLessThan4);
+
+            assertAllTrue([
+                it.next() == ?1,
+                it.next() == ?4,
+                it.next() == ?9,
+                it.next() == null,
+                it.next() == null
+            ])
+        }),
         describe("max", [
             it("find max", do{
                 let vals = [1, 2, 3, 4, 5].vals();
@@ -547,4 +568,4 @@ if(success == false){
   Debug.trap("\1b[46;41mTests failed\1b[0m");
 }else{
     Debug.print("\1b[23;42;3m Success!\1b[0m");
-}
+};
