@@ -46,6 +46,9 @@ in aviate_labs # additions
  - Text
      - `"Hello, world!".chars()`
      - `Text.split("a,b,c", #char ',')`
+ 
+ - Buffer
+   - `buffer.toArray().vals()`
   
 
  For conversion of other data types to iterators, you can look in the [base library](https://internetcomputer.org/docs/current/references/motoko-ref/array) for the specific data type's documentation.
@@ -117,9 +120,11 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 #### Generic Iterator Methods
 
-- [x] [accumulate](https://tomijaga.github.io/Itertools.mo/Iter.html#accumulate), [all](https://tomijaga.github.io/Itertools.mo/Iter.html#all), [any](https://tomijaga.github.io/Itertools.mo/Iter.html#any), [chain](https://tomijaga.github.io/Itertools.mo/Iter.html#chain), [chunks](https://tomijaga.github.io/Itertools.mo/Iter.html#chunks), [chunksExact](https://tomijaga.github.io/Itertools.mo/Iter.html#chunksExact), [cycle](https://tomijaga.github.io/Itertools.mo/Iter.html#cycle), [enumerate](https://tomijaga.github.io/Itertools.mo/Iter.html#enumerate), [find](https://tomijaga.github.io/Itertools.mo/Iter.html#find), [findIndex](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndex), [filterMap](https://tomijaga.github.io/Itertools.mo/Iter.html#filterMap), [mapWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#mapWhile), [max](https://tomijaga.github.io/Itertools.mo/Iter.html#max), [min](https://tomijaga.github.io/Itertools.mo/Iter.html#min), [minmax](https://tomijaga.github.io/Itertools.mo/Iter.html#minmax), [nth](https://tomijaga.github.io/Itertools.mo/Iter.html#nth), [nthOrDefault](https://tomijaga.github.io/Itertools.mo/Iter.html#nthOrDefault), [peekable](https://tomijaga.github.io/Itertools.mo/Iter.html#peekable), [range](https://tomijaga.github.io/Itertools.mo/Iter.html#range), [intRange](https://tomijaga.github.io/Itertools.mo/Iter.html#intRange), [ref](https://tomijaga.github.io/Itertools.mo/Iter.html#ref), [repeat](https://tomijaga.github.io/Itertools.mo/Iter.html#repeat), [skip](https://tomijaga.github.io/Itertools.mo/Iter.html#skip)
-, [slidingTuples](https://tomijaga.github.io/Itertools.mo/Iter.html#slidingTuples)
-, [slidingTriples](https://tomijaga.github.io/Itertools.mo/Iter.html#slidingTriples), [splitAt](https://tomijaga.github.io/Itertools.mo/Iter.html#splitAt), [spy](https://tomijaga.github.io/Itertools.mo/Iter.html#spy), [stepBy](https://tomijaga.github.io/Itertools.mo/Iter.html#stepBy), [take](https://tomijaga.github.io/Itertools.mo/Iter.html#take), [takeWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#takeWhile), [tee](https://tomijaga.github.io/Itertools.mo/Iter.html#tee), [tuples](https://tomijaga.github.io/Itertools.mo/Iter.html#tuples), [triples](https://tomijaga.github.io/Itertools.mo/Iter.html#triples), [unzip](https://tomijaga.github.io/Itertools.mo/Iter.html#unzip), [zip](https://tomijaga.github.io/Itertools.mo/Iter.html#zip), [zip3](https://tomijaga.github.io/Itertools.mo/Iter.html#zip3)
+- [x] [accumulate](https://tomijaga.github.io/Itertools.mo/Iter.html#accumulate), [all](https://tomijaga.github.io/Itertools.mo/Iter.html#all), [any](https://tomijaga.github.io/Itertools.mo/Iter.html#any), [chain](https://tomijaga.github.io/Itertools.mo/Iter.html#chain), [chunks](https://tomijaga.github.io/Itertools.mo/Iter.html#chunks), [chunksExact](https://tomijaga.github.io/Itertools.mo/Iter.html#chunksExact), [cycle](https://tomijaga.github.io/Itertools.mo/Iter.html#cycle), [enumerate](https://tomijaga.github.io/Itertools.mo/Iter.html#enumerate), [find](https://tomijaga.github.io/Itertools.mo/Iter.html#find), [findIndex](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndex), [findIndices](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndices), [filterMap](https://tomijaga.github.io/Itertools.mo/Iter.html#filterMap), [fold](https://tomijaga.github.io/Itertools.mo/Iter.html/#fold), [interleave](https://tomijaga.github.io/Itertools.mo/Iter.html/#interleave), [interleaveShortest](https://tomijaga.github.io/Itertools.mo/Iter.html/#interleaveShortest), [intersperse](https://tomijaga.github.io/Itertools.mo/Iter.html/#intersperse), [mapWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#mapWhile), [max](https://tomijaga.github.io/Itertools.mo/Iter.html#max), [min](https://tomijaga.github.io/Itertools.mo/Iter.html#min), [minmax](https://tomijaga.github.io/Itertools.mo/Iter.html#minmax), [nth](https://tomijaga.github.io/Itertools.mo/Iter.html#nth), [nthOrDefault](https://tomijaga.github.io/Itertools.mo/Iter.html#nthOrDefault), [peekable](https://tomijaga.github.io/Itertools.mo/Iter.html#peekable), [range](https://tomijaga.github.io/Itertools.mo/Iter.html#range), [intRange](https://tomijaga.github.io/Itertools.mo/Iter.html#intRange), [reduce](https://tomijaga.github.io/Itertools.mo/Iter.html/#reduce), [ref](https://tomijaga.github.io/Itertools.mo/Iter.html#ref), [repeat](https://tomijaga.github.io/Itertools.mo/Iter.html#repeat), [skip](https://tomijaga.github.io/Itertools.mo/Iter.html#skip), [slidingTuples](https://tomijaga.github.io/Itertools.mo/Iter.html#slidingTuples), [slidingTriples](https://tomijaga.github.io/Itertools.mo/Iter.html#slidingTriples), [splitAt](https://tomijaga.github.io/Itertools.mo/Iter.html#splitAt), [spy](https://tomijaga.github.io/Itertools.mo/Iter.html#spy), [stepBy](https://tomijaga.github.io/Itertools.mo/Iter.html#stepBy), [take](https://tomijaga.github.io/Itertools.mo/Iter.html#take), [takeWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#takeWhile), [tee](https://tomijaga.github.io/Itertools.mo/Iter.html#tee), [tuples](https://tomijaga.github.io/Itertools.mo/Iter.html#tuples), [triples](https://tomijaga.github.io/Itertools.mo/Iter.html#triples), [unique](https://tomijaga.github.io/Itertools.mo/Iter.html#unique), [unzip](https://tomijaga.github.io/Itertools.mo/Iter.html#unzip), [zip](https://tomijaga.github.io/Itertools.mo/Iter.html#zip), [zip3](https://tomijaga.github.io/Itertools.mo/Iter.html#zip3)
+
+#### Collection Iterator Methods
+
+[toBuffer](https://tomijaga.github.io/Itertools.mo/Iter.html#toBuffer), [toText](https://tomijaga.github.io/Itertools.mo/Iter.html#toText)
 
 #### Unimplemented Methods
 
@@ -129,25 +134,21 @@ For a complete list of functions and data types, see the [Itertools documentatio
   
 - [ ] cartesianProduct
 
-- [ ] fold
+- [ ] groupBy
 
 - [ ] inspect
 
 - [ ] isSorted
 
-- [ ] isParititioned
-
-- [ ] intersperse
-
-- [ ] interleave
+- [ ] isPartitioned
 
 - [ ] merge
 
 - [ ] kmerge
 
-- [ ] reduce
-
 - [ ] sortedMerge
+
+- [ ] pad
 
 - [ ] partition
 
@@ -158,5 +159,9 @@ For a complete list of functions and data types, see the [Itertools documentatio
 - [ ] skipWhile
 
 - [ ] successor/unfold
+  
+- [ ] tupleCombinations
+
+- [ ] while?
 
 - [ ] zipLongest

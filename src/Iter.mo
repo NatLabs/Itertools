@@ -17,15 +17,15 @@
 ///     - `[1, 2, 3, 4, 5].vals()`
 ///     - `Iter.fromArray([1, 2, 3, 4, 5])`
 ///
-///
 /// - List
 ///     - `Iter.fromList(list)`
-///
 ///
 /// - Text
 ///     - `"Hello, world!".chars()`
 ///     - `Text.split("a,b,c", #char ',')`
-///
+///  
+/// - Buffer
+///   - `buffer.toArray().vals()`
 ///
 /// - [HashMap](https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1)
 ///        - `map.entries()`
@@ -79,12 +79,18 @@ import Buffer "mo:base/Buffer";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
 import Char "mo:base/Char";
+import Hash "mo:base/Hash";
 import Text "mo:base/Text";
+import TrieSet "mo:base/TrieSet";
 import Prelude "mo:base/Prelude";
 
 import PeekableIter "PeekableIter";
 
 module {
+
+    // ==============================================================================================
+    // ============================== Integer Accumulation Methods ==============================
+    // ==============================================================================================
 
     /// Consumes an iterator of integers and returns the sum of all values.
     /// An empty iterator returns `null`.
@@ -141,6 +147,10 @@ module {
             null
         }
     };
+
+    // ==============================================================================================
+    // ============================== Generic Iterator Methods ==============================
+    // ==============================================================================================
 
     /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.
     ///  
@@ -526,7 +536,7 @@ module {
     ///     let isEven = func( x : Int ) : Bool {x % 2 == 0};
     ///     let res = Itertools.findIndex(vals, isEven);
     ///
-    ///     assert res == ?1
+    ///     assert res == ?1;
     /// ```
     public func findIndex<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): ?Nat{
         var i = 0;
@@ -539,9 +549,199 @@ module {
         return null;
     };
 
+    /// Returns an iterator with the indices of all the elements that match the predicate.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5, 6].vals();
+    ///
+    ///     let isEven = func( x : Int ) : Bool {x % 2 == 0};
+    ///     let res = Itertools.findIndices(vals, isEven);
+    ///
+    ///     assert Iter.toArray(res) == [1, 3, 5];
+    ///
+    /// ```
+    public func findIndices<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): Iter.Iter<Nat>{
+        var i = 0;
+        return object{
+            public func next(): ?Nat{
+                for (val in iter){
+                    i+=1;
+
+                    if (predicate(val)){
+                        return ?(i - 1);
+                    };
+
+                };
+
+                return null;
+            }
+        };
+    };
+
+
+    /// Returns the accumulated result of applying of the given
+    /// function to each element and the previous result starting with
+    /// the initial value.
+    ///
+    /// This method is similar to [reduce](#reduce) but it takes an initial
+    /// value and does not return an optional value.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///     import Nat8 "mo:base/Nat8";
+    ///
+    ///     let arr : [Nat8] = [1, 2, 3, 4, 5];
+    ///     let sumToNat = func(acc: Nat, n: Nat8): Nat { 
+    ///         acc + Nat8.toNat(n)
+    ///     };
+    ///
+    ///     let sum = Itertools.fold<Nat8, Nat>(
+    ///         arr.vals(), 
+    ///         200, 
+    ///         sumToNat
+    ///     );
+    ///
+    ///     assertTrue(sum == 215)
+    /// ```
+    ///
+    /// You can easily fold from the right to left using a 
+    /// [`Deiter`](Deiter.html) to reverse the iterator before folding.
+
+    public func fold<A, B>(iter: Iter.Iter<A>, initial: B, f: (B, A) -> B): B{
+        var res = initial;
+        for (val in iter){
+            res := f(res, val);
+        };
+
+        return res;
+    };
+
+    /// Alternates between two iterators of the same type until both are exhausted.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let vals2 = [10, 20].vals();
+    ///
+    ///     let iter = Itertools.interleave(vals, vals2);
+    ///
+    ///     assert iter.next() == ?1
+    ///     assert iter.next() == ?10
+    ///     assert iter.next() == ?2
+    ///     assert iter.next() == ?20
+    ///     assert iter.next() == ?3
+    ///     assert iter.next() == ?4
+    ///     assert iter.next() == null
+    /// ```
+    public func interleave<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+        var iter1 = _iter1;
+        var iter2 = _iter2;
+
+        return object{
+            public func next ():?A {
+                
+                switch (iter1.next()){
+                    case (?val) {
+                        let tmp = iter1;
+                        iter1 := iter2;
+                        iter2 := tmp;
+
+                        return ?val;
+                    };
+
+                    case (_) iter2.next();
+                };
+            };
+        };
+    };
+
+    /// Alternates between two iterators of the same type until one is exhausted.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let vals2 = [10, 20].vals();
+    ///
+    ///     let iter = Itertools.interleaveShortest(vals, vals2);
+    ///
+    ///     assert iter.next() == ?1
+    ///     assert iter.next() == ?10
+    ///     assert iter.next() == ?2
+    ///     assert iter.next() == ?20
+    ///     assert iter.next() == null
+    /// ```
+
+    public func interleaveShortest<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+        var iter1 = _iter1;
+        var iter2 = _iter2;
+
+        return object{
+            public func next () : ?A {
+                
+                switch (iter1.next(), iter2.next()){
+                    case (?val, ?val2) {
+
+                        let tmp = iter1;
+                        iter1 := chain([val2].vals(), iter2);
+                        iter2 := tmp;
+
+                        return ?val;
+                    };
+
+                    case (_) null;
+                };
+            };
+        };
+    };
+
+    // intersperse
+    /// Returns an iterator that inserts a value between each pair 
+    /// of values in an iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3].vals();
+    ///     let iter = Itertools.intersperse(vals, 10);
+    ///
+    ///     assert Iter.toArray(iter) == [1, 10, 2, 10, 3];
+    ///
+    /// ```
+    public func intersperse<A>(_iter: Iter.Iter<A>, val: A): Iter.Iter<A>{
+        let iter = peekable(_iter);
+        var even = true;
+
+        return object{
+            public func next () : ?A {
+                switch(iter.peek()){
+                    case (?item) {
+                        if (even) {
+                            even := false;
+                            return iter.next();
+                        }else{
+                            even := true;
+                            return ?val;
+                        };
+                    };
+                    case (_) null;
+                }
+            };
+        };
+    };
+
     /// Returns an iterator that maps and yields elements while the 
-    // predicate is true.
-    /// The predicate is true if it returns an optional value and false if it 
+    /// predicate is true.
+    /// The predicate is true if it returns an optional value and 
+    /// false if it 
     /// returns null.
     ///
     /// ### Example
@@ -592,7 +792,6 @@ module {
             }
         };
     };
-
 
     /// Returns the maximum value in an iterator.
     /// A null value is returned if the iterator is empty.
@@ -872,6 +1071,37 @@ module {
                 }
             };
         };
+    };
+
+    /// Returns an optional value representing the application of the given
+    /// function to each element and the accumulated result.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let add = func (a: Int, b: Int) : Int { a + b };
+    ///
+    ///     let sum = Itertools.reduce(vals, add);
+    ///
+    ///     assert sum == ?15;
+    /// ```
+    public func reduce<A>(iter: Iter.Iter<A>, f: (A, A) -> A): ?A{
+        switch (iter.next()){
+            case (?a) {
+                var acc = a;
+
+                for (val in iter){
+                    acc := f(acc, val);
+                };
+
+                ?acc
+            };
+            case (_) {
+                return null;
+            };
+        }
     };
 
     /// Returns a reference to the iterator
@@ -1287,6 +1517,52 @@ module {
         };
     };
 
+    /// Returns an iterator with unique elements from the given iter.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 1, 2, 3].vals();
+    ///     let it = Itertools.unique(vals);
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?2;
+    ///     assert it.next() == ?3;
+    ///     assert it.next() == null;
+    ///
+    /// ```
+    public func unique<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): Iter.Iter<A> {
+        var set = TrieSet.empty<A>();
+
+        return object{
+            public func next(): ?A{
+                var res: ?A = null;
+
+                label l loop {
+                    switch(iter.next()){
+                        case (?item){
+                            let hash = hashFn(item);
+
+                            if (TrieSet.mem<A>(set, item, hash, isEq)){
+                                continue l;
+                            };
+
+                            set := TrieSet.put<A>(set, item, hash, isEq);
+                            res := ?item;
+                            
+                            break l;
+                        };
+                        case (_){
+                            break l;
+                        };
+                    };
+                };
+
+                return res;
+            }
+        }
+    };
+
     /// Unzips an iterator of tuples into a tuple of arrays.
     ///
     /// ### Example
@@ -1368,12 +1644,35 @@ module {
         }
     };
 
-    /// Collects a character iterator into a text
+    // ==============================================================================================
+    // ============================== Iterator Collection Methods ==============================
+    // ==============================================================================================
+
+    /// Collects an iterator of any type into a buffer
     ///
     /// ### Example
     /// ```motoko
     ///
-    ///     let chars = ['a', 'b', 'c'].vals();
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let buf = Itertools.toBuffer(vals);
+    ///
+    ///     assert buf.toArray() == [1, 2, 3, 4, 5];
+    /// ```
+    public func toBuffer<A>(iter: Iter.Iter<A>): Buffer.Buffer<A>{
+        let buf = Buffer.Buffer<A>(8);
+        for (item in iter){
+            buf.add(item);
+        };
+
+        return buf;
+    };
+
+    /// Collects an iterator of characters into a text    
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let chars = "abc".chars();
     ///     let text = Itertools.toText(chars);
     ///
     ///     assert text == "abc";
@@ -1382,4 +1681,5 @@ module {
         let textIter = Iter.map<Char, Text>(charIter, func(c){Char.toText(c)});
         Text.join("", textIter);
     };
+
 }

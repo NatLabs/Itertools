@@ -17,3 +17,5 @@ dist/
 .vessel
 .dfx
 dprint.json
+
+app.md

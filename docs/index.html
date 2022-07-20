@@ -37,13 +37,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
     import Itertools &quot;mo:itertools/Iter&quot;;</code></pre>
 
 <p>Converting data types to iterators is the next step.</p>
-<ul><li>Array<ul><li><code>[1, 2, 3, 4, 5].vals()</code></li><li><code>Iter.fromArray([1, 2, 3, 4, 5])</code></li></ul></li></ul>
-
-<ul><li>List<ul><li><code>Iter.fromList(list)</code></li></ul></li></ul>
-
-<ul><li>Text<ul><li><code>&quot;Hello, world!&quot;.chars()</code></li><li><code>Text.split(&quot;a,b,c&quot;, #char ',')</code></li></ul></li></ul>
-
-<ul><li><a href="https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1">HashMap</a><ul><li><code>map.entries()</code></li></ul></li></ul>
+<ul><li>Array<ul><li><code>[1, 2, 3, 4, 5].vals()</code></li><li><code>Iter.fromArray([1, 2, 3, 4, 5])</code></li></ul></li><li>List<ul><li><code>Iter.fromList(list)</code></li></ul></li><li>Text<ul><li><code>&quot;Hello, world!&quot;.chars()</code></li><li><code>Text.split(&quot;a,b,c&quot;, #char ',')</code></li></ul></li><li>Buffer<ul><li><code>buffer.toArray().vals()</code></li></ul></li><li><a href="https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1">HashMap</a><ul><li><code>map.entries()</code></li></ul></li></ul>
 
 <p>For conversion of other data types to iterators, you can look in the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/array">base library</a> for the specific data type's documentation.</p>
 <p>Here are some examples of using the functions in this library to create simple and 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#findIndices">findIndices</a></li></li><li><li><a href="#fold">fold</a></li></li><li><li><a href="#interleave">interleave</a></li></li><li><li><a href="#interleaveShortest">interleaveShortest</a></li></li><li><li><a href="#intersperse">intersperse</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#reduce">reduce</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unique">unique</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toBuffer">toBuffer</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
 <p>See the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1"><code>Iter</code></a> module from the base lib for more information on the <code>Iter</code> type.</p>
 <h2 id="Getting-started">Getting started</h2>
 
@@ -8,13 +8,7 @@
     import Itertools &quot;mo:itertools/Iter&quot;;</code></pre>
 
 <p>Converting data types to iterators is the next step.</p>
-<ul><li>Array<ul><li><code>[1, 2, 3, 4, 5].vals()</code></li><li><code>Iter.fromArray([1, 2, 3, 4, 5])</code></li></ul></li></ul>
-
-<ul><li>List<ul><li><code>Iter.fromList(list)</code></li></ul></li></ul>
-
-<ul><li>Text<ul><li><code>&quot;Hello, world!&quot;.chars()</code></li><li><code>Text.split(&quot;a,b,c&quot;, #char ',')</code></li></ul></li></ul>
-
-<ul><li><a href="https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1">HashMap</a><ul><li><code>map.entries()</code></li></ul></li></ul>
+<ul><li>Array<ul><li><code>[1, 2, 3, 4, 5].vals()</code></li><li><code>Iter.fromArray([1, 2, 3, 4, 5])</code></li></ul></li><li>List<ul><li><code>Iter.fromList(list)</code></li></ul></li><li>Text<ul><li><code>&quot;Hello, world!&quot;.chars()</code></li><li><code>Text.split(&quot;a,b,c&quot;, #char ',')</code></li></ul></li><li>Buffer<ul><li><code>buffer.toArray().vals()</code></li></ul></li><li><a href="https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1">HashMap</a><ul><li><code>map.entries()</code></li></ul></li></ul>
 
 <p>For conversion of other data types to iterators, you can look in the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/array">base library</a> for the specific data type's documentation.</p>
 <p>Here are some examples of using the functions in this library to create simple and 
@@ -214,8 +208,83 @@ maps them to a new value based on the second argument.</p>
     let isEven = func( x : Int ) : Bool {x % 2 == 0};
     let res = Itertools.findIndex(vals, isEven);
 
-    assert res == ?1</code></pre></p></div><div class="declaration"><h4 class="function" id="mapWhile"><code><span class="keyword">public func </span><span class="fnname">mapWhile</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">pred</span> : (<span class="type">A</span>) -&gt; ?<span class="type">B</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Returns an iterator that maps and yields elements while the 
-The predicate is true if it returns an optional value and false if it 
+    assert res == ?1;</code></pre></p></div><div class="declaration"><h4 class="function" id="findIndices"><code><span class="keyword">public func </span><span class="fnname">findIndices</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">predicate</span> : (<span class="type">A</span>) -&gt; <span class="type">Bool</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns an iterator with the indices of all the elements that match the predicate.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4, 5, 6].vals();
+
+    let isEven = func( x : Int ) : Bool {x % 2 == 0};
+    let res = Itertools.findIndices(vals, isEven);
+
+    assert Iter.toArray(res) == [1, 3, 5];
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="fold"><code><span class="keyword">public func </span><span class="fnname">fold</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">initial</span> : <span class="type">B</span>, <br/>  <span class="parameter">f</span> : (<span class="type">B</span>, <span class="type">A</span>) -&gt; <span class="type">B</span><br/>) : <span class="type">B</span></code></h4><p><p>Returns the accumulated result of applying of the given
+function to each element and the previous result starting with
+the initial value.</p>
+<p>This method is similar to <a href="#reduce">reduce</a> but it takes an initial
+value and does not return an optional value.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">    import Nat8 &quot;mo:base/Nat8&quot;;
+
+    let arr : [Nat8] = [1, 2, 3, 4, 5];
+    let sumToNat = func(acc: Nat, n: Nat8): Nat { 
+        acc + Nat8.toNat(n)
+    };
+
+    let sum = Itertools.fold&lt;Nat8, Nat&gt;(
+        arr.vals(), 
+        200, 
+        sumToNat
+    );
+
+    assertTrue(sum == 215)</code></pre>
+
+<p>You can easily fold from the right to left using a 
+<a href="Deiter.html"><code>Deiter</code></a> to reverse the iterator before folding.</p>
+</p></div><div class="declaration"><h4 class="function" id="interleave"><code><span class="keyword">public func </span><span class="fnname">interleave</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">_iter1</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">_iter2</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Alternates between two iterators of the same type until both are exhausted.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4].vals();
+    let vals2 = [10, 20].vals();
+
+    let iter = Itertools.interleave(vals, vals2);
+
+    assert iter.next() == ?1
+    assert iter.next() == ?10
+    assert iter.next() == ?2
+    assert iter.next() == ?20
+    assert iter.next() == ?3
+    assert iter.next() == ?4
+    assert iter.next() == null</code></pre></p></div><div class="declaration"><h4 class="function" id="interleaveShortest"><code><span class="keyword">public func </span><span class="fnname">interleaveShortest</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">_iter1</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">_iter2</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Alternates between two iterators of the same type until one is exhausted.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4].vals();
+    let vals2 = [10, 20].vals();
+
+    let iter = Itertools.interleaveShortest(vals, vals2);
+
+    assert iter.next() == ?1
+    assert iter.next() == ?10
+    assert iter.next() == ?2
+    assert iter.next() == ?20
+    assert iter.next() == null</code></pre></p></div><div class="declaration"><h4 class="function" id="intersperse"><code><span class="keyword">public func </span><span class="fnname">intersperse</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">_iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">val</span> : <span class="type">A</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns an iterator that inserts a value between each pair 
+of values in an iterator.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3].vals();
+    let iter = Itertools.intersperse(vals, 10);
+
+    assert Iter.toArray(iter) == [1, 10, 2, 10, 3];
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="mapWhile"><code><span class="keyword">public func </span><span class="fnname">mapWhile</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">pred</span> : (<span class="type">A</span>) -&gt; ?<span class="type">B</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Returns an iterator that maps and yields elements while the 
+predicate is true.
+The predicate is true if it returns an optional value and 
+false if it 
 returns null.</p>
 <h3 id="Example">Example</h3>
 
@@ -345,7 +414,17 @@ The base library provides a <code>range</code> function that returns an iterator
     assert iter.next() == ?1;
     assert iter.next() == ?2;
     assert iter.next() == ?3;
-    assert iter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="ref"><code><span class="keyword">public func </span><span class="fnname">ref</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns a reference to the iterator</p>
+    assert iter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="reduce"><code><span class="keyword">public func </span><span class="fnname">reduce</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">f</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">A</span>) : ?<span class="type">A</span></code></h4><p><p>Returns an optional value representing the application of the given
+function to each element and the accumulated result.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4, 5].vals();
+    let add = func (a: Int, b: Int) : Int { a + b };
+
+    let sum = Itertools.reduce(vals, add);
+
+    assert sum == ?15;</code></pre></p></div><div class="declaration"><h4 class="function" id="ref"><code><span class="keyword">public func </span><span class="fnname">ref</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns a reference to the iterator</p>
 <p>Instead of using this method you could copy the ptr directly:</p>
 <pre class="motoko"><code class="motoko">    let iter = Itertools.range(1, 5);
     let ref = iter;</code></pre>
@@ -509,6 +588,16 @@ The first element is paired with the second element, the third element with the 
     assert it.next() == ?(4, 5, 6);
     assert it.next() == null;
 
+</code></pre></p></div><div class="declaration"><h4 class="function" id="unique"><code><span class="keyword">public func </span><span class="fnname">unique</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">hashFn</span> : (<span class="type">A</span>) -&gt; <span class="type">Hash.Hash</span>, <br/>  <span class="parameter">isEq</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Bool</span><br/>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns an iterator with unique elements from the given iter.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 1, 2, 3].vals();
+    let it = Itertools.unique(vals);
+
+    assert it.next() == ?1;
+    assert it.next() == ?2;
+    assert it.next() == ?3;
+    assert it.next() == null;
+
 </code></pre></p></div><div class="declaration"><h4 class="function" id="unzip"><code><span class="keyword">public func </span><span class="fnname">unzip</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;(<span class="type">A</span>, <span class="type">A</span>)&gt;) : ([<span class="type">A</span>], [<span class="type">A</span>])</code></h4><p><p>Unzips an iterator of tuples into a tuple of arrays.</p>
 <h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
     let iter = [(1, 'a'), (2, 'b'), (3, 'c')].vals();
@@ -539,9 +628,14 @@ of the shorter iterator</p>
     assert zipped.next() == ?(1, 'a', 1.35);
     assert zipped.next() == ?(2, 'b', 2.92);
     assert zipped.next() == ?(3, 'c', 3.74);
-    assert zipped.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="toText"><code><span class="keyword">public func </span><span class="fnname">toText</span>(<span class="parameter">charIter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Char</span>&gt;) : <span class="type">Text</span></code></h4><p><p>Collects a character iterator into a text</p>
+    assert zipped.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="toBuffer"><code><span class="keyword">public func </span><span class="fnname">toBuffer</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Buffer.Buffer</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Collects an iterator of any type into a buffer</p>
 <h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
-    let chars = ['a', 'b', 'c'].vals();
+    let vals = [1, 2, 3, 4, 5].vals();
+    let buf = Itertools.toBuffer(vals);
+
+    assert buf.toArray() == [1, 2, 3, 4, 5];</code></pre></p></div><div class="declaration"><h4 class="function" id="toText"><code><span class="keyword">public func </span><span class="fnname">toText</span>(<span class="parameter">charIter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Char</span>&gt;) : <span class="type">Text</span></code></h4><p><p>Collects an iterator of characters into a text</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+    let chars = &quot;abc&quot;.chars();
     let text = Itertools.toText(chars);
 
     assert text == &quot;abc&quot;;</code></pre></p></div></div></body></html>

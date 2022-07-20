@@ -1,7 +1,11 @@
+import Buffer "mo:base/Buffer";
 import Debug "mo:base/Debug";
 import Deque "mo:base/Deque";
 import Iter "mo:base/Iter";
 import Nat "mo:base/Nat";
+import Nat8 "mo:base/Nat8";
+import Int "mo:base/Int";
+import Hash "mo:base/Hash";
 
 import ActorSpec "./utils/ActorSpec";
 
@@ -216,17 +220,67 @@ let success = run([
             let vals = [1, 2, 3, 4, 5].vals();
 
             let isEven = func( x : Int ) : Bool {x % 2 == 0};
-            let res = Itertools.find(vals, isEven);
+            let res = Itertools.find<Int>(vals, isEven);
 
             assertTrue(res == ?2)
         }),
         it("findIndex", do{
             let vals = [1, 2, 3, 4, 5].vals();
+       
+            let isEven = func( x : Int ) : Bool {x % 2 == 0};
+            let res = Itertools.findIndex<Int>(vals, isEven);
+
+            assertTrue( res == ?1 )
+        }),
+        it("findIndices", do{
+            let vals = [1, 2, 3, 4, 5, 6, 7, 9].vals();
 
             let isEven = func( x : Int ) : Bool {x % 2 == 0};
-            let res = Itertools.findIndex(vals, isEven);
+            let iter = Itertools.findIndices(vals, isEven);
 
-            assertTrue(res == ?1)
+            let res = Iter.toArray(iter);
+
+            Debug.print(debug_show res);
+
+            assertTrue( res == [1, 3, 5] )
+        }),
+        it("fold", do{
+            let arr : [Nat8] = [1, 2, 3, 4, 5];
+            
+            let sumToNat = func(acc: Nat, n: Nat8): Nat { 
+                acc + Nat8.toNat(n)
+            };
+
+            let sum = Itertools.fold<Nat8, Nat>(arr.vals(), 200, sumToNat);
+    
+            assertTrue(sum == 215)
+        }),
+        it("interleave", do{
+            let vals  = [1, 2, 3, 4].vals();
+            let vals2 = [10, 20].vals();
+
+            let iter = Itertools.interleave(vals, vals2);
+            let res = Iter.toArray(iter);
+
+            assertTrue(res == [1, 10, 2, 20, 3, 4])
+        }),
+
+        it("interleaveShortest", do{
+            let vals  = [1, 2, 3, 4].vals();
+            let vals2 = [10, 20].vals();
+
+            let iter = Itertools.interleaveShortest(vals, vals2);
+            let res = Iter.toArray(iter);
+
+            assertTrue( res == [1, 10, 2, 20])
+        }),
+        it("intersperse", do{
+            let vals = [1, 2, 3].vals();
+            let iter = Itertools.intersperse(vals, 10);
+
+            assertTrue( 
+                Iter.toArray(iter) == [1, 10, 2, 10, 3]
+            )
         }),
         it("mapWhile", do{
             let vals = [1, 2, 3, 4, 5].vals();
@@ -351,6 +405,14 @@ let success = run([
                 iter.next() == ?4,
                 iter.next() == null
             ])
+        }),
+        it("reduce", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let add = func (a: Int, b: Int) : Int { a + b };
+       
+            let sum = Itertools.reduce(vals, add);
+       
+            assertTrue(sum == ?15);
         }),
         it("ref(erence)", do{
             let iter = Iter.fromArray([1, 2, 3]);
@@ -517,6 +579,15 @@ let success = run([
                 iter2.next() == null
             ])
         }),
+
+        it("unique", do{
+            let vals = [1, 1, 2, 2, 3, 3].vals();
+            let it = Itertools.unique<Nat>(vals, Hash.hash, Nat.equal);
+
+            let res = Iter.toArray(it);
+            assertTrue( res == [1, 2, 3] );
+        }),
+
         it("unzip", do{
             let iter = [(1, 'a'), (2, 'b'), (3, 'c')].vals();
             let (arr1, arr2) = Itertools.unzip(iter);
@@ -555,12 +626,20 @@ let success = run([
             ])
         }),
 
+        it("toBuffer", do{
+            let chars = "abc".chars();
+            let buffer = Itertools.toBuffer<Char>(chars);
+
+            assertTrue( buffer.toArray() == ['a', 'b', 'c'] )
+        }),
+
         it("toText", do{
-            let chars = ['a', 'b', 'c'].vals();
+            let chars = "abc".chars();
             let text = Itertools.toText(chars);
 
             assertTrue( text == "abc" )
         }),
+
     ])
 ]);
 
