@@ -79,6 +79,7 @@ import Buffer "mo:base/Buffer";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
 import Char "mo:base/Char";
+import Array "mo:base/Array";
 import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
@@ -89,7 +90,7 @@ import PeekableIter "PeekableIter";
 module {
 
     // ==============================================================================================
-    // ============================== Integer Accumulation Methods ==============================
+    // =============================== Integer Accumulation Methods ===============================
     // ==============================================================================================
 
     /// Consumes an iterator of integers and returns the sum of all values.
@@ -149,7 +150,7 @@ module {
     };
 
     // ==============================================================================================
-    // ============================== Generic Iterator Methods ==============================
+    // =============================== Generic Iterator Methods ===============================
     // ==============================================================================================
 
     /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.
@@ -991,6 +992,127 @@ module {
         };
     };
 
+    /// Takes a partition function that returns `true` or `false` 
+    /// for each element in the iterator.
+    /// The iterator is partitioned into a tuple of two arrays.
+    /// The first array contains the elements all elements that 
+    /// returned `true` and the second array contains the elements
+    /// that returned `false`.
+    ///
+    /// If the iterator is empty, it returns a tuple of two empty arrays.
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [0, 1, 2, 3, 4, 5].vals();
+    ///     let isEven = func (n: Nat) : Bool { n % 2 == 0 };
+    ///
+    ///     let (even, odd) = Itertools.partition(vals, isEven);
+    ///
+    ///     assert even == [0, 2, 4];
+    ///     assert odd == [1, 3, 5];
+    ///
+    /// ```
+    public func partition<A>(iter: Iter.Iter<A>, f: (A) -> Bool): ([A], [A]){
+        let firstGroup = Buffer.Buffer<A>(8);
+        let secondGroup = Buffer.Buffer<A>(8);
+
+        for (val in iter){
+            if (f(val)){
+                firstGroup.add(val);
+            }else{
+                secondGroup.add(val);
+            };
+        };
+
+        (firstGroup.toArray(), secondGroup.toArray())
+    };
+
+    /// Partitions an iterator in place so that the values that 
+    /// return `true` from the `predicate` are on the left and the
+    /// values that return `false` are on the right.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [0, 1, 2, 3, 4, 5].vals();
+    ///     let isEven = func (n: Nat) : Bool { n % 2 == 0 };
+    ///
+    ///     let iter = Itertools.partitionInPlace(vals, isEven);
+    ///
+    ///     assert Iter.toArray(iter) == [0, 2, 4, 1, 3, 5];
+    ///
+    /// ```
+    public func partitionInPlace<A>(iter: Iter.Iter<A>, f: (A) -> Bool): Iter.Iter<A> {
+        let secondGroup = Buffer.Buffer<A>(8);
+        var i = 0;
+
+        object {
+            public func next() : ?A{
+                label l loop {
+                    switch (iter.next()){
+                        case (?a) {
+                            if (f(a)){
+                                return ?a;
+                            }else{
+                                secondGroup.add(a);
+                            };
+                        };
+                        case (_) {
+                            if (i >= secondGroup.size()){
+                                return null;
+                            }else{
+                                break l;
+                            }
+                        };
+                    };
+                };
+
+                let tmp_index = i;
+                i+=1;
+                return ?secondGroup.get(tmp_index);
+            };
+        }
+    };
+    
+    /// Checks if an iterator is partitioned by a predicate into 
+    /// two consecutive groups.
+    /// The first n elements of the iterator return `true` when 
+    /// passed to the predicate, and the rest return `false`.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [0, 2, 4, 1, 3, 5].vals();
+    ///     let isEven = func (n: Nat) : Bool { n % 2 == 0 };
+    ///
+    ///     let res = Itertools.isPartitioned(vals, isEven);
+    ///
+    ///     assert res == true;
+    /// ```
+
+    public func isPartitioned<A>(iter: Iter.Iter<A>, f: (A) -> Bool): Bool{
+        var inFirstGroup = true;
+      
+        for (val in iter){
+            if (f(val)){
+                if (not inFirstGroup){
+                    return false;
+                };
+            }else{
+                if (inFirstGroup){
+                    inFirstGroup := false;
+                };
+            }
+        };
+
+        return true;
+    };
+
+
+
     /// Returns a peekable iterator.
     /// The iterator has a `peek` method that returns the next value 
     /// without consuming the iterator.
@@ -1435,7 +1557,7 @@ module {
     /// ```motoko
     ///
     ///     let iter = [1, 2, 3].vals();
-    ///     let (iter1, iter2) = Itertools.tee(iter, 2);
+    ///     let (iter1, iter2) = Itertools.tee(iter);
     ///
     ///     assert iter1.next() == ?1;
     ///     assert iter1.next() == ?2;
@@ -1450,7 +1572,8 @@ module {
 
     public func tee<A>(iter: Iter.Iter<A>): (Iter.Iter<A>, Iter.Iter<A>){
         let array = Iter.toArray(iter);
-        return (Iter.fromArray(array), Iter.fromArray(array));
+
+        return (array.vals(), array.vals());
     };
 
     /// Returns an iterator of consecutive, non-overlapping tuple pairs of elements from a single iter.
@@ -1645,7 +1768,7 @@ module {
     };
 
     // ==============================================================================================
-    // ============================== Iterator Collection Methods ==============================
+    // =============================== Iterator Collection Methods ===============================
     // ==============================================================================================
 
     /// Collects an iterator of any type into a buffer

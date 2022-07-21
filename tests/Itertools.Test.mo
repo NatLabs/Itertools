@@ -365,6 +365,40 @@ let success = run([
                 Itertools.nthOrDefault(vals, 3, -1) == -1
             ])
         }),
+
+        it("partition", do{
+            let vals = [0, 1, 2, 3, 4, 5].vals();
+
+            let isEven = func (n: Nat) : Bool { n % 2 == 0 };
+       
+            let (even, odd) = Itertools.partition(vals, isEven);
+       
+            assertAllTrue([
+                even == [0, 2, 4],
+                odd == [1, 3, 5]
+            ])
+        }),
+
+        it("partitionInPlace", do{
+            let vals = [0, 1, 2, 3, 4, 5].vals();
+
+            let isEven = func (n: Nat) : Bool { n % 2 == 0 };
+       
+            let iter = Itertools.partitionInPlace<Nat>(vals, isEven);
+            let res = Iter.toArray(iter);
+
+            assertTrue( res == [0, 2, 4, 1, 3, 5] )
+        }),
+
+        it("isPartitioned", do{
+            let vals = [0, 2, 4, 1, 3, 5].vals();
+
+            let isEven = func (n: Nat) : Bool { n % 2 == 0 };
+       
+            let res = Itertools.isPartitioned(vals, isEven);
+
+            assertTrue( res == true )
+        }),
         
         it("peekable", do{
             let vals = [1, 2].vals();
