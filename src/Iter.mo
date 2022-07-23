@@ -272,6 +272,63 @@ module {
         return false;
     };
 
+    /// Returns the cartesian product of the given iterables as an iterator of tuples.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let a = [1, 2, 3].vals();
+    ///     let b = "abc".chars();
+    ///
+    ///     let it = Itertools.cartesianProduct(a, b);
+    ///
+    ///     assert Iter.toArray(it) == [
+    ///         (1, 'a'), (1, 'b'), (1, 'c'), 
+    ///         (2, 'a'), (2, 'b'), (2, 'c'), 
+    ///         (3, 'a'), (3, 'b'), (3, 'c')
+    ///     ];
+    ///
+    /// ```
+    public func cartesianProduct<A, B>(iterA: Iter.Iter<A>, iterB: Iter.Iter<B>): Iter.Iter<(A, B)>{
+        var optionA = iterA.next();
+
+        let buffer = Buffer.Buffer<B>(8);
+        var i = 0;
+
+        return object{
+            public func next(): ?(A, B){
+                switch(optionA, iterB.next()){
+                    case (?a, ?b){
+                        buffer.add(b);
+                        return ?(a, b);
+                    };
+                    case (?a, _){
+                        if (i == buffer.size() or i == 0){
+                            switch (iterA.next()){
+                                case (?a){
+                                    i := 1;
+                                    optionA := ?a;
+                                    return ?(a, buffer.get(0));
+                                };
+                                case (null){
+                                    return null;
+                                };
+                            };
+                        }else{
+                            let tmp = buffer.get(i);
+                            i+=1;
+                            ?(a, tmp);
+                        }
+                    };
+                    case (_){
+                        return null;
+                    };
+                }
+            }
+        };
+    };
+
     /// Chains two iterators of the same type together, so that the elements produced by the 
     /// second come after the elements produced by the first.
     /// 
@@ -1135,6 +1192,31 @@ module {
     /// ```
     public func peekable<T>(iter: Iter.Iter<T>) : PeekableIter.PeekableIter<T> {
         PeekableIter.fromIter<T>(iter)
+    };
+
+    /// Add a value to the front of an iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [2, 3].vals();
+    ///     let iter = Itertools.prepend(1, vals);
+    ///
+    ///     assert Iter.toArray(iter) == [1, 2, 3];
+    /// ```
+    public func prepend<A>(value: A, iter: Iter.Iter<A>) : Iter.Iter<A> {
+        var popped = false;
+        object {
+            public func next() : ?A {
+                if (popped){
+                    iter.next()
+                }else{
+                    popped := true;
+                    ?value
+                }
+            };
+        }
     };
 
     /// Returns a `Nat` iterator that yields numbers in range [start, end).

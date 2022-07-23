@@ -132,7 +132,7 @@ For a complete list of functions and data types, see the [Itertools documentatio
   
 - [ ] combinations
   
-- [ ] cartesianProduct
+<!-- - [ ] cartesianProduct -->
 
 - [ ] flatten: with an iterator of depth 1
 
