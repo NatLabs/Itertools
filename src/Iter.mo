@@ -80,10 +80,12 @@ import Int "mo:base/Int";
 import Iter "mo:base/Iter";
 import Char "mo:base/Char";
 import Array "mo:base/Array";
+import Debug "mo:base/Debug";
 import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
 import Prelude "mo:base/Prelude";
+import {format; print} "mo:format";
 
 import PeekableIter "PeekableIter";
 
@@ -444,6 +446,116 @@ module {
         }
     };
 
+    /// Returns an array of combinations of size `n` from the given iterable.
+    ///
+    /// ### Example
+    /// - An example grouping a iterator of integers into arrays of size `3`:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let it = Itertools.combinations(vals, 3);
+    ///
+    ///     assert it.next() == ?[1, 2, 3];
+    ///     assert it.next() == ?[1, 2, 4];
+    ///     assert it.next() == ?[1, 3, 4];
+    ///     assert it.next() == ?[2, 3, 4];
+    ///     assert it.next() == null;
+    /// ```
+    ///
+    /// - An example grouping a iterator of integers into arrays of size `2`:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let it = Itertools.combinations(vals, 2);
+    ///
+    ///     assert it.next() == ?[1, 2];
+    ///     assert it.next() == ?[1, 3];
+    ///     assert it.next() == ?[1, 4];
+    ///     assert it.next() == ?[2, 3];
+    ///     assert it.next() == ?[2, 4];
+    ///     assert it.next() == ?[3, 4];
+    ///     assert it.next() == null;
+    /// ```
+    public func combinations(iter: Iter.Iter<Nat>, size: Nat): Iter.Iter<[Nat]>{
+        assert size > 0;
+
+        let buffer = Buffer.Buffer<Nat>(8);
+        let cbns = Buffer.Buffer<Nat>(size);
+
+        let indices = Buffer.Buffer<Nat>(size);
+        for (i in Iter.range(0, Int.abs(size - 1))){
+            indices.add(i);
+        };
+
+        var bufferIsFilled = false;
+
+        func getNextCombination() : ?[Nat] {
+            // print("indices: {}", [#numArray(indices.toArray())]);
+            // print("cbns: {}", [#numArray(cbns.toArray())]);
+
+            // fill buffer incrementally 
+            if (not bufferIsFilled){
+                switch(iter.next()){
+                    case (?n){
+                        buffer.add(n);
+                    };
+                    case (_){
+                        bufferIsFilled := true;
+                    };
+                };
+            };
+            
+            // recursively build combinations
+            if (indices.size() == 0){
+                null
+            }else if (cbns.size() == size){
+                let res = cbns.toArray();
+                ignore cbns.removeLast();
+                ?res
+            }else{
+                if (indices.size() > cbns.size()){
+                    let i = indices.get(cbns.size());
+
+                    // print("indices[{}] = {}", [#num(cbns.size()), #num(i)]);
+
+                    if ( i >= buffer.size()){
+                        if (cbns.size() == 0){
+                            null
+                        }else{
+
+                            ignore indices.removeLast();
+
+                            if (indices.size() == 0){
+                                return null;
+                            };
+
+                            ignore cbns.removeLast();
+                            getNextCombination()
+                        }
+                    }else{
+                        indices.put(cbns.size(), i + 1);
+                        cbns.add(buffer.get(i));
+
+                        getNextCombination()
+                    }
+                }else{
+                    indices.add(
+                        indices.get(indices.size() - 1)
+                    );
+                    getNextCombination()
+                }
+            }
+        };
+
+        object{
+            public func next(): ?[Nat]{
+                getNextCombination()
+            }
+        }
+    };
+
     /// Creates an iterator that loops infinitely over the values of a
     /// given iterator.
     /// 
@@ -697,7 +809,7 @@ module {
     ///     assert iter.next() == ?4
     ///     assert iter.next() == null
     /// ```
-    public func interleave<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+    public func interleaveLongest<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
         var iter1 = _iter1;
         var iter2 = _iter2;
 
@@ -728,7 +840,7 @@ module {
     ///     let vals = [1, 2, 3, 4].vals();
     ///     let vals2 = [10, 20].vals();
     ///
-    ///     let iter = Itertools.interleaveShortest(vals, vals2);
+    ///     let iter = Itertools.interleave(vals, vals2);
     ///
     ///     assert iter.next() == ?1
     ///     assert iter.next() == ?10
@@ -737,7 +849,7 @@ module {
     ///     assert iter.next() == null
     /// ```
 
-    public func interleaveShortest<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+    public func interleave<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
         var iter1 = _iter1;
         var iter2 = _iter2;
 
@@ -1726,9 +1838,11 @@ module {
     ///
     /// ### Example
     /// ```motoko
+    ///     import Nat "mo:base/Nat";
+    ///     import Hash "mo:base/Hash";
     ///
     ///     let vals = [1, 2, 3, 1, 2, 3].vals();
-    ///     let it = Itertools.unique(vals);
+    ///     let it = Itertools.unique(vals, Hash.hash, Nat.equal);
     ///
     ///     assert it.next() == ?1;
     ///     assert it.next() == ?2;
@@ -1768,6 +1882,85 @@ module {
         }
     };
 
+    /// Returns an iterator with the elements of the given iter and a boolean 
+    /// indicating if the element is unique.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///     import Nat "mo:base/Nat";
+    ///     import Hash "mo:base/Hash";
+    ///
+    ///     let vals = [1, 2, 3, 1, 2, 3].vals();
+    ///     let it = Itertools.uniqueCheck(vals, Hash.hash, Nat.equal);
+    ///
+    ///     assert Iter.toArray(it) == [
+    ///         (1, true), (2, true), (3, true),
+    ///         (1, false), (2, false), (3, false)
+    ///     ];
+    ///
+    /// ```
+    public func uniqueCheck<A>(
+        iter: Iter.Iter<A>, 
+        hashFn: (A) -> Hash.Hash, 
+        isEq: (A, A) -> Bool
+    ): Iter.Iter<(A, Bool)> {
+        var set = TrieSet.empty<A>();
+
+        return object{
+            public func next(): ?(A, Bool){
+                var res: ?(A, Bool) = null;
+
+                switch(iter.next()){
+                    case (?item){
+                        let hash = hashFn(item);
+                        if (TrieSet.mem<A>(set, item, hash, isEq)){
+                            ?(item, false)
+                        }else{
+                            set := TrieSet.put<A>(set, item, hash, isEq);
+                            ?(item, true)
+                        }
+                    };
+                    case (_){
+                        null
+                    };
+                };
+            }
+        }
+    };
+
+    /// Returns `true` if all the elements in the given iter are unique.
+    /// The hash function and equality function are used to compare elements.
+    ///
+    /// > Note: If the iterator is empty, it will return `true`.
+    /// ### Example
+    ///
+    /// ```motoko
+    ///     import Nat "mo:base/Nat";
+    ///     import Hash "mo:base/Hash";
+    ///
+    ///     let vals = [1, 2, 3, 1, 2, 3].vals();
+    ///     let res = Itertools.isUnique(vals, Hash.hash, Nat.equal);
+    ///
+    ///     assert res == false;
+    ///
+    /// ```
+    public func isUnique<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): Bool {
+        var set = TrieSet.empty<A>();
+
+        for (item in iter){
+            let hash = hashFn(item);
+
+            if (TrieSet.mem<A>(set, item, hash, isEq)){
+                return false;
+            };
+
+            set := TrieSet.put<A>(set, item, hash, isEq);
+        };
+
+        return true;
+    };
+
+    
     /// Unzips an iterator of tuples into a tuple of arrays.
     ///
     /// ### Example

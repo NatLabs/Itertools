@@ -190,6 +190,86 @@ let success = run([
                 it.next() == null
             ])
         }),
+
+        describe("combinations", [
+            it("size 2, range 1 - 4", do{
+                let vals = [1, 2, 3, 4].vals();
+                let it = Itertools.combinations(vals, 2);
+
+                let res = Iter.toArray(it);
+                assertTrue(
+                    res == [
+                        [1, 2],
+                        [1, 3],
+                        [1, 4],
+                        [2, 3],
+                        [2, 4],
+                        [3, 4]
+                    ]
+                )
+            }),
+            it("size 3, range 1 - 9", do{
+                let vals = Iter.range(1, 9);
+                let it = Itertools.combinations(vals, 3);
+
+                let res = Iter.toArray(it);
+
+                assertTrue(
+                    res == [
+                        [1, 2, 3], [1, 2, 4], [1, 2, 5], [1, 2, 6], [1, 2, 7], 
+                        [1, 2, 8], [1, 2, 9], [1, 3, 4], [1, 3, 5], [1, 3, 6], 
+                        [1, 3, 7], [1, 3, 8], [1, 3, 9], [1, 4, 5], [1, 4, 6], 
+                        [1, 4, 7], [1, 4, 8], [1, 4, 9], [1, 5, 6], [1, 5, 7], 
+                        [1, 5, 8], [1, 5, 9], [1, 6, 7], [1, 6, 8], [1, 6, 9], 
+                        [1, 7, 8], [1, 7, 9], [1, 8, 9], 
+                        [2, 3, 4], [2, 3, 5], [2, 3, 6], [2, 3, 7], [2, 3, 8], 
+                        [2, 3, 9], [2, 4, 5], [2, 4, 6], [2, 4, 7], [2, 4, 8], 
+                        [2, 4, 9], [2, 5, 6], [2, 5, 7], [2, 5, 8], [2, 5, 9], 
+                        [2, 6, 7], [2, 6, 8], [2, 6, 9], [2, 7, 8], [2, 7, 9], 
+                        [2, 8, 9], 
+                        [3, 4, 5], [3, 4, 6], [3, 4, 7], [3, 4, 8], [3, 4, 9], 
+                        [3, 5, 6], [3, 5, 7], [3, 5, 8], [3, 5, 9], [3, 6, 7], 
+                        [3, 6, 8], [3, 6, 9], [3, 7, 8], [3, 7, 9], [3, 8, 9],
+                        [4, 5, 6], [4, 5, 7], [4, 5, 8], [4, 5, 9], [4, 6, 7], 
+                        [4, 6, 8], [4, 6, 9], [4, 7, 8], [4, 7, 9], [4, 8, 9], 
+                        [5, 6, 7], [5, 6, 8], [5, 6, 9], [5, 7, 8], [5, 7, 9], [5, 8, 9], [6, 7, 8], [6, 7, 9], [6, 8, 9], [7, 8, 9],
+                    ]
+                )
+            }),
+            it("size equal to range length", do{
+                let vals = Iter.range(1, 5);
+                let it = Itertools.combinations(vals, 5);
+
+                let res = Iter.toArray(it);
+                assertTrue(
+                    res == [
+                        [1, 2, 3, 4, 5]
+                    ]
+                )
+            }),
+            it("size greater than range length", do{
+                let vals = Iter.range(1, 5);
+                let it = Itertools.combinations(vals, 6);
+
+                let res = Iter.toArray(it);
+                Debug.print(debug_show res);
+
+                assertTrue( res == [] )
+            }),
+            it("size 1, range 1 - 5", do{
+                let vals = Iter.range(1, 5);
+                let it = Itertools.combinations(vals, 1);
+
+                let res = Iter.toArray(it);
+
+                assertTrue( 
+                    res == [
+                        [1], [2], [3], [4], [5]
+                    ] 
+                )
+            })
+        ]),
+
         it("cycle", do{
             let chars = "abc".chars();
             let it = Itertools.cycle(chars);
@@ -257,8 +337,6 @@ let success = run([
 
             let res = Iter.toArray(iter);
 
-            Debug.print(debug_show res);
-
             assertTrue( res == [1, 3, 5] )
         }),
         it("fold", do{
@@ -272,21 +350,21 @@ let success = run([
     
             assertTrue(sum == 215)
         }),
-        it("interleave", do{
+        it("interleaveLongest", do{
             let vals  = [1, 2, 3, 4].vals();
             let vals2 = [10, 20].vals();
 
-            let iter = Itertools.interleave(vals, vals2);
+            let iter = Itertools.interleaveLongest(vals, vals2);
             let res = Iter.toArray(iter);
 
             assertTrue(res == [1, 10, 2, 20, 3, 4])
         }),
 
-        it("interleaveShortest", do{
+        it("interleave", do{
             let vals  = [1, 2, 3, 4].vals();
             let vals2 = [10, 20].vals();
 
-            let iter = Itertools.interleaveShortest(vals, vals2);
+            let iter = Itertools.interleave(vals, vals2);
             let res = Iter.toArray(iter);
 
             assertTrue( res == [1, 10, 2, 20])
@@ -646,9 +724,39 @@ let success = run([
             let it = Itertools.unique<Nat>(vals, Hash.hash, Nat.equal);
 
             let res = Iter.toArray(it);
+
             assertTrue( res == [1, 2, 3] );
         }),
 
+        it("uniqueCheck", do{
+            let vals = [1, 1, 2, 2, 3, 3].vals();
+            let iter = Itertools.uniqueCheck(vals, Hash.hash, Nat.equal);
+
+            let res = Iter.toArray(iter);
+
+            assertTrue( 
+                res == [
+                    (1, true), (1, false),
+                    (2, true), (2, false),
+                    (3, true), (3, false)
+                ]
+             );
+        }),
+
+        describe("isUnique", [
+            it("duplicate values ", do{
+                let vals = [1, 1, 2, 2, 3, 3].vals();
+
+                assertTrue( not Itertools.isUnique(vals, Hash.hash, Nat.equal) );
+            }),
+
+            it("unique values", do{
+                let vals = [1, 2, 3].vals();
+
+                assertTrue( Itertools.isUnique(vals, Hash.hash, Nat.equal) );
+            }),
+        ]),
+        
         it("unzip", do{
             let iter = [(1, 'a'), (2, 'b'), (3, 'c')].vals();
             let (arr1, arr2) = Itertools.unzip(iter);

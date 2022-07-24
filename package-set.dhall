@@ -5,24 +5,12 @@ let vessel_package_set =
 let Package =
     { name : Text, version : Text, repo : Text, dependencies : List Text }
 
-let
-  -- This is where you can add your own packages to the package-set
-  additions =
-    [] : List Package
+let additions = [
+  { name = "format"
+  , repo = "https://github.com/tomijaga/format.mo"
+  , version = "main"
+  , dependencies = [ "base" ]
+  },
+] : List Package
 
-let
-  {- This is where you can override existing packages in the package-set
-
-     For example, if you wanted to use version `v2.0.0` of the foo library:
-     let overrides = [
-         { name = "foo"
-         , version = "v2.0.0"
-         , repo = "https://github.com/bar/foo"
-         , dependencies = [] : List Text
-         }
-     ]
-  -}
-  overrides =
-    [] : List Package
-
-in  aviate_labs # vessel_package_set # overrides
+in  aviate_labs # vessel_package_set # additions
