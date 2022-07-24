@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#findIndices">findIndices</a></li></li><li><li><a href="#fold">fold</a></li></li><li><li><a href="#interleave">interleave</a></li></li><li><li><a href="#interleave">interleave</a></li></li><li><li><a href="#intersperse">intersperse</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#partition">partition</a></li></li><li><li><a href="#partitionInPlace">partitionInPlace</a></li></li><li><li><a href="#isPartitioned">isPartitioned</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#reduce">reduce</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unique">unique</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toBuffer">toBuffer</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#cartesianProduct">cartesianProduct</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#combinations">combinations</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#filterMap">filterMap</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#findIndices">findIndices</a></li></li><li><li><a href="#fold">fold</a></li></li><li><li><a href="#interleaveLongest">interleaveLongest</a></li></li><li><li><a href="#interleave">interleave</a></li></li><li><li><a href="#intersperse">intersperse</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#partition">partition</a></li></li><li><li><a href="#partitionInPlace">partitionInPlace</a></li></li><li><li><a href="#isPartitioned">isPartitioned</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#prepend">prepend</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#reduce">reduce</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unique">unique</a></li></li><li><li><a href="#uniqueCheck">uniqueCheck</a></li></li><li><li><a href="#isUnique">isUnique</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#toBuffer">toBuffer</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
 <p>See the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1"><code>Iter</code></a> module from the base lib for more information on the <code>Iter</code> type.</p>
 <h2 id="Getting-started">Getting started</h2>
 
@@ -111,7 +111,22 @@ An empty iterator returns null.</p>
     let isEven = func(a: Nat) : Bool { a % 2 == 0 };
 
     assert Itertools.any(a, isEven) == true;
-    assert Itertools.any(b, isEven) == false;</code></pre></p></div><div class="declaration"><h4 class="function" id="chain"><code><span class="keyword">public func </span><span class="fnname">chain</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">a</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">b</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Chains two iterators of the same type together, so that the elements produced by the 
+    assert Itertools.any(b, isEven) == false;</code></pre></p></div><div class="declaration"><h4 class="function" id="cartesianProduct"><code><span class="keyword">public func </span><span class="fnname">cartesianProduct</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iterA</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">iterB</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;) : <span class="type">Iter.Iter</span>&lt;(<span class="type">A</span>, <span class="type">B</span>)&gt;</code></h4><p><p>Returns the cartesian product of the given iterables as an iterator of tuples.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let a = [1, 2, 3].vals();
+    let b = &quot;abc&quot;.chars();
+
+    let it = Itertools.cartesianProduct(a, b);
+
+    assert Iter.toArray(it) == [
+        (1, 'a'), (1, 'b'), (1, 'c'), 
+        (2, 'a'), (2, 'b'), (2, 'c'), 
+        (3, 'a'), (3, 'b'), (3, 'c')
+    ];
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="chain"><code><span class="keyword">public func </span><span class="fnname">chain</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">a</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">b</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Chains two iterators of the same type together, so that the elements produced by the 
 second come after the elements produced by the first.</p>
 <h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
    let iter1 = [1, 2].vals();
@@ -144,6 +159,31 @@ If the iterator is shorter than <code>n</code> elements, <code>None</code> is re
     assert it.next() == ?[1, 2, 3];
     assert it.next() == ?[4, 5, 6];
     assert it.next() == ?[7, 8, 9];
+    assert it.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="combinations"><code><span class="keyword">public func </span><span class="fnname">combinations</span>(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;, <span class="parameter">size</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;[<span class="type">Nat</span>]&gt;</code></h4><p><p>Returns an array of combinations of size <code>n</code> from the given iterable.</p>
+<h3 id="Example">Example</h3><ul><li>An example grouping a iterator of integers into arrays of size <code>3</code>:</li></ul>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4].vals();
+    let it = Itertools.combinations(vals, 3);
+
+    assert it.next() == ?[1, 2, 3];
+    assert it.next() == ?[1, 2, 4];
+    assert it.next() == ?[1, 3, 4];
+    assert it.next() == ?[2, 3, 4];
+    assert it.next() == null;</code></pre>
+
+<ul><li>An example grouping a iterator of integers into arrays of size <code>2</code>:</li></ul>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4].vals();
+    let it = Itertools.combinations(vals, 2);
+
+    assert it.next() == ?[1, 2];
+    assert it.next() == ?[1, 3];
+    assert it.next() == ?[1, 4];
+    assert it.next() == ?[2, 3];
+    assert it.next() == ?[2, 4];
+    assert it.next() == ?[3, 4];
     assert it.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="cycle"><code><span class="keyword">public func </span><span class="fnname">cycle</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Creates an iterator that loops infinitely over the values of a
 given iterator.</p>
 <h3 id="Example">Example</h3>
@@ -243,7 +283,7 @@ value and does not return an optional value.</p>
 
 <p>You can easily fold from the right to left using a 
 <a href="Deiter.html"><code>Deiter</code></a> to reverse the iterator before folding.</p>
-</p></div><div class="declaration"><h4 class="function" id="interleave"><code><span class="keyword">public func </span><span class="fnname">interleave</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">_iter1</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">_iter2</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Alternates between two iterators of the same type until both are exhausted.</p>
+</p></div><div class="declaration"><h4 class="function" id="interleaveLongest"><code><span class="keyword">public func </span><span class="fnname">interleaveLongest</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">_iter1</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">_iter2</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Alternates between two iterators of the same type until both are exhausted.</p>
 <h3 id="Example">Example</h3>
 
 <pre class="motoko"><code class="motoko">
@@ -437,7 +477,14 @@ without consuming the iterator.</p>
     assert peekIter.next() == ?2;
 
     assert peekIter.peek() == null;
-    assert peekIter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a <code>Nat</code> iterator that yields numbers in range [start, end).
+    assert peekIter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="prepend"><code><span class="keyword">public func </span><span class="fnname">prepend</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">value</span> : <span class="type">A</span>, <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Add a value to the front of an iterator.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [2, 3].vals();
+    let iter = Itertools.prepend(1, vals);
+
+    assert Iter.toArray(iter) == [1, 2, 3];</code></pre></p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a <code>Nat</code> iterator that yields numbers in range [start, end).
 The base library provides a <code>range</code> function that returns an iterator from with start and end both inclusive.</p>
 <h3 id="Example">Example</h3>
 
@@ -632,14 +679,42 @@ The first element is paired with the second element, the third element with the 
     assert it.next() == null;
 
 </code></pre></p></div><div class="declaration"><h4 class="function" id="unique"><code><span class="keyword">public func </span><span class="fnname">unique</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">hashFn</span> : (<span class="type">A</span>) -&gt; <span class="type">Hash.Hash</span>, <br/>  <span class="parameter">isEq</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Bool</span><br/>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns an iterator with unique elements from the given iter.</p>
-<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">    import Nat &quot;mo:base/Nat&quot;;
+    import Hash &quot;mo:base/Hash&quot;;
+
     let vals = [1, 2, 3, 1, 2, 3].vals();
-    let it = Itertools.unique(vals);
+    let it = Itertools.unique(vals, Hash.hash, Nat.equal);
 
     assert it.next() == ?1;
     assert it.next() == ?2;
     assert it.next() == ?3;
     assert it.next() == null;
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="uniqueCheck"><code><span class="keyword">public func </span><span class="fnname">uniqueCheck</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">hashFn</span> : (<span class="type">A</span>) -&gt; <span class="type">Hash.Hash</span>, <br/>  <span class="parameter">isEq</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Bool</span><br/>) : <span class="type">Iter.Iter</span>&lt;(<span class="type">A</span>, <span class="type">Bool</span>)&gt;</code></h4><p><p>Returns an iterator with the elements of the given iter and a boolean 
+indicating if the element is unique.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">    import Nat &quot;mo:base/Nat&quot;;
+    import Hash &quot;mo:base/Hash&quot;;
+
+    let vals = [1, 2, 3, 1, 2, 3].vals();
+    let it = Itertools.uniqueCheck(vals, Hash.hash, Nat.equal);
+
+    assert Iter.toArray(it) == [
+        (1, true), (2, true), (3, true),
+        (1, false), (2, false), (3, false)
+    ];
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="isUnique"><code><span class="keyword">public func </span><span class="fnname">isUnique</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">hashFn</span> : (<span class="type">A</span>) -&gt; <span class="type">Hash.Hash</span>, <br/>  <span class="parameter">isEq</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Bool</span><br/>) : <span class="type">Bool</span></code></h4><p><p>Returns <code>true</code> if all the elements in the given iter are unique.
+The hash function and equality function are used to compare elements.</p>
+<blockquote><p>Note: If the iterator is empty, it will return <code>true</code>.</p>
+<h3 id="Example">Example</h3></blockquote>
+
+<pre class="motoko"><code class="motoko">    import Nat &quot;mo:base/Nat&quot;;
+    import Hash &quot;mo:base/Hash&quot;;
+
+    let vals = [1, 2, 3, 1, 2, 3].vals();
+    let res = Itertools.isUnique(vals, Hash.hash, Nat.equal);
+
+    assert res == false;
 
 </code></pre></p></div><div class="declaration"><h4 class="function" id="unzip"><code><span class="keyword">public func </span><span class="fnname">unzip</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;(<span class="type">A</span>, <span class="type">A</span>)&gt;) : ([<span class="type">A</span>], [<span class="type">A</span>])</code></h4><p><p>Unzips an iterator of tuples into a tuple of arrays.</p>
 <h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
