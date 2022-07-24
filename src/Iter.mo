@@ -54,7 +54,7 @@
 ///
 ///     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
 ///     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-///     let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
+///     let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
 ///
 ///     assert Iter.toArray(evenIndices) == [1, 3, 5];
 /// ```
@@ -84,6 +84,7 @@ import Debug "mo:base/Debug";
 import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
+import Heap "mo:base/Heap";
 import Prelude "mo:base/Prelude";
 import {format; print} "mo:format";
 
@@ -644,34 +645,24 @@ module {
         };
     };
 
-    /// Returns an iterator that filters elements based on a predicate and 
-    /// maps them to a new value based on the second argument.
+    /// Creates an empty iterator.
     ///
     /// ### Example
-    /// - An example filtering odd numbers and squaring them:
     ///
     /// ```motoko
     ///
-    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
-    ///     
-    ///     let isEven = func( x : Nat ) : Bool { x % 2 == 0};
-    ///     let square = func( x : Nat ) : Nat {x * x};
-    ///     let it = Itertools.filterMap(vals, isEven, square);
+    ///     let it = Itertools.empty();
+    ///     assert it.next() == null;
     ///
-    ///     assert it.next() == ?4
-    ///     assert it.next() == ?16
-    ///     assert it.next() == ?36
-    ///     assert it.next() == ?64
-    ///     assert it.next() == ?100
-    ///     assert it.next() == null
     /// ```
-    public func filterMap<A, B>(iter: Iter.Iter<A>, filter: (A) -> Bool, map: (A) -> B): Iter.Iter<B>{
-
-        let filteredIter = Iter.filter(iter, filter);
-        let mappedIter = Iter.map(filteredIter, map);
-        return mappedIter;
+    public func empty<A>(): Iter.Iter<A> {
+        return object{
+            public func next(): ?A{
+                null
+            }
+        }
     };
-
+    
     /// Looks for an element in an iterator that matches a predicate.
     ///
     /// ### Example
@@ -790,6 +781,49 @@ module {
         return res;
     };
 
+    /// Returns an iterator with all the arrays from the given iterator flattened.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [[1], [2, 3], [4, 5, 6]].vals();
+    ///     let iter = Itertools.flatten(vals);
+    ///
+    ///     assert Iter.toArray(iter) == [1, 2, 3, 4, 5, 6];
+    /// ```
+    public func flatten<A>(iter: Iter.Iter<[A]>): Iter.Iter<A>{
+        let store  = Buffer.Buffer<A>(8);
+        var i = 0;
+
+        return object{
+            public func next(): ?A{
+                switch(iter.next()){
+                    case(?arr){
+                        for (val in arr.vals()){
+                            store.add(val);
+                        };
+
+                        let tmp = i;
+                        i+=1;
+
+                        ?store.get(tmp)
+                    };
+                    case(_){
+                        if ( i < store.size()){
+                            let tmp = i;
+                            i+=1;
+
+                            ?store.get(tmp)
+                        } else {
+                            null
+                        };
+                    }
+                };
+            }
+        };
+    };
+
     /// Alternates between two iterators of the same type until both are exhausted.
     ///
     /// ### Example
@@ -906,6 +940,64 @@ module {
                 }
             };
         };
+    };
+
+    /// Returns an iterator that filters elements based on a predicate and 
+    /// maps them to a new value based on the second argument.
+    ///
+    /// ### Example
+    /// - An example filtering odd numbers and squaring them:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
+    ///     
+    ///     let isEven = func( x : Nat ) : Bool { x % 2 == 0};
+    ///     let square = func( x : Nat ) : Nat {x * x};
+    ///     let it = Itertools.mapFilter(vals, isEven, square);
+    ///
+    ///     assert it.next() == ?4
+    ///     assert it.next() == ?16
+    ///     assert it.next() == ?36
+    ///     assert it.next() == ?64
+    ///     assert it.next() == ?100
+    ///     assert it.next() == null
+    /// ```
+    public func mapFilter<A, B>(iter: Iter.Iter<A>, filter: (A) -> Bool, map: (A) -> B): Iter.Iter<B>{
+
+        let filteredIter = Iter.filter(iter, filter);
+        let mappedIter = Iter.map(filteredIter, map);
+        return mappedIter;
+    };
+
+    /// Maps the elements of an iterator and accumulates them into a single value.
+    ///
+    /// ### Example
+    ///
+    /// - decode numeric representation of characters into a string
+    /// ```motoko
+    ///
+    ///     let vals = [13, 15, 20, 15, 11, 15].vals();
+    ///
+    ///     let natToChar = func (x : Nat) : Text { 
+    ///         Char.toText(
+    ///             Char.fromNat32(
+    ///                 Nat32.fromNat(x) + 96 
+    ///             )
+    ///         )
+    ///     };
+    ///
+    ///     let concat = func (a : Text, b : Text) : Text {
+    ///         a # b
+    ///     };
+    ///
+    ///     let res = Itertools.mapReduce(vals, natToChar, concat);
+    ///
+    ///     assert res == ?"motoko";
+    ///
+    /// ```
+    public func mapReduce<A, B>(iter: Iter.Iter<A>, f: (A) -> B, accFn: (B, B) -> B): ?B{
+        reduce( Iter.map<A, B>(iter, f), accFn )
     };
 
     /// Returns an iterator that maps and yields elements while the 
@@ -1045,6 +1137,7 @@ module {
         return min;
     };
 
+
     /// Returns a tuple of the minimum and maximum value in an iterator.
     /// The first element is the minimum, the second the maximum.
     ///
@@ -1121,6 +1214,119 @@ module {
 
     };
 
+    /// Returns an iterator that merges two iterators in order.
+    ///
+    /// The two iterators must have be of the same type
+    ///
+    /// ### Example
+    ///
+    /// - merge two sorted lists
+    ///
+    /// ```motoko
+    ///
+    ///     let vals1 = [5, 6, 7].vals();
+    ///     let vals2 = [1, 3, 4].vals();
+    ///     let merged = Itertools.merge(vals1, vals2, Nat.compare);
+    ///
+    ///     assert Iter.toArray(merged) == [1, 3, 4, 5, 6, 7];
+    /// ```
+    ///
+    /// - merge two unsorted lists
+    ///
+    /// ```motoko
+    ///
+    ///     let vals1 = [5, 2, 3].vals();
+    ///     let vals2 = [8, 4, 1].vals();
+    ///     let merged = Itertools.merge(vals1, vals2, Nat.compare);
+    ///
+    ///     assert Iter.toArray(merged) == [5, 2, 3, 8, 4, 1];
+    /// ```
+    public func merge<A>(iter1: Iter.Iter<A>, iter2: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Iter.Iter<A>{
+        let p1 = peekable(iter1);
+        let p2 = peekable(iter2);
+
+        object{
+            public func next() : ?A{
+                switch(p1.peek(), p2.peek()){
+                    case (?a, ?b) {
+                        if (cmp(a, b) == #less){
+                            p1.next()
+                        }else{
+                            p2.next()
+                        }
+                    };
+                    case(_, ?b) {
+                        p2.next()
+                    };
+                    case(?a, _) {
+                        p1.next()
+                    };
+                    case(_) {
+                        null
+                    };
+                };
+            }
+        }
+    };
+
+    /// Returns an iterator that merges `k` iterators in order based on the `cmp` function.
+    ///
+    /// > Note: The iterators must have be of the same type
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals1 = [5, 6, 7].vals();
+    ///     let vals2 = [1, 3, 4].vals();
+    ///     let vals3 = [8, 4, 1].vals();
+    ///     let merged = Itertools.kmerge([vals1, vals2, vals3], Nat.compare);
+    ///
+    ///     assert Iter.toArray(merged) == [1, 3, 4, 5, 6, 7, 8, 4, 1];
+    /// ```
+
+    public func kmerge<A>(iters: [Iter.Iter<A>], cmp: (A, A) -> Order.Order): Iter.Iter<A>{
+        type Index<A> = (A, Nat);
+
+        let cmpIters = func (a: Index<A>, b: Index<A>) : Order.Order {
+            cmp(a.0, b.0)
+        };
+
+        let heap = Heap.Heap<Index<A>>(cmpIters);
+
+        for ((i, iter) in enumerate(iters.vals())){
+            switch(iter.next()){
+                case(?a){
+                    heap.put((a, i));
+                };
+                case(_){
+
+                };
+            };
+        };
+
+        object{
+            public func next() : ?A{
+                switch(heap.removeMin()){
+                    case (?(min, i)) {
+                        switch( iters[i].next() ){
+                            case(?a){
+                                heap.put((a, i));
+                            };
+                            case(_){};
+                        };
+
+                        ?min
+                    };
+                    case(_) {
+                        null
+                    };
+                };
+            }
+        }
+    };
+
+
     /// Returns the nth element of an iterator.
     /// Consumes the first n elements of the iterator.
     ///
@@ -1135,8 +1341,8 @@ module {
     /// ```
     ///
     public func nth<A>(iter: Iter.Iter<A>, n: Nat): ?A{
-        skip<A>(iter, n);
-        return iter.next();
+        let skippedIter = skip<A>(iter, n);
+        return skippedIter.next();
     };
 
     /// Returns the nth elements of an iterator or a given default value.
@@ -1279,8 +1485,6 @@ module {
 
         return true;
     };
-
-
 
     /// Returns a peekable iterator.
     /// The iterator has a `peek` method that returns the next value 
@@ -1485,7 +1689,7 @@ module {
     ///     assert iter.next() == ?5;
     ///     assert iter.next() == null;
     /// ```
-    public func skip<A>(iter: Iter.Iter<A>, n: Nat){
+    public func skip<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A>{
         var i = 0;
         label l while (i < n){
             switch(iter.next()){
@@ -1496,8 +1700,45 @@ module {
                     break l;
                 };
             };
-        }
+        };
+
+        iter
     };
+
+    /// Skips elements continuously while the predicate is true.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter = [1, 2, 3, 4, 5].vals();
+    ///     let lessThan3 = func (a: Int) : Bool { a < 3 };
+    ///
+    ///     Itertools.skipWhile(iter, lessThan3);
+    ///
+    ///     assert Iter.toArray(iter) == [3, 4, 5];
+    ///
+    /// ```
+    public func skipWhile<A>(iter: Iter.Iter<A>, pred: (A) -> Bool): Iter.Iter<A>{
+        let peekableIter = peekable(iter);
+
+        label l loop{
+            switch(peekableIter.peek()){
+                case (?val){
+                    if (not pred(val)){
+                        break l;
+                    };
+
+                    ignore peekableIter.next();
+                };
+                case (_){
+                    break l;
+                };
+            };
+        };
+
+        peekableIter
+    };
+
 
     /// Returns overlapping tuple pairs from the given iterator.
     /// The first element of the iterator is paired with the second element, and the 
@@ -1577,6 +1818,30 @@ module {
         };
     };
 
+    /// Returns an iterator where all the elements are sorted in ascending order.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [8, 3, 5, 4, 1].vals();
+    ///     let sorted = Itertools.sort(vals);
+    ///
+    ///     assert Iter.toArray(sorted) == [1, 3, 4, 5, 8];
+    /// ```
+    public func sort<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Iter.Iter<A>{
+        let heap = Heap.Heap<A>(cmp);
+
+        for (val in iter){
+            heap.put(val);
+        };
+
+        object{
+            public func next(): ?A{
+                heap.removeMin()
+            }
+        }
+    };
+
     /// Returns a tuple of iterators where the first element is the first n elements of the iterator, and the second element is the remaining elements.
     ///
     /// ### Example
@@ -1647,15 +1912,11 @@ module {
     public func stepBy<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
         assert n > 0;
 
-        var i = 0;
-        var opt = iter.next();
-
         return object{
             public func next(): ?A{
-                switch(opt){
+                switch(iter.next()){
                     case (?item){
-                        skip(iter, Int.abs(n - 1));
-                        opt := iter.next();
+                        ignore skip(iter, Int.abs(n - 1));
                         ?item
                     };
                     case (_){
@@ -2036,11 +2297,54 @@ module {
             public func next(): ?(A, B, C){
                 switch(a.next(), b.next(), c.next()){
                     case(?valueA, ?valueB, ?valueC) ?(valueA, valueB, valueC);
-                    case(_, _, _) null;
+                    case(_) null;
                 }
             }
         }
     };
+
+    public type Either<A, B> = {
+        #left : A;
+        #right : B;
+    };
+
+    public type EitherOr<A, B> = Either<A, B> or {
+        #both : (A, B);
+    };
+
+    /// Zips two iterators until both iterators are exhausted.
+    /// The length of the zipped iterator is equal to the length
+    /// of the longest iterator.
+    ///
+    /// The iterator returns a [`EitherOr`](#EitherOr) type of the two iterators.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter1 = [1, 2, 3, 4, 5].vals();
+    ///     let iter2 = "abc".chars();
+    ///     let zipped = Itertools.zipLongest(iter1, iter2);
+    ///
+    ///     assert zipped.next() == ?#both(1, 'a');
+    ///     assert zipped.next() == ?#both(2, 'b');
+    ///     assert zipped.next() == ?#both(3, 'c');
+    ///     assert zipped.next() == ?#left(4);
+    ///     assert zipped.next() == ?#left(5);
+    ///     assert zipped.next() == null;
+    /// ```
+    public func zipLongest<A, B>(iterA: Iter.Iter<A>, iterB:Iter.Iter<B>): Iter.Iter<EitherOr<A, B>>{
+        object{
+            public func next(): ?EitherOr<A, B>{
+                switch(iterA.next(), iterB.next()){
+                    case(?a, ?b) ?#both(a, b);
+                    case(?a, _)  ?#left(a);
+                    case(_, ?b)  ?#right(b);
+                    case(_, _) null;
+                }
+            }
+        }
+    };
+
 
     // ==============================================================================================
     // =============================== Iterator Collection Methods ===============================

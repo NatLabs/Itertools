@@ -56,7 +56,7 @@ efficient iterators for solving different problems:</p>
 
     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-    let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
+    let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
 
     assert Iter.toArray(evenIndices) == [1, 3, 5];</code></pre>
 

@@ -1,11 +1,14 @@
 import Buffer "mo:base/Buffer";
+import Char "mo:base/Char";
 import Debug "mo:base/Debug";
 import Deque "mo:base/Deque";
 import Iter "mo:base/Iter";
 import Nat "mo:base/Nat";
 import Nat8 "mo:base/Nat8";
+import Nat32 "mo:base/Nat32";
 import Int "mo:base/Int";
 import Hash "mo:base/Hash";
+import Text "mo:base/Text";
 
 import ActorSpec "./utils/ActorSpec";
 
@@ -31,7 +34,7 @@ let success = run([
 
             let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
             let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-            let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
+            let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
 
             assertTrue(Iter.toArray(evenIndices) == [1, 3, 5])
         }),
@@ -297,22 +300,13 @@ let success = run([
                 iter.next() == null
             ])
         }),
-        it("filterMap", do{
-            let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
 
-            let isEven = func( x : Nat ) : Bool { x % 2 == 0};
-            let square = func( x : Nat ) : Nat {x * x};
-            let it = Itertools.filterMap(vals, isEven, square);
-    
-            assertAllTrue([
-                it.next() == ?4,
-                it.next() == ?16,
-                it.next() == ?36,
-                it.next() == ?64,
-                it.next() == ?100,
-                it.next() == null
-            ])
+        it("empty", do{
+            
+            let it = Itertools.empty();
+            assertTrue(it.next() == null)
         }),
+        
         it("find", do{
             let vals = [1, 2, 3, 4, 5].vals();
 
@@ -350,6 +344,20 @@ let success = run([
     
             assertTrue(sum == 215)
         }),
+
+        it("flatten", do{
+            let arr = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9]
+            ];
+
+            let iter = Itertools.flatten(arr.vals());
+            let res = Iter.toArray(iter);
+
+            assertTrue( res == [1, 2, 3, 4, 5, 6, 7, 8, 9] )
+
+        }),
         it("interleaveLongest", do{
             let vals  = [1, 2, 3, 4].vals();
             let vals2 = [10, 20].vals();
@@ -377,6 +385,42 @@ let success = run([
                 Iter.toArray(iter) == [1, 10, 2, 10, 3]
             )
         }),
+        it("mapFilter", do{
+            let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
+
+            let isEven = func( x : Nat ) : Bool { x % 2 == 0};
+            let square = func( x : Nat ) : Nat {x * x};
+            let it = Itertools.mapFilter(vals, isEven, square);
+    
+            assertAllTrue([
+                it.next() == ?4,
+                it.next() == ?16,
+                it.next() == ?36,
+                it.next() == ?64,
+                it.next() == ?100,
+                it.next() == null
+            ])
+        }),
+        it("mapReduce", do{
+            let vals = [13, 15, 20, 15, 11, 15].vals();
+       
+            let natToChar = func (x : Nat) : Text { 
+                Char.toText(
+                    Char.fromNat32(
+                        Nat32.fromNat(x) + 96 
+                    )
+                )
+            };
+       
+            let concat = func (a : Text, b : Text) : Text {
+                a # b
+            };
+       
+            let res = Itertools.mapReduce(vals, natToChar, concat);
+       
+            assertTrue( res == ?"motoko")
+        }),
+
         it("mapWhile", do{
             let vals = [1, 2, 3, 4, 5].vals();
     
@@ -445,6 +489,75 @@ let success = run([
         
                 assertTrue(minmax == ?(8, 8))
             }),
+        ]),
+        describe("merge", [
+            it("two unsorted iters", do{
+                let vals1 = [5, 2, 3].vals();
+                let vals2 = [8, 4, 1].vals();
+                let merged = Itertools.merge(vals1, vals2, Nat.compare);
+
+                let res = Iter.toArray(merged);
+
+                assertTrue( 
+                    res == [5, 2, 3, 8, 4, 1]
+                )
+            }),
+            it("two sorted iters", do{
+                let vals1 = [5, 6, 7].vals();
+                let vals2 = [1, 3, 4].vals();
+                let merged = Itertools.merge(vals1, vals2, Nat.compare);
+                
+                let res = Iter.toArray(merged);
+
+                assertTrue(
+                    res == [1, 3, 4, 5, 6, 7]
+                )
+            }),
+        ]),
+        describe("kmerge", [
+            it("three unsorted lists", do{
+                let vals1 = [5, 2, 3].vals();
+                let vals2 = [8, 4, 1].vals();
+                let vals3 = [2, 1, 6].vals();
+
+                let merged = Itertools.kmerge([vals1, vals2, vals3], Nat.compare);
+                let res = Iter.toArray(merged);
+
+                assertTrue( 
+                    res == [2, 1, 5, 2, 3, 6, 8, 4, 1]
+                )
+            }),
+            it("three sorted lists", do{
+                let vals1 = [1, 4, 8].vals();
+                let vals2 = [2, 7, 9].vals();
+                let vals3 = [3, 5, 6].vals();
+                
+                let merged = Itertools.kmerge([vals1, vals2, vals3], Nat.compare);
+                let res = Iter.toArray(merged);
+                
+                assertTrue(
+                    res == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                )
+            }),
+            it("five sorted lists", do{
+                let vals1 = [5, 2, 3].vals();
+                let vals2 = [8, 4, 1].vals();
+                let vals3 = [1, 15, 11].vals();
+                let vals4 = [7, 14, 13].vals();
+                let vals5 = [9, 12, 6].vals();
+
+                let merged = Itertools.kmerge(
+                    [vals1, vals2, vals3, vals4, vals5], 
+                    Nat.compare
+                );
+
+                let res = Iter.toArray(merged);
+
+                assertTrue( 
+                    res == [1, 5, 2, 3, 7, 8, 4, 1, 9, 12, 6, 14, 13, 15, 11 ]
+                )
+
+            })
         ]),
         it("nth", do{
             let vals = [0, 1, 2, 3, 4, 5].vals();
@@ -576,13 +689,25 @@ let success = run([
         }),
         it("skip", do{
             let iter = [1, 2, 3, 4, 5].vals();
-            Itertools.skip(iter, 3);
+            let skippedIter = Itertools.skip(iter, 3);
 
             assertAllTrue([
-                iter.next() == ?4,
-                iter.next() == ?5,
-                iter.next() == null
+                skippedIter.next() == ?4,
+                skippedIter.next() == ?5,
+                skippedIter.next() == null
             ])
+        }),
+        it("skipWhile", do{
+            let iter = [1, 2, 3, 4, 5].vals();
+            let lessThan3 = func (a: Int) : Bool { a < 3 };
+
+            let skippedIter = Itertools.skipWhile(iter, lessThan3);
+
+            let res = Iter.toArray(skippedIter);
+            Debug.print(debug_show res);
+            assertTrue(
+                res == [3, 4, 5]
+            )
         }),
         it("slidingTuples", do{
             let vals = [1, 2, 3, 4, 5].vals();
@@ -608,21 +733,26 @@ let success = run([
             ])
            
         }),
+        it("sort", do{
+            let chars = "daecb".chars();
+            let sorted = Itertools.sort(chars, Char.compare);
+
+            let res = Text.join("", Iter.map(sorted, Char.toText));
+
+            assertTrue( res == "abcde" );
+        }),
         it("splitAt", do{
             let iter = [1, 2, 3, 4, 5].vals();
-            let (left, right) = Itertools.splitAt(iter, 3);
+            let (leftIter, rightIter) = Itertools.splitAt(iter, 3);
+
+            let (left, right) = (
+                Iter.toArray(leftIter), 
+                Iter.toArray(rightIter)
+            );
 
             assertAllTrue([
-                left.next() == ?1,
-                right.next() == ?4,
-        
-                left.next() == ?2,
-                right.next() == ?5,
-        
-                left.next() == ?3,
-        
-                left.next() == null,
-                right.next() == null,
+                left == [1, 2, 3],
+                right == [4, 5]
             ])
         }),
         it("spy", do{
@@ -794,6 +924,44 @@ let success = run([
                 zipped.next() == null
             ])
         }),
+
+        describe("zipLongest", [
+            it("left iter is longest", do{
+                let iter1 = [1, 2, 3, 4, 5].vals();
+                let iter2 = "abc".chars();
+                let zipped = Itertools.zipLongest(iter1, iter2);
+    
+                let res = Iter.toArray(zipped);
+
+                assertTrue(
+                    res == [
+                        #both(1, 'a'),
+                        #both(2, 'b'),
+                        #both(3, 'c'),
+                        #left(4),
+                        #left(5)
+                    ]
+                )
+            }),
+
+            it("right iter is longest", do{
+                let iter1 = [1, 2, 3].vals();
+                let iter2 = "abcde".chars();
+                let zipped = Itertools.zipLongest(iter1, iter2);
+    
+                let res = Iter.toArray(zipped);
+
+                assertTrue(
+                    res == [
+                        #both(1, 'a'),
+                        #both(2, 'b'),
+                        #both(3, 'c'),
+                        #right('d'),
+                        #right('e'),
+                    ]
+                )
+            }),
+        ]),
 
         it("toBuffer", do{
             let chars = "abc".chars();
