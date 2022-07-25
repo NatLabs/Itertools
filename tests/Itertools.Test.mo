@@ -850,6 +850,27 @@ let success = run([
         
            
         }),
+        it("successor", do{
+            let optionSquaresOfSquares = func(n: Nat) : ?Nat{
+                let square = n * n;
+
+                if (square <= Nat.pow(2, 64)) {
+                    return ?square;
+                };
+
+                return null;
+            };
+
+            let succIter = Itertools.successor(2, optionSquaresOfSquares);
+            let res = Iter.toArray(succIter);
+
+            assertTrue(
+                res == [
+                    2, 4, 16, 256,
+                    65_536, 4_294_967_296, 
+                ]
+            )
+        }),
         it("stepBy", do{
             let vals = [1, 2, 3, 4, 5].vals();
             let iter = Itertools.stepBy(vals, 2);

@@ -2065,6 +2065,62 @@ module {
         (copy.vals(), chain(copy.vals(), iter))
     };
 
+    /// Creates an iterator from the given value a where the next
+    /// elements are the results of the given function applied to 
+    /// the previous element.
+    ///
+    /// The function takes the previous value and returns an Optional 
+    /// value.  If the function returns null when the function 
+    /// returns null.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///     import Nat "mo:base/Nat";
+    ///
+    ///     let optionSquaresOfSquares = func(n: Nat) : ?Nat{
+    ///         let square = n * n;
+    ///
+    ///         if (square <= Nat.pow(2, 64)) {
+    ///             return ?square;
+    ///         };
+    ///
+    ///         return null;
+    ///     };
+    ///
+    ///     let succIter = Itertools.successor(
+    ///          2, 
+    ///          optionSquaresOfSquares
+    ///     );
+    ///
+    ///     let res = Iter.toArray(succIter);
+    ///
+    ///     assert res == [
+    ///         2, 4, 16, 256, 65_536, 4_294_967_296, 
+    ///     ];
+    ///
+    /// ```
+    public func successor<A>(start: A, f: (A) -> ?A) : Iter.Iter<A>{
+        var curr = start;
+
+        object{
+            public func next(): ?A{
+                switch(f(curr)){
+                    case(?n){
+                        let prev = curr;
+                        curr := n;
+
+                        ?prev
+                    };
+                    case(_){
+                        null
+                    };
+                };
+            }
+        }
+    };
+
+
+
     /// Returns every nth element of the iterator.
     /// n must be greater than zero.
     ///

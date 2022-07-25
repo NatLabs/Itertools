@@ -136,4 +136,4 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 - [ ] permutations
 
-- [ ] successor/unfold
+<!-- - [ ] successor/unfold -->
