@@ -8,6 +8,7 @@ import Nat8 "mo:base/Nat8";
 import Nat32 "mo:base/Nat32";
 import Int "mo:base/Int";
 import Hash "mo:base/Hash";
+import Float "mo:base/Float";
 import Text "mo:base/Text";
 
 import ActorSpec "./utils/ActorSpec";
@@ -306,7 +307,26 @@ let success = run([
             let it = Itertools.empty();
             assertTrue(it.next() == null)
         }),
-        
+
+        describe("equal", [
+            it("two equal iters", do{
+                let it1 = Iter.range(1, 5);
+                let it2 = Iter.range(1, 5);
+
+                assertTrue(
+                    Itertools.equal(it1, it2, Nat.compare)
+                );
+            }),
+
+            it("two unequal iters ", do{
+                let it1 = Iter.range(1, 5);
+                let it2 = Iter.range(1, 10);
+
+                assertFalse(
+                    Itertools.equal(it1, it2, Nat.compare)
+                );
+            }),
+        ]),
         it("find", do{
             let vals = [1, 2, 3, 4, 5].vals();
 
@@ -358,16 +378,41 @@ let success = run([
             assertTrue( res == [1, 2, 3, 4, 5, 6, 7, 8, 9] )
 
         }),
-        it("interleaveLongest", do{
-            let vals  = [1, 2, 3, 4].vals();
-            let vals2 = [10, 20].vals();
 
-            let iter = Itertools.interleaveLongest(vals, vals2);
+        it("groupBy", do{
+            let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
+       
+            let isFactorOf30 = func( n : Int ) : Bool { 
+                30.0 % Float.fromInt(n) == 0 
+            };
+            let groups = Itertools.groupBy(vals, isFactorOf30);
+
+            let res = Iter.toArray(groups);
+
+            assertTrue(
+                res == [
+                    ([1, 2, 3], true), 
+                    ([4], false),
+                    ([5, 6], true),
+                    ([7, 8, 9], false),
+                    ([10], true)
+                ]
+            )
+        }),
+        it("inspect", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+       
+            let printIfEven = func(n: Int) {
+                if (n % 2 == 0){
+                    Debug.print("This value [ " # debug_show n # " ] is even.");
+                }
+            };
+       
+            let iter = Itertools.inspect(vals, printIfEven);
             let res = Iter.toArray(iter);
 
-            assertTrue(res == [1, 10, 2, 20, 3, 4])
+            assertTrue( res == [1, 2, 3, 4, 5] )
         }),
-
         it("interleave", do{
             let vals  = [1, 2, 3, 4].vals();
             let vals2 = [10, 20].vals();
@@ -376,6 +421,15 @@ let success = run([
             let res = Iter.toArray(iter);
 
             assertTrue( res == [1, 10, 2, 20])
+        }),
+        it("interleaveLongest", do{
+            let vals  = [1, 2, 3, 4].vals();
+            let vals2 = [10, 20].vals();
+
+            let iter = Itertools.interleaveLongest(vals, vals2);
+            let res = Iter.toArray(iter);
+
+            assertTrue(res == [1, 10, 2, 20, 3, 4])
         }),
         it("intersperse", do{
             let vals = [1, 2, 3].vals();
@@ -559,6 +613,27 @@ let success = run([
 
             })
         ]),
+
+        describe("notEqual", [
+            it("two equal iters", do{
+                let it1 = Iter.range(1, 5);
+                let it2 = Iter.range(1, 5);
+
+                assertFalse(
+                    Itertools.notEqual(it1, it2, Nat.compare)
+                );
+            }),
+            
+            it("two unequal iters ", do{
+                let it1 = Iter.range(1, 5);
+                let it2 = Iter.range(1, 10);
+
+                assertTrue(
+                    Itertools.notEqual(it1, it2, Nat.compare)
+                );
+            }),
+        ]),
+
         it("nth", do{
             let vals = [0, 1, 2, 3, 4, 5].vals();
             let nth = Itertools.nth(vals, 3);

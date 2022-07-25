@@ -662,6 +662,39 @@ module {
             }
         }
     };
+
+    /// Checks if two iterators are equal.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let it1 = Itertools.range(1, 10);
+    ///     let it2 = Itertools.range(1, 10);
+    ///
+    ///     assert Itertools.equal(it1, it2, Nat.compare);
+    ///
+    ///     let it3 = Itertools.range(1, 5);
+    ///     let it4 = Itertools.range(1, 10);
+    ///
+    ///     assert not Itertools.equal(it3, it4, Nat.compare);
+    /// ```
+    public func equal<A>(iter1: Iter.Iter<A>, iter2: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool {
+
+        switch( (iter1.next(), iter2.next())){
+            case((?a, ?b)){
+                if (cmp(a, b) == #equal){
+                    equal<A>(iter1, iter2, cmp)
+                }else{
+                    false
+                }
+            };
+            case ((null, ?b)) false;
+            case ((?a, null)) false;
+            case ((null, null)) true;
+        };
+    };
+
     
     /// Looks for an element in an iterator that matches a predicate.
     ///
@@ -822,6 +855,112 @@ module {
                 };
             }
         };
+    };
+
+    /// Groups nearby elements into arrays based on result from the given function and returns them along with the result of elements in that group.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
+    ///
+    ///     let isFactorOf30 = func( x : Int ) : Bool {x % 30 == 0};
+    ///     let groups = Itertools.groupBy(vals, isFactorOf30);
+    ///
+    ///     assert Iter.toArray(groups) == [
+    ///         ([1, 2, 3], true), 
+    ///         ([4], false),
+    ///         ([5, 6], true),
+    ///         ([7, 8, 9], false),
+    ///         ([10], true)
+    ///     ];
+    ///
+    /// ```
+    public func groupBy<A, B>(iter: Iter.Iter<A>, pred: (A) -> Bool): Iter.Iter<([A], Bool)>{
+        let group  = Buffer.Buffer<A>(8);
+
+        func nextGroup() : ?([A], Bool){
+            switch(iter.next()){
+                case(?val){
+                    if (group.size() == 0){
+                        group.add(val);
+                        return nextGroup();
+                    };
+
+                    if(pred(group.get(0)) ==  pred(val)){
+                        group.add(val);
+                        nextGroup()
+                    }else{
+                        let arr = group.toArray();
+
+                        group.clear();
+                        group.add(val);
+
+                        ?(arr, pred(arr[0]))
+                    };
+                };
+                case(_){
+                    if (group.size() == 0){
+                        null
+                    }else{
+                        let arr = group.toArray();
+                        
+                        group.clear();
+
+                        ?(arr, pred(arr[0]))
+                    }
+                }
+            };
+        };
+
+        return object{
+            public func next(): ?([A], Bool){
+                nextGroup()
+            }
+        };
+    };
+
+    /// Pass in a callback function to the iterator that performs a task every time the iterator is advanced.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///     import Debug "mo:base/Debug";
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///
+    ///     let printIfEven = func(n: Int) {
+    ///         if (n % 2 == 0){
+    ///             Debug.print("This value [ " # debug_show n # " ] is even.");
+    ///         }
+    ///     };
+    ///
+    ///     let iter = Itertools.inspect(vals, printIfEven);
+    ///
+    ///     assert Iter.toArray(iter) == [1, 2, 3, 4, 5];
+    /// ```
+    ///
+    /// - console:
+    /// ```bash
+    ///     This value [ +2 ] is even.
+    ///     This value [ +4 ] is even.
+    /// ```
+    public func inspect<A>(iter: Iter.Iter<A>, callback: (A) -> ()): Iter.Iter<A>{
+
+        object{
+            public func next() : ?A{
+                switch(iter.next()){
+                    case(?a){
+                        callback(a);
+                        ?a
+                    };
+                    case(_){
+                        null
+                    };
+                }
+            }
+        }
     };
 
     /// Alternates between two iterators of the same type until both are exhausted.
@@ -1324,6 +1463,37 @@ module {
                 };
             }
         }
+    };
+
+    /// Checks if two iterators are not equal.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals1 = [5, 6, 7].vals();
+    ///     let vals2 = [1, 3, 4].vals();
+    ///
+    ///     assert Itertools.notEqual(vals1, vals2);
+    ///
+    ///     let vals3 = [1, 3, 4].vals();
+    ///     let vals4 = [1, 3, 4].vals();
+    ///
+    ///     assert not Itertools.notEqual(vals3, vals4);
+    /// ```
+    public func notEqual<A>(iter1: Iter.Iter<A>, iter2: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool{
+        switch(iter1.next(), iter2.next()){
+            case (?a, ?b) {
+                if (not (cmp(a, b) == #equal)){
+                    true
+                }else{
+                    notEqual(iter1, iter2, cmp)
+                }
+            };
+            case(_, ?b) true;
+            case(?a, _) true;
+            case(_, _) false;
+        };
     };
 
 
