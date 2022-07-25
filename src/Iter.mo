@@ -1045,7 +1045,7 @@ module {
         };
     };
 
-    // intersperse
+
     /// Returns an iterator that inserts a value between each pair 
     /// of values in an iterator.
     ///
@@ -1536,6 +1536,77 @@ module {
             };
         };
     };
+
+    /// Pads an iterator with a given value until it is of a certain length.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3].vals();
+    ///     let padded = Itertools.pad(vals, 6, 0);
+    ///
+    ///     assert Iter.toArray(padded) == [1, 2, 3, 0, 0, 0];
+    /// ```
+    public func pad<A>(iter: Iter.Iter<A>, length: Nat, value: A ): Iter.Iter<A>{
+        var count = 0;
+
+        object{
+            public func next() : ?A{
+                switch(iter.next()){
+                    case (?a) {
+                        count += 1;
+                        ?a
+                    };
+                    case (_) {
+                        if (count < length){
+                            count +=1;
+                            ?value
+                        }else{
+                            null
+                        };
+                    };
+                };
+            }
+        }
+    };
+
+    /// Pads an iterator with the result of a given function until it is of a certain length.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     
+    ///     let vals = [1, 2, 3].vals();
+    ///     let incrementIndex = func (i: Nat) { i + 1 };
+    ///
+    ///     let padded = Itertools.padWithFn(vals, 6, incrementIndex);
+    ///assert Iter.toArray(padded) == [1, 2, 3, 4, 5, 6];
+    /// ```
+    public func padWithFn<A>(iter: Iter.Iter<A>, length: Nat, f: (Nat) -> A): Iter.Iter<A>{
+        var count: Nat = 0;
+
+        object{
+            public func next() : ?A{
+                switch(iter.next()){
+                    case (?a) {
+                        count += 1;
+                        ?a
+                    };
+                    case (_) {
+                        if (count < length){
+                            count +=1;
+                            ?f(count - 1)
+                        }else{
+                            null
+                        };
+                    };
+                };
+            }
+        }
+    };
+
 
     /// Takes a partition function that returns `true` or `false` 
     /// for each element in the iterator.

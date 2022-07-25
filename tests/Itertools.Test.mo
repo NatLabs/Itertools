@@ -256,7 +256,6 @@ let success = run([
                 let it = Itertools.combinations(vals, 6);
 
                 let res = Iter.toArray(it);
-                Debug.print(debug_show res);
 
                 assertTrue( res == [] )
             }),
@@ -404,7 +403,7 @@ let success = run([
        
             let printIfEven = func(n: Int) {
                 if (n % 2 == 0){
-                    Debug.print("This value [ " # debug_show n # " ] is even.");
+                    // Debug.print("This value [ " # debug_show n # " ] is even.");
                 }
             };
        
@@ -648,7 +647,25 @@ let success = run([
                 Itertools.nthOrDefault(vals, 3, -1) == -1
             ])
         }),
+        it("pad", do{
+            let vals = [1, 2, 3].vals();
+            let padded = Itertools.pad(vals, 6, 0);
 
+            assertTrue(
+                Iter.toArray(padded) == [1, 2, 3, 0, 0, 0]
+            )
+        }),
+
+        it("padWithFn", do{
+            let vals = [1, 2, 3].vals();
+            let incrementIndex = func (i: Nat) : Nat { i + 1 };
+       
+            let padded = Itertools.padWithFn(vals, 6, incrementIndex);
+
+            assertTrue(
+                Iter.toArray(padded) == [1, 2, 3, 4, 5, 6]
+            )
+        }),
         it("partition", do{
             let vals = [0, 1, 2, 3, 4, 5].vals();
 
@@ -779,7 +796,6 @@ let success = run([
             let skippedIter = Itertools.skipWhile(iter, lessThan3);
 
             let res = Iter.toArray(skippedIter);
-            Debug.print(debug_show res);
             assertTrue(
                 res == [3, 4, 5]
             )
