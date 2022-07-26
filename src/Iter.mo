@@ -85,10 +85,13 @@ import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
 import Heap "mo:base/Heap";
+import Stack "mo:base/Stack";
 import Prelude "mo:base/Prelude";
+
 import {format; print} "mo:format";
 
 import PeekableIter "PeekableIter";
+import Deiter "Deiter";
 
 module {
 
@@ -1749,6 +1752,111 @@ module {
     /// ```
     public func peekable<T>(iter: Iter.Iter<T>) : PeekableIter.PeekableIter<T> {
         PeekableIter.fromIter<T>(iter)
+    };
+
+    /// Returns an iterator that yeilds all the permutations of the
+    /// elements of the iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3].vals();
+    ///     let perms = Itertools.permutations(vals);
+    ///
+    ///     assert Iter.toArray(perms) == [
+    ///         [1, 2, 3], [1, 3, 2], 
+    ///         [2, 1, 3], [2, 3, 1], 
+    ///         [3, 1, 2], [3, 2, 1]
+    ///     ];
+    /// ```
+    /// Todo: Learn how to do this for normal vectors before 
+    ///       trying to do this for iterators.
+    public func permutations<A>(iter: Iter.Iter<A>): Iter.Iter<[A]>{
+        let arr = Iter.toArrayMut<A>(iter);
+        let n = arr.size();
+
+        let indices = Stack.Stack<(Nat, Nat)>();
+        let swaps = Stack.Stack<(Nat, Nat)>();
+
+        let revRange = Deiter.rev(
+            Deiter.range(0, n)
+        );
+
+        for (k in revRange){
+            indices.push((0, k));
+        };
+
+        func _swap(a: Nat, b: Nat) {
+            let tmp = arr[a];
+            arr[a] := arr[b];
+            arr[b] := tmp;
+        };
+
+        func swap(a: Nat, b: Nat) {
+            _swap(a, b);
+            swaps.push((a, b));
+        };
+
+        func unswap(i: Nat) {
+            label l loop{
+                switch(swaps.peek()){
+                    case (?(a, b)) {
+                        if (i <= a){
+                            _swap(a, b);
+                            print("{} swaps: ({}, {})", [#num(i), #num(a), #num(b)]);
+                            
+                            ignore swaps.pop();
+                        }else{
+                            break l;
+                        }
+                    };
+                    case (_) {
+                        break l;
+                    };
+                }
+            }
+        };
+
+        func nextPermutation(): ?[A]{
+            switch(indices.pop()){
+                case (?(i, j)) {
+                    print("popped: ({}, {})", [#num(i), #num(j)]);
+
+                    swap(i, j);
+
+                    let revRange = Deiter.rev(
+                        Deiter.range(i + 1, n)
+                    );
+
+                    for (k in revRange){
+                        print("k: {}", [#num(k)]);
+                        indices.push((i + 1, k));
+                    };
+
+                    let perms = if(i + 1 == n){
+                        ?Array.freeze(arr)
+                    }else{
+                        nextPermutation()
+                    };
+
+                    if (j + 1 == n){
+                        unswap(i);
+                    };
+
+                    perms
+                };
+                case (_) {
+                    null;
+                };
+            };
+        };
+
+        object{
+            public func next() : ?[A]{
+                nextPermutation()
+            };
+        };
     };
 
     /// Add a value to the front of an iterator.

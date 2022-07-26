@@ -717,6 +717,25 @@ let success = run([
             ])
         }),
 
+        it("permutations", do{
+            let vals = [1, 2, 3].vals();
+            let permutations = Itertools.permutations(vals);
+            let res = Iter.toArray(permutations);
+            
+            Debug.print(debug_show res);
+            
+            assertTrue(
+                res == [
+                    [1, 2, 3],
+                    [1, 3, 2],
+                    [2, 1, 3],
+                    [2, 3, 1],
+                    [3, 1, 2],
+                    [3, 2, 1]
+                ]
+            )
+        }),
+
         it("prepend", do{
             let vals = [2, 3].vals();
             let it1 = Itertools.prepend(1, vals);

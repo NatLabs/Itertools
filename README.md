@@ -132,4 +132,8 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 - [ ] mapResult
 
-- [ ] permutations
+- [ ] mapOption
+  
+- [ ] mapEntries
+
+- [ ] permutations: WIP
