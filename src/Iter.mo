@@ -1084,6 +1084,38 @@ module {
         };
     };
 
+    /// Returns an iterator adaptor that mutates elements of an iterator by applying the given function to each entry.
+    /// Each entry consists of the index of the element and the element itself.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [2, 2, 2, 2, 2].vals();
+    ///     let mulWithIndex = func(i: Nat, val: Nat) {
+    ///         i * val;
+    ///     };
+    ///
+    ///     let iter = Itertools.mapEntries(vals, mulWithIndex);
+    ///
+    ///     assert Iter.toArray(iter) == [0, 2, 4, 6, 8];
+    ///
+    /// ```
+    public func mapEntries<A, B>(iter: Iter.Iter<A>, f: (Nat, A) -> B): Iter.Iter<B>{
+        let entries = enumerate(iter);
+
+        return object{
+            public func next () : ?B {
+                switch(entries.next()){
+                    case (?(i, val)) {
+                        return ?f(i, val);
+                    };
+                    case (_) null;
+                }
+            };
+        };
+    };
+
     /// Returns an iterator that filters elements based on a predicate and 
     /// maps them to a new value based on the second argument.
     ///
