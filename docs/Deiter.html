@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#type.Deiter">Deiter</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#rev">rev</a></li></li><li><li><a href="#fromArray">fromArray</a></li></li><li><li><a href="#toArray">toArray</a></li></li><li><li><a href="#fromArrayMut">fromArrayMut</a></li></li><li><li><a href="#toArrayMut">toArrayMut</a></li></li><li><li><a href="#toIter">toIter</a></li></li><li><li><a href="#fromDeque">fromDeque</a></li></li><li><li><a href="#toDeque">toDeque</a></li></li></ul></nav><div class="documentation"><h1>Deiter</h1><p>Double Ended Iterator</p>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#type.Deiter">Deiter</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#reverse">reverse</a></li></li><li><li><a href="#fromArray">fromArray</a></li></li><li><li><a href="#toArray">toArray</a></li></li><li><li><a href="#fromArrayMut">fromArrayMut</a></li></li><li><li><a href="#toArrayMut">toArrayMut</a></li></li><li><li><a href="#toIter">toIter</a></li></li><li><li><a href="#fromDeque">fromDeque</a></li></li><li><li><a href="#toDeque">toDeque</a></li></li></ul></nav><div class="documentation"><h1>Deiter</h1><p>Double Ended Iterator</p>
 <p>This type of iterator allows for both forward and backward iteration
 Double Ended Iterators are useful for iterating over data structures in reverse without allocating extra space for the reverse iteration.</p>
 <p>The <code>Deiter</code> type is an extension of the <code>Iter</code> type built in Motoko 
@@ -17,7 +17,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
   let deiter = Deiter.fromArray(arr);
 
   // reverse double ended iterator
-  let revDeiter = Deiter.rev(deiter);
+  let revDeiter = Deiter.reverse(deiter);
 
   // Double Ended Iter gets typecasted to an Iter typw
   let chunks = Itertools.chunks(revDeiter, 3);
@@ -31,7 +31,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
 </code></pre><div class="declaration"><h4 class="type-declaration" id="type.Deiter"><span class="keyword">type </span><span class="type">Deiter</span>&lt;<span class="type">T</span>&gt; = <span class="type">Iter.Iter</span>&lt;<span class="type">T</span>&gt; and { next_back : () -&gt; ?<span class="type">T</span> }</h4><p><p>Double Ended Iterator Type</p>
 </p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <a href="#type.Deiter"><span class="type">Deiter</span></a>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a Double Ended Iterator over a range of natural, <code>Nat</code> numbers from [start, end)</p>
 </p></div><div class="declaration"><h4 class="function" id="intRange"><code><span class="keyword">public func </span><span class="fnname">intRange</span>(<span class="parameter">start</span> : <span class="type">Int</span>, <span class="parameter">end</span> : <span class="type">Int</span>) : <a href="#type.Deiter"><span class="type">Deiter</span></a>&lt;<span class="type">Int</span>&gt;</code></h4><p><p>Returns a Double Ended Iterator over a range of integers (<code>Int</code>) from [start, end)</p>
-</p></div><div class="declaration"><h4 class="function" id="rev"><code><span class="keyword">public func </span><span class="fnname">rev</span>&lt;<span class="type">T</span>&gt;(<span class="parameter">deiter</span> : <a href="#type.Deiter"><span class="type">Deiter</span></a>&lt;<span class="type">T</span>&gt;) : <a href="#type.Deiter"><span class="type">Deiter</span></a>&lt;<span class="type">T</span>&gt;</code></h4><p><p>Returns an iterator that iterates over the elements in reverse order.</p>
+</p></div><div class="declaration"><h4 class="function" id="reverse"><code><span class="keyword">public func </span><span class="fnname">reverse</span>&lt;<span class="type">T</span>&gt;(<span class="parameter">deiter</span> : <a href="#type.Deiter"><span class="type">Deiter</span></a>&lt;<span class="type">T</span>&gt;) : <a href="#type.Deiter"><span class="type">Deiter</span></a>&lt;<span class="type">T</span>&gt;</code></h4><p><p>Returns an iterator that iterates over the elements in reverse order.</p>
 <h4 id="Example">Example</h4>
 
 <pre class="motoko"><code class="motoko">
@@ -44,7 +44,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
   assert deiter.next() == null;
 
   let deiter2 = Deiter.fromArray(arr);
-  let revIter = Deiter.rev(deiter2);
+  let revIter = Deiter.reverse(deiter2);
 
   assert revIter.next() == ?3;
   assert revIter.next() == ?2;

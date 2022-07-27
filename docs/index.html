@@ -17,7 +17,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
   let deiter = Deiter.fromArray(arr);
 
   // reverse double ended iterator
-  let revDeiter = Deiter.rev(deiter);
+  let revDeiter = Deiter.reverse(deiter);
 
   // Double Ended Iter gets typecasted to an Iter typw
   let chunks = Itertools.chunks(revDeiter, 3);

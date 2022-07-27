@@ -85,10 +85,16 @@ import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
 import Heap "mo:base/Heap";
+import Stack "mo:base/Stack";
 import Prelude "mo:base/Prelude";
+
 import {format; print} "mo:format";
 
 import PeekableIter "PeekableIter";
+import Deiter "Deiter";
+
+import ArrayMut_Utils "Utils/ArrayMut";
+import Nat_Utils "Utils/Nat";
 
 module {
 
@@ -486,7 +492,7 @@ module {
         let cbns = Buffer.Buffer<Nat>(size);
 
         let indices = Buffer.Buffer<Nat>(size);
-        for (i in Iter.range(0, Int.abs(size - 1))){
+        for (i in range(0, size)){
             indices.add(i);
         };
 
@@ -1781,6 +1787,69 @@ module {
     /// ```
     public func peekable<T>(iter: Iter.Iter<T>) : PeekableIter.PeekableIter<T> {
         PeekableIter.fromIter<T>(iter)
+    };
+
+    /// Returns an iterator that yeilds all the permutations of the
+    /// elements of the iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3].vals();
+    ///     let perms = Itertools.permutations(vals, Nat.compare);
+    ///
+    ///     assert Iter.toArray(perms) == [
+    ///         [1, 2, 3], [1, 3, 2], 
+    ///         [2, 1, 3], [2, 3, 1], 
+    ///         [3, 1, 2], [3, 2, 1]
+    ///     ];
+    /// ```
+    /// Todo: Learn how to do this for normal vectors before 
+    ///       trying to do this for iterators.
+    public func permutations<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order ): Iter.Iter<[A]>{
+        let arr = Iter.toArrayMut<A>(iter);
+        let n = arr.size();
+
+        let totalPermutations = Nat_Utils.factorial(n);
+        var permutationsLeft = totalPermutations;
+
+        object{
+            public func next() : ?[A]{
+                if (permutationsLeft == totalPermutations){
+                    permutationsLeft -= 1;
+                    return ?Array.freeze(arr);
+                };
+
+                if (permutationsLeft == 0){
+                    return null;
+                };
+
+                permutationsLeft -=1;
+
+                var i = Int.abs(n - 2);
+                
+                while (i > 0 and not (cmp(arr[i], arr[i + 1]) == #less)){
+                    i-= 1;
+                };
+
+                var j = i+1;
+
+                for (k in range(i + 1, n)){
+                    if (cmp(arr[k], arr[i]) == #greater){
+                        if (cmp(arr[k], arr[j]) == #less) {
+                            j := k;
+                        };
+                    };
+                };
+                
+                print("i: {}, j: {}", [#num(i), #num(j)]);
+                ArrayMut_Utils.swap(arr, i, j);
+                ArrayMut_Utils.reverseFrom(arr, i + 1);
+
+                ?Array.freeze(arr)
+            };
+        };
     };
 
     /// Add a value to the front of an iterator.

@@ -22,7 +22,7 @@
 ///   let deiter = Deiter.fromArray(arr);
 ///
 ///   // reverse double ended iterator
-///   let revDeiter = Deiter.rev(deiter);
+///   let revDeiter = Deiter.reverse(deiter);
 ///
 ///   // Double Ended Iter gets typecasted to an Iter typw
 ///   let chunks = Itertools.chunks(revDeiter, 3);
@@ -84,6 +84,7 @@ module {
           return null;
         }
       };
+      
       public func next_back(): ?Int {
         if (j > start and j > i) {
           j -= 1;
@@ -93,6 +94,11 @@ module {
         }
       };
     };
+  };
+
+  /// @deprecated in favor of `reverse`
+  public func rev<T>(deiter : Deiter<T>) : Deiter<T> {
+    reverse<T>(deiter)
   };
 
   /// Returns an iterator that iterates over the elements in reverse order.
@@ -109,7 +115,7 @@ module {
   ///   assert deiter.next() == null;
   ///
   ///   let deiter2 = Deiter.fromArray(arr);
-  ///   let revIter = Deiter.rev(deiter2);
+  ///   let revIter = Deiter.reverse(deiter2);
   ///
   ///   assert revIter.next() == ?3;
   ///   assert revIter.next() == ?2;
@@ -117,7 +123,7 @@ module {
   ///   assert revIter.next() == null;
   ///
   /// ```
-  public func rev<T>(deiter : Deiter<T>) : Deiter<T> {
+  public func reverse<T>(deiter : Deiter<T>) : Deiter<T> {
     return object{
       public func next(): ?T {
         deiter.next_back()
