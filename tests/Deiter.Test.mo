@@ -67,10 +67,10 @@ let success = run([
                 deiter.next() == null
             ])
         }),
-        it("rev", do {
+        it("reverse", do {
             let deque = arrayToDeque([1, 2, 3, 4, 5]);
             let deiter = Deiter.fromDeque<Nat>(deque);
-            let revIter = Deiter.rev(deiter);
+            let revIter = Deiter.reverse(deiter);
 
             assertAllTrue([
                 revIter.next() == ?5,
@@ -86,7 +86,7 @@ let success = run([
             let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         
             let deiter = Deiter.fromArray(arr);
-            let revDeiter = Deiter.rev(deiter);
+            let revDeiter = Deiter.reverse(deiter);
             let chunks = Itertools.chunks(revDeiter, 3);
             
             assertAllTrue([

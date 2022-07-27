@@ -110,7 +110,7 @@ For a complete list of functions and data types, see the [Itertools documentatio
   
 ### Deiter - (Double-Ended Iterator)
 
-- [x] [rev](https://tomijaga.github.io/Itertools.mo/Deiter.html#rev), [range](https://tomijaga.github.io/Itertools.mo/Deiter.html#range), [intRange](https://tomijaga.github.io/Itertools.mo/Deiter.html#intRange), [fromArray](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromArray), [toArray](https://tomijaga.github.io/Itertools.mo/Deiter.html#toArray), [fromArrayMut](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromArrayMut), [toArrayMut](https://tomijaga.github.io/Itertools.mo/Deiter.html#toArrayMut), [fromDeque](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromDeque), [toDeque](https://tomijaga.github.io/Itertools.mo/Deiter.html#toDeque)
+- [x] [reverse](https://tomijaga.github.io/Itertools.mo/Deiter.html#reverse), [range](https://tomijaga.github.io/Itertools.mo/Deiter.html#range), [intRange](https://tomijaga.github.io/Itertools.mo/Deiter.html#intRange), [fromArray](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromArray), [toArray](https://tomijaga.github.io/Itertools.mo/Deiter.html#toArray), [fromArrayMut](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromArrayMut), [toArrayMut](https://tomijaga.github.io/Itertools.mo/Deiter.html#toArrayMut), [fromDeque](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromDeque), [toDeque](https://tomijaga.github.io/Itertools.mo/Deiter.html#toDeque)
 
 ### Iter
 
@@ -134,6 +134,4 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 - [ ] mapOption
   
-- [ ] mapEntries
-
 - [ ] permutations: WIP

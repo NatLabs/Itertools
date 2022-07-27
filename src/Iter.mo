@@ -93,6 +93,8 @@ import {format; print} "mo:format";
 import PeekableIter "PeekableIter";
 import Deiter "Deiter";
 
+import ArrayMut "Utils/ArrayMut";
+
 module {
 
     // ==============================================================================================
@@ -489,7 +491,7 @@ module {
         let cbns = Buffer.Buffer<Nat>(size);
 
         let indices = Buffer.Buffer<Nat>(size);
-        for (i in Iter.range(0, Int.abs(size - 1))){
+        for (i in range(0, size)){
             indices.add(i);
         };
 
@@ -1808,85 +1810,32 @@ module {
         let arr = Iter.toArrayMut<A>(iter);
         let n = arr.size();
 
-        let indices = Stack.Stack<(Nat, Nat)>();
-        let swaps = Stack.Stack<(Nat, Nat)>();
-
-        let revRange = Deiter.rev(
-            Deiter.range(0, n)
-        );
-
-        for (k in revRange){
-            indices.push((0, k));
-        };
-
-        func _swap(a: Nat, b: Nat) {
-            let tmp = arr[a];
-            arr[a] := arr[b];
-            arr[b] := tmp;
-        };
-
-        func swap(a: Nat, b: Nat) {
-            _swap(a, b);
-            swaps.push((a, b));
-        };
-
-        func unswap(i: Nat) {
-            label l loop{
-                switch(swaps.peek()){
-                    case (?(a, b)) {
-                        if (i <= a){
-                            _swap(a, b);
-                            print("{} swaps: ({}, {})", [#num(i), #num(a), #num(b)]);
-                            
-                            ignore swaps.pop();
-                        }else{
-                            break l;
-                        }
-                    };
-                    case (_) {
-                        break l;
-                    };
-                }
-            }
-        };
-
-        func nextPermutation(): ?[A]{
-            switch(indices.pop()){
-                case (?(i, j)) {
-                    print("popped: ({}, {})", [#num(i), #num(j)]);
-
-                    swap(i, j);
-
-                    let revRange = Deiter.rev(
-                        Deiter.range(i + 1, n)
-                    );
-
-                    for (k in revRange){
-                        print("k: {}", [#num(k)]);
-                        indices.push((i + 1, k));
-                    };
-
-                    let perms = if(i + 1 == n){
-                        ?Array.freeze(arr)
-                    }else{
-                        nextPermutation()
-                    };
-
-                    if (j + 1 == n){
-                        unswap(i);
-                    };
-
-                    perms
-                };
-                case (_) {
-                    null;
-                };
-            };
-        };
-
         object{
             public func next() : ?[A]{
-                nextPermutation()
+                var i = Int.abs(n - 2);
+                
+                while (i >= 0 and arr[i] >= arr[i + 1]){
+                    i-= 1;
+                };
+
+                var j = i;
+
+                for (k in range(i + 1, n)){
+                    if (arr[k] > arr[i]){
+                        if (arr[k] < arr[j]){
+                            j := k;
+                        };
+                    };
+                };
+
+                if (i == 0){
+                    return null;
+                };
+                
+                ArrayMut.swap(arr, i, j);
+                ArrayMut.reverseFrom(arr, i + 1);
+
+                Array.freeze(arr)
             };
         };
     };
