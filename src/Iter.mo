@@ -93,7 +93,8 @@ import {format; print} "mo:format";
 import PeekableIter "PeekableIter";
 import Deiter "Deiter";
 
-import ArrayMut "Utils/ArrayMut";
+import ArrayMut_Utils "Utils/ArrayMut";
+import Nat_Utils "Utils/Nat";
 
 module {
 
@@ -1796,7 +1797,7 @@ module {
     /// ```motoko
     ///
     ///     let vals = [1, 2, 3].vals();
-    ///     let perms = Itertools.permutations(vals);
+    ///     let perms = Itertools.permutations(vals, Nat.compare);
     ///
     ///     assert Iter.toArray(perms) == [
     ///         [1, 2, 3], [1, 3, 2], 
@@ -1806,36 +1807,47 @@ module {
     /// ```
     /// Todo: Learn how to do this for normal vectors before 
     ///       trying to do this for iterators.
-    public func permutations<A>(iter: Iter.Iter<A>): Iter.Iter<[A]>{
+    public func permutations<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order ): Iter.Iter<[A]>{
         let arr = Iter.toArrayMut<A>(iter);
         let n = arr.size();
 
+        let totalPermutations = Nat_Utils.factorial(n);
+        var permutationsLeft = totalPermutations;
+
         object{
             public func next() : ?[A]{
+                if (permutationsLeft == totalPermutations){
+                    permutationsLeft -= 1;
+                    return ?Array.freeze(arr);
+                };
+
+                if (permutationsLeft == 0){
+                    return null;
+                };
+
+                permutationsLeft -=1;
+
                 var i = Int.abs(n - 2);
                 
-                while (i >= 0 and arr[i] >= arr[i + 1]){
+                while (i > 0 and not (cmp(arr[i], arr[i + 1]) == #less)){
                     i-= 1;
                 };
 
-                var j = i;
+                var j = i+1;
 
                 for (k in range(i + 1, n)){
-                    if (arr[k] > arr[i]){
-                        if (arr[k] < arr[j]){
+                    if (cmp(arr[k], arr[i]) == #greater){
+                        if (cmp(arr[k], arr[j]) == #less) {
                             j := k;
                         };
                     };
                 };
-
-                if (i == 0){
-                    return null;
-                };
                 
-                ArrayMut.swap(arr, i, j);
-                ArrayMut.reverseFrom(arr, i + 1);
+                print("i: {}, j: {}", [#num(i), #num(j)]);
+                ArrayMut_Utils.swap(arr, i, j);
+                ArrayMut_Utils.reverseFrom(arr, i + 1);
 
-                Array.freeze(arr)
+                ?Array.freeze(arr)
             };
         };
     };
