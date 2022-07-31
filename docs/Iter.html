@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#sum">sum</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#cartesianProduct">cartesianProduct</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#combinations">combinations</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#empty">empty</a></li></li><li><li><a href="#equal">equal</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#findIndices">findIndices</a></li></li><li><li><a href="#fold">fold</a></li></li><li><li><a href="#flatten">flatten</a></li></li><li><li><a href="#groupBy">groupBy</a></li></li><li><li><a href="#inspect">inspect</a></li></li><li><li><a href="#interleaveLongest">interleaveLongest</a></li></li><li><li><a href="#interleave">interleave</a></li></li><li><li><a href="#intersperse">intersperse</a></li></li><li><li><a href="#mapFilter">mapFilter</a></li></li><li><li><a href="#mapReduce">mapReduce</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#merge">merge</a></li></li><li><li><a href="#kmerge">kmerge</a></li></li><li><li><a href="#notEqual">notEqual</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#partition">partition</a></li></li><li><li><a href="#partitionInPlace">partitionInPlace</a></li></li><li><li><a href="#isPartitioned">isPartitioned</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#prepend">prepend</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#reduce">reduce</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#skipWhile">skipWhile</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#sort">sort</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unique">unique</a></li></li><li><li><a href="#uniqueCheck">uniqueCheck</a></li></li><li><li><a href="#isUnique">isUnique</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#type.Either">Either</a></li></li><li><li><a href="#type.EitherOr">EitherOr</a></li></li><li><li><a href="#zipLongest">zipLongest</a></li></li><li><li><a href="#toBuffer">toBuffer</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li><li><li><a href="Utils/ArrayMut.html">Utils/ArrayMut</a></li></li><li><li><a href="Utils/Nat.html">Utils/Nat</a></li></li><li><li><a href="Utils/TrieMap.html">Utils/TrieMap</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#accumulate">accumulate</a></li></li><li><li><a href="#all">all</a></li></li><li><li><a href="#any">any</a></li></li><li><li><a href="#cartesianProduct">cartesianProduct</a></li></li><li><li><a href="#count">count</a></li></li><li><li><a href="#countAll">countAll</a></li></li><li><li><a href="#chain">chain</a></li></li><li><li><a href="#chunks">chunks</a></li></li><li><li><a href="#chunksExact">chunksExact</a></li></li><li><li><a href="#combinations">combinations</a></li></li><li><li><a href="#cycle">cycle</a></li></li><li><li><a href="#enumerate">enumerate</a></li></li><li><li><a href="#empty">empty</a></li></li><li><li><a href="#equal">equal</a></li></li><li><li><a href="#find">find</a></li></li><li><li><a href="#findIndex">findIndex</a></li></li><li><li><a href="#findIndices">findIndices</a></li></li><li><li><a href="#fold">fold</a></li></li><li><li><a href="#flatten">flatten</a></li></li><li><li><a href="#groupBy">groupBy</a></li></li><li><li><a href="#inspect">inspect</a></li></li><li><li><a href="#interleaveLongest">interleaveLongest</a></li></li><li><li><a href="#interleave">interleave</a></li></li><li><li><a href="#intersperse">intersperse</a></li></li><li><li><a href="#mapEntries">mapEntries</a></li></li><li><li><a href="#mapFilter">mapFilter</a></li></li><li><li><a href="#mapReduce">mapReduce</a></li></li><li><li><a href="#mapWhile">mapWhile</a></li></li><li><li><a href="#max">max</a></li></li><li><li><a href="#min">min</a></li></li><li><li><a href="#minmax">minmax</a></li></li><li><li><a href="#merge">merge</a></li></li><li><li><a href="#kmerge">kmerge</a></li></li><li><li><a href="#notEqual">notEqual</a></li></li><li><li><a href="#nth">nth</a></li></li><li><li><a href="#nthOrDefault">nthOrDefault</a></li></li><li><li><a href="#pad">pad</a></li></li><li><li><a href="#padWithFn">padWithFn</a></li></li><li><li><a href="#partition">partition</a></li></li><li><li><a href="#partitionInPlace">partitionInPlace</a></li></li><li><li><a href="#isPartitioned">isPartitioned</a></li></li><li><li><a href="#peekable">peekable</a></li></li><li><li><a href="#permutations">permutations</a></li></li><li><li><a href="#prepend">prepend</a></li></li><li><li><a href="#product">product</a></li></li><li><li><a href="#range">range</a></li></li><li><li><a href="#intRange">intRange</a></li></li><li><li><a href="#reduce">reduce</a></li></li><li><li><a href="#ref">ref</a></li></li><li><li><a href="#repeat">repeat</a></li></li><li><li><a href="#skip">skip</a></li></li><li><li><a href="#skipWhile">skipWhile</a></li></li><li><li><a href="#slidingTuples">slidingTuples</a></li></li><li><li><a href="#slidingTriples">slidingTriples</a></li></li><li><li><a href="#sort">sort</a></li></li><li><li><a href="#splitAt">splitAt</a></li></li><li><li><a href="#spy">spy</a></li></li><li><li><a href="#stepBy">stepBy</a></li></li><li><li><a href="#successor">successor</a></li></li><li><li><a href="#sum">sum</a></li></li><li><li><a href="#take">take</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li><li><li><a href="#tee">tee</a></li></li><li><li><a href="#tuples">tuples</a></li></li><li><li><a href="#triples">triples</a></li></li><li><li><a href="#unique">unique</a></li></li><li><li><a href="#uniqueCheck">uniqueCheck</a></li></li><li><li><a href="#isUnique">isUnique</a></li></li><li><li><a href="#unzip">unzip</a></li></li><li><li><a href="#zip">zip</a></li></li><li><li><a href="#zip3">zip3</a></li></li><li><li><a href="#type.Either">Either</a></li></li><li><li><a href="#type.EitherOr">EitherOr</a></li></li><li><li><a href="#zipLongest">zipLongest</a></li></li><li><li><a href="#toBuffer">toBuffer</a></li></li><li><li><a href="#toText">toText</a></li></li></ul></nav><div class="documentation"><h1>Iter</h1><p>Main module with utility functions for working efficiently with iterators.</p>
 <p>See the <a href="https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1"><code>Iter</code></a> module from the base lib for more information on the <code>Iter</code> type.</p>
 <h2 id="Getting-started">Getting started</h2>
 
@@ -16,7 +16,7 @@ efficient iterators for solving different problems:</p>
 <ul><li>An example, using <code>range</code> and <code>sum</code> to find the sum of values from 1 to 25:</li></ul>
 
 <pre class="motoko"><code class="motoko">    let range = Itertools.range(1, 25 + 1);
-    let sum = Itertools.sum(range);
+    let sum = Itertools.sum(range, Nat.add);
 
     assert sum == ?325;</code></pre>
 
@@ -41,19 +41,7 @@ efficient iterators for solving different problems:</p>
     let diff = func (x : (Int, Int)) : Int { x.1 - x.0 };
     let iter = Iter.map(tuples, diff);
 
-    assert Iter.toArray(iter) == [-2, 0, 4, 1, 2];</code></pre><div class="declaration"><h4 class="function" id="sum"><code><span class="keyword">public func </span><span class="fnname">sum</span>(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Int</span>&gt;) : ?<span class="type">Int</span></code></h4><p><p>Consumes an iterator of integers and returns the sum of all values.
-An empty iterator returns <code>null</code>.</p>
-<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
-    let vals = [1, 2, 3, 4].vals();
-    let sum = Itertools.sum(vals);
-
-    assert sum == ?10;</code></pre></p></div><div class="declaration"><h4 class="function" id="product"><code><span class="keyword">public func </span><span class="fnname">product</span>(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">Int</span>&gt;) : ?<span class="type">Int</span></code></h4><p><p>Consumes an iterator of integers and returns the product of all values.
-An empty iterator returns null.</p>
-<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
-    let vals = [1, 2, 3, 4].vals();
-    let prod = Itertools.product(vals);
-
-    assert prod == ?24;</code></pre></p></div><div class="declaration"><h4 class="function" id="accumulate"><code><span class="keyword">public func </span><span class="fnname">accumulate</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">predicate</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">A</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.</p>
+    assert Iter.toArray(iter) == [-2, 0, 4, 1, 2];</code></pre><div class="declaration"><h4 class="function" id="accumulate"><code><span class="keyword">public func </span><span class="fnname">accumulate</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">predicate</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">A</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.</p>
 <h3 id="Example">Example</h3><ul><li>An example calculating the running sum of a iterator:</li></ul>
 
 <pre class="motoko"><code class="motoko">   
@@ -126,7 +114,25 @@ An empty iterator returns null.</p>
         (3, 'a'), (3, 'b'), (3, 'c')
     ];
 
-</code></pre></p></div><div class="declaration"><h4 class="function" id="chain"><code><span class="keyword">public func </span><span class="fnname">chain</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">a</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">b</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Chains two iterators of the same type together, so that the elements produced by the 
+</code></pre></p></div><div class="declaration"><h4 class="function" id="count"><code><span class="keyword">public func </span><span class="fnname">count</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">element</span> : <span class="type">A</span>, <br/>  <span class="parameter">isEq</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Bool</span><br/>) : <span class="type">Nat</span></code></h4><p><p>Counts the frequency of an element in the iterator.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let a = [1, 2, 3, 1, 2, 3].vals();
+
+    let freq = Itertools.count(a, 1, Nat.equal);
+
+    assert freq == 2;</code></pre></p></div><div class="declaration"><h4 class="function" id="countAll"><code><span class="keyword">public func </span><span class="fnname">countAll</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">isEq</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Bool</span>, <br/>  <span class="parameter">hashFn</span> : (<span class="type">A</span>) -&gt; <span class="type">Hash.Hash</span><br/>) : <span class="type">TrieMap.TrieMap</span>&lt;<span class="type">A</span>, <span class="type">Nat</span>&gt;</code></h4><p><p>Returns a TrieMap with the frequency of each element in the iterator.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let a = &quot;motoko&quot;.chars();
+
+    let freqMap = Itertools.countAll(a, Char.hash, Char.equal);
+    
+    let res = Iter.toArray(freqMap.entries());
+    
+    assert res == [('k', 1), ('m', 1), ('o', 3), ('t', 1)];</code></pre></p></div><div class="declaration"><h4 class="function" id="chain"><code><span class="keyword">public func </span><span class="fnname">chain</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">a</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">b</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Chains two iterators of the same type together, so that the elements produced by the 
 second come after the elements produced by the first.</p>
 <h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
    let iter1 = [1, 2].vals();
@@ -367,6 +373,20 @@ of values in an iterator.</p>
 
     assert Iter.toArray(iter) == [1, 10, 2, 10, 3];
 
+</code></pre></p></div><div class="declaration"><h4 class="function" id="mapEntries"><code><span class="keyword">public func </span><span class="fnname">mapEntries</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">f</span> : (<span class="type">Nat</span>, <span class="type">A</span>) -&gt; <span class="type">B</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Returns an iterator adaptor that mutates elements of an iterator by applying the given function to each entry.
+Each entry consists of the index of the element and the element itself.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [2, 2, 2, 2, 2].vals();
+    let mulWithIndex = func(i: Nat, val: Nat) {
+        i * val;
+    };
+
+    let iter = Itertools.mapEntries(vals, mulWithIndex);
+
+    assert Iter.toArray(iter) == [0, 2, 4, 6, 8];
+
 </code></pre></p></div><div class="declaration"><h4 class="function" id="mapFilter"><code><span class="keyword">public func </span><span class="fnname">mapFilter</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">filter</span> : (<span class="type">A</span>) -&gt; <span class="type">Bool</span>, <br/>  <span class="parameter">map</span> : (<span class="type">A</span>) -&gt; <span class="type">B</span><br/>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Returns an iterator that filters elements based on a predicate and 
 maps them to a new value based on the second argument.</p>
 <h3 id="Example">Example</h3><ul><li>An example filtering odd numbers and squaring them:</li></ul>
@@ -402,33 +422,60 @@ maps them to a new value based on the second argument.</p>
 </li></ul>
 
 <p>```</p>
-</p></div><div class="declaration"><h4 class="function" id="mapWhile"><code><span class="keyword">public func </span><span class="fnname">mapWhile</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">pred</span> : (<span class="type">A</span>) -&gt; ?<span class="type">B</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Returns an iterator that maps and yields elements while the 
+</p></div><div class="declaration"><h4 class="function" id="mapWhile"><code><span class="keyword">public func </span><span class="fnname">mapWhile</span>&lt;<span class="type">A</span>, <span class="type">B</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">pred</span> : (<span class="type">A</span>) -&gt; ?<span class="type">B</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">B</span>&gt;</code></h4><p><p>Maps a Result-returning function over an Iter and 
+returns either the first error or an iter of successful 
+values.</p>
+<h3 id="Example">Example</h3>
+
+<ul><li><p>decode utf8 encoded bytes into a string
+```motoko</p>
+<p>let vals = [72, 101, 108, 108, 111, 44, 20, 87, 111, 114, 108, 100].vals();</p>
+<p>let decodeUtf8 = func (n : Nat) : Result.Result&lt;Iter.Iter&lt;Char&gt;, Text&gt; {</p>
+<pre><code>if (n &lt;= 127){
+    let c =  Char.fromNat32(
+        Nat32.fromNat(x)
+    );
+    #ok(c)
+}else{
+    #err(&quot;Invalid UTF8&quot;)
+};</code></pre><p>};</p>
+<p>let res = Itertools.mapResult&lt;Nat, Char&gt;(vals, decodeUtf8);</p>
+<p>switch(res){</p>
+<pre><code>case (#ok(iter)) {
+    assert Itertools.toText(iter) == &quot;Hello, World!&quot;;
+};
+case (#err(msg)) {
+    assert msg == &quot;Invalid UTF8&quot;;
+};</code></pre><p>};</p>
+</li></ul>
+
+<pre><code>Returns an iterator that maps and yields elements while the 
 predicate is true.
 The predicate is true if it returns an optional value and 
 false if it 
-returns null.</p>
-<h3 id="Example">Example</h3>
+returns null.
 
-<pre class="motoko"><code class="motoko">
-    let vals = [1, 2, 3, 4, 5].vals();
+### Example
 
-    let squareIntLessThan4 = func( x : Int ) : ?Int { 
-        if (x &lt; 4){
-            return ?(x * x);
-        }else{
-            return null;
-        };
+</code></pre><p>motoko</p>
+<pre><code>let vals = [1, 2, 3, 4, 5].vals();
+
+let squareIntLessThan4 = func( x : Int ) : ?Int { 
+    if (x &lt; 4){
+        return ?(x * x);
+    }else{
+        return null;
     };
+};
 
-    let it = Itertools.mapWhile(vals, squareIntLessThan4);
+let it = Itertools.mapWhile(vals, squareIntLessThan4);
 
-    assert it.next() == ?1;
-    assert it.next() == ?4;
-    assert it.next() == ?9;
-    assert it.next() == null;
-    assert it.next() == null;
-
-</code></pre></p></div><div class="declaration"><h4 class="function" id="max"><code><span class="keyword">public func </span><span class="fnname">max</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">cmp</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Order.Order</span>) : ?<span class="type">A</span></code></h4><p><p>Returns the maximum value in an iterator.
+assert it.next() == ?1;
+assert it.next() == ?4;
+assert it.next() == ?9;
+assert it.next() == null;
+assert it.next() == null;</code></pre><p>```</p>
+</p></div><div class="declaration"><h4 class="function" id="max"><code><span class="keyword">public func </span><span class="fnname">max</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">cmp</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Order.Order</span>) : ?<span class="type">A</span></code></h4><p><p>Returns the maximum value in an iterator.
 A null value is returned if the iterator is empty.</p>
 <h3 id="Example">Example</h3>
 
@@ -544,7 +591,22 @@ Consumes the first n elements of the iterator.</p>
     let vals = [0, 1, 2, 3, 4, 5].vals();
 
     assert Itertools.nthOrDefault(vals, 3, -1) == ?3;
-    assert Itertools.nthOrDefault(vals, 3, -1) == ?-1;</code></pre></p></div><div class="declaration"><h4 class="function" id="partition"><code><span class="keyword">public func </span><span class="fnname">partition</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">f</span> : (<span class="type">A</span>) -&gt; <span class="type">Bool</span>) : ([<span class="type">A</span>], [<span class="type">A</span>])</code></h4><p><p>Takes a partition function that returns <code>true</code> or <code>false</code> 
+    assert Itertools.nthOrDefault(vals, 3, -1) == ?-1;</code></pre></p></div><div class="declaration"><h4 class="function" id="pad"><code><span class="keyword">public func </span><span class="fnname">pad</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">length</span> : <span class="type">Nat</span>, <br/>  <span class="parameter">value</span> : <span class="type">A</span><br/>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Pads an iterator with a given value until it is of a certain length.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3].vals();
+    let padded = Itertools.pad(vals, 6, 0);
+
+    assert Iter.toArray(padded) == [1, 2, 3, 0, 0, 0];</code></pre></p></div><div class="declaration"><h4 class="function" id="padWithFn"><code><span class="keyword">public func </span><span class="fnname">padWithFn</span>&lt;<span class="type">A</span>&gt;(<br/>  <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <br/>  <span class="parameter">length</span> : <span class="type">Nat</span>, <br/>  <span class="parameter">f</span> : (<span class="type">Nat</span>) -&gt; <span class="type">A</span><br/>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Pads an iterator with the result of a given function until it is of a certain length.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    
+    let vals = [1, 2, 3].vals();
+    let incrementIndex = func (i: Nat) { i + 1 };
+
+    let padded = Itertools.padWithFn(vals, 6, incrementIndex);</code></pre></p></div><div class="declaration"><h4 class="function" id="partition"><code><span class="keyword">public func </span><span class="fnname">partition</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">f</span> : (<span class="type">A</span>) -&gt; <span class="type">Bool</span>) : ([<span class="type">A</span>], [<span class="type">A</span>])</code></h4><p><p>Takes a partition function that returns <code>true</code> or <code>false</code> 
 for each element in the iterator.
 The iterator is partitioned into a tuple of two arrays.
 The first array contains the elements all elements that 
@@ -602,14 +664,32 @@ without consuming the iterator.</p>
     assert peekIter.next() == ?2;
 
     assert peekIter.peek() == null;
-    assert peekIter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="prepend"><code><span class="keyword">public func </span><span class="fnname">prepend</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">value</span> : <span class="type">A</span>, <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Add a value to the front of an iterator.</p>
+    assert peekIter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="permutations"><code><span class="keyword">public func </span><span class="fnname">permutations</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">cmp</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">Order.Order</span>) : <span class="type">Iter.Iter</span>&lt;[<span class="type">A</span>]&gt;</code></h4><p><p>Returns an iterator that yeilds all the permutations of the
+elements of the iterator.</p>
+<h3 id="Example">Example</h3>
+
+<pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3].vals();
+    let perms = Itertools.permutations(vals, Nat.compare);
+
+    assert Iter.toArray(perms) == [
+        [1, 2, 3], [1, 3, 2], 
+        [2, 1, 3], [2, 3, 1], 
+        [3, 1, 2], [3, 2, 1]
+    ];</code></pre></p></div><div class="declaration"><h4 class="function" id="prepend"><code><span class="keyword">public func </span><span class="fnname">prepend</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">value</span> : <span class="type">A</span>, <span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Add a value to the front of an iterator.</p>
 <h3 id="Example">Example</h3>
 
 <pre class="motoko"><code class="motoko">
     let vals = [2, 3].vals();
     let iter = Itertools.prepend(1, vals);
 
-    assert Iter.toArray(iter) == [1, 2, 3];</code></pre></p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a <code>Nat</code> iterator that yields numbers in range [start, end).
+    assert Iter.toArray(iter) == [1, 2, 3];</code></pre></p></div><div class="declaration"><h4 class="function" id="product"><code><span class="keyword">public func </span><span class="fnname">product</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">mul</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">A</span>) : ?<span class="type">A</span></code></h4><p><p>Consumes an iterator of integers and returns the product of all values.
+An empty iterator returns null.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4].vals();
+    let prod = Itertools.product(vals, Nat.mul);
+
+    assert prod == ?24;</code></pre></p></div><div class="declaration"><h4 class="function" id="range"><code><span class="keyword">public func </span><span class="fnname">range</span>(<span class="parameter">start</span> : <span class="type">Nat</span>, <span class="parameter">end</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">Nat</span>&gt;</code></h4><p><p>Returns a <code>Nat</code> iterator that yields numbers in range [start, end).
 The base library provides a <code>range</code> function that returns an iterator from with start and end both inclusive.</p>
 <h3 id="Example">Example</h3>
 
@@ -750,7 +830,42 @@ n must be greater than zero.</p>
     assert iter.next() == ?1;
     assert iter.next() == ?3;
     assert iter.next() == ?5;
-    assert iter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="take"><code><span class="keyword">public func </span><span class="fnname">take</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">n</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns an iterator with the first n elements of the given iter</p>
+    assert iter.next() == null;</code></pre></p></div><div class="declaration"><h4 class="function" id="successor"><code><span class="keyword">public func </span><span class="fnname">successor</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">start</span> : <span class="type">A</span>, <span class="parameter">f</span> : (<span class="type">A</span>) -&gt; ?<span class="type">A</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Creates an iterator from the given value a where the next
+elements are the results of the given function applied to 
+the previous element.</p>
+<p>The function takes the previous value and returns an Optional 
+value.  If the function returns null when the function 
+returns null.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">    import Nat &quot;mo:base/Nat&quot;;
+
+    let optionSquaresOfSquares = func(n: Nat) : ?Nat{
+        let square = n * n;
+
+        if (square &lt;= Nat.pow(2, 64)) {
+            return ?square;
+        };
+
+        return null;
+    };
+
+    let succIter = Itertools.successor(
+         2, 
+         optionSquaresOfSquares
+    );
+
+    let res = Iter.toArray(succIter);
+
+    assert res == [
+        2, 4, 16, 256, 65_536, 4_294_967_296, 
+    ];
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="sum"><code><span class="keyword">public func </span><span class="fnname">sum</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">add</span> : (<span class="type">A</span>, <span class="type">A</span>) -&gt; <span class="type">A</span>) : ?<span class="type">A</span></code></h4><p><p>Consumes an iterator of integers and returns the sum of all values.
+An empty iterator returns <code>null</code>.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+    let vals = [1, 2, 3, 4].vals();
+    let sum = Itertools.sum(vals, Nat.add);
+
+    assert sum == ?10;</code></pre></p></div><div class="declaration"><h4 class="function" id="take"><code><span class="keyword">public func </span><span class="fnname">take</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;, <span class="parameter">n</span> : <span class="type">Nat</span>) : <span class="type">Iter.Iter</span>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Returns an iterator with the first n elements of the given iter</p>
 <blockquote><p>Be aware that this returns a ref to the original iterator so
 using it will cause the original iterator to be skipped.</p>
 </blockquote>

@@ -9,6 +9,7 @@ import Nat32 "mo:base/Nat32";
 import Int "mo:base/Int";
 import Hash "mo:base/Hash";
 import Float "mo:base/Float";
+import Func "mo:base/Func";
 import Text "mo:base/Text";
 
 import ActorSpec "./utils/ActorSpec";
@@ -25,7 +26,7 @@ let success = run([
     describe("Custom Iterators", [
         it("sum of 1 to 25", do{
             let range = Itertools.range(1, 25 + 1);
-            let sum = Itertools.sum(range);
+            let sum = Itertools.sum(range, Nat.add);
 
             assertTrue( sum == ?325);
         }),
@@ -51,18 +52,6 @@ let success = run([
         })
     ]),
     describe("Iter", [
-        it("sum", do{
-            let vals = [1, 2, 3, 4].vals();
-            let sum = Itertools.sum(vals);
-    
-            assertTrue(sum == ?10)
-        }),
-        it("product", do{
-            let vals = [1, 2, 3, 4].vals();
-            let product = Itertools.product(vals);
-    
-            assertTrue(product == ?24)
-        }),
         describe("accumulate", [
             it("sum", do{
                 let vals = [1, 2, 3, 4].vals();
@@ -272,7 +261,25 @@ let success = run([
                 )
             })
         ]),
+        it("count", do{
+            let a = [1, 2, 3, 1, 2].vals();
+            let freq = Itertools.count(a, 1, Nat.equal);
 
+            assertTrue( freq == 2 );
+        }),
+        it("countAll", do{
+            let iter = Iter.map("motoko".chars(), Char.toText);
+
+            let freqMap = Itertools.countAll(iter, Text.equal, Text.hash);
+            
+            let res = Iter.toArray(freqMap.entries());
+
+            assertTrue(
+                res == [
+                    ("m", 1), ("o", 3), ("t", 1), ("k", 1)
+                ]
+            )
+        }),
         it("cycle", do{
             let chars = "abc".chars();
             let it = Itertools.cycle(chars);
@@ -300,7 +307,6 @@ let success = run([
                 iter.next() == null
             ])
         }),
-
         it("empty", do{
             
             let it = Itertools.empty();
@@ -400,17 +406,26 @@ let success = run([
         }),
         it("inspect", do{
             let vals = [1, 2, 3, 4, 5].vals();
-       
-            let printIfEven = func(n: Int) {
+            let debugRes = Buffer.Buffer<Text>(5);
+
+            let printIfEven = func(n: Nat) {
                 if (n % 2 == 0){
-                    // Debug.print("This value [ " # debug_show n # " ] is even.");
+                    debugRes.add(
+                        "This value [ " # debug_show n # " ] is even."
+                    );
                 }
             };
        
             let iter = Itertools.inspect(vals, printIfEven);
             let res = Iter.toArray(iter);
 
-            assertTrue( res == [1, 2, 3, 4, 5] )
+            assertAllTrue([ 
+                res == [1, 2, 3, 4, 5],
+                debugRes.toArray() ==[
+                    "This value [ 2 ] is even.",
+                    "This value [ 4 ] is even."
+                ]
+            ])
         }),
         it("interleave", do{
             let vals  = [1, 2, 3, 4].vals();
@@ -730,6 +745,155 @@ let success = run([
             ])
         }),
 
+        describe("permutations", [
+            it("with 3 vals", do{
+                let vals = [1, 2, 3].vals();
+                let permutations = Itertools.permutations(vals, Nat.compare);
+                let res = Iter.toArray(permutations);
+                
+                assertTrue(
+                    res == [
+                        [1, 2, 3],
+                        [1, 3, 2],
+                        [2, 1, 3],
+                        [2, 3, 1],
+                        [3, 1, 2],
+                        [3, 2, 1]
+                    ]
+                )
+            }),
+
+            it("with 5 vals", do{
+                let vals = [1, 2, 3, 4, 5].vals();
+                let permutations = Itertools.permutations(vals, Nat.compare);
+                let res = Iter.toArray(permutations);
+                
+                assertTrue(
+                    res == [
+                        [1, 2, 3, 4, 5],
+                        [1, 2, 3, 5, 4],
+                        [1, 2, 4, 3, 5],
+                        [1, 2, 4, 5, 3],
+                        [1, 2, 5, 3, 4],
+                        [1, 2, 5, 4, 3],
+                        [1, 3, 2, 4, 5],
+                        [1, 3, 2, 5, 4],
+                        [1, 3, 4, 2, 5],
+                        [1, 3, 4, 5, 2],
+                        [1, 3, 5, 2, 4],
+                        [1, 3, 5, 4, 2],
+                        [1, 4, 2, 3, 5],
+                        [1, 4, 2, 5, 3],
+                        [1, 4, 3, 2, 5],
+                        [1, 4, 3, 5, 2],
+                        [1, 4, 5, 2, 3],
+                        [1, 4, 5, 3, 2],
+                        [1, 5, 2, 3, 4],
+                        [1, 5, 2, 4, 3],
+                        [1, 5, 3, 2, 4],
+                        [1, 5, 3, 4, 2],
+                        [1, 5, 4, 2, 3],
+                        [1, 5, 4, 3, 2],
+                        [2, 1, 3, 4, 5],
+                        [2, 1, 3, 5, 4],
+                        [2, 1, 4, 3, 5],
+                        [2, 1, 4, 5, 3],
+                        [2, 1, 5, 3, 4],
+                        [2, 1, 5, 4, 3],
+                        [2, 3, 1, 4, 5],
+                        [2, 3, 1, 5, 4],
+                        [2, 3, 4, 1, 5],
+                        [2, 3, 4, 5, 1],
+                        [2, 3, 5, 1, 4],
+                        [2, 3, 5, 4, 1],
+                        [2, 4, 1, 3, 5],
+                        [2, 4, 1, 5, 3],
+                        [2, 4, 3, 1, 5],
+                        [2, 4, 3, 5, 1],
+                        [2, 4, 5, 1, 3],
+                        [2, 4, 5, 3, 1],
+                        [2, 5, 1, 3, 4],
+                        [2, 5, 1, 4, 3],
+                        [2, 5, 3, 1, 4],
+                        [2, 5, 3, 4, 1],
+                        [2, 5, 4, 1, 3],
+                        [2, 5, 4, 3, 1],
+                        [3, 1, 2, 4, 5],
+                        [3, 1, 2, 5, 4],
+                        [3, 1, 4, 2, 5],
+                        [3, 1, 4, 5, 2],
+                        [3, 1, 5, 2, 4],
+                        [3, 1, 5, 4, 2],
+                        [3, 2, 1, 4, 5],
+                        [3, 2, 1, 5, 4],
+                        [3, 2, 4, 1, 5],
+                        [3, 2, 4, 5, 1],
+                        [3, 2, 5, 1, 4],
+                        [3, 2, 5, 4, 1],
+                        [3, 4, 1, 2, 5],
+                        [3, 4, 1, 5, 2],
+                        [3, 4, 2, 1, 5],
+                        [3, 4, 2, 5, 1],
+                        [3, 4, 5, 1, 2],
+                        [3, 4, 5, 2, 1],
+                        [3, 5, 1, 2, 4],
+                        [3, 5, 1, 4, 2],
+                        [3, 5, 2, 1, 4],
+                        [3, 5, 2, 4, 1],
+                        [3, 5, 4, 1, 2],
+                        [3, 5, 4, 2, 1],
+                        [4, 1, 2, 3, 5],
+                        [4, 1, 2, 5, 3],
+                        [4, 1, 3, 2, 5],
+                        [4, 1, 3, 5, 2],
+                        [4, 1, 5, 2, 3],
+                        [4, 1, 5, 3, 2],
+                        [4, 2, 1, 3, 5],
+                        [4, 2, 1, 5, 3],
+                        [4, 2, 3, 1, 5],
+                        [4, 2, 3, 5, 1],
+                        [4, 2, 5, 1, 3],
+                        [4, 2, 5, 3, 1],
+                        [4, 3, 1, 2, 5],
+                        [4, 3, 1, 5, 2],
+                        [4, 3, 2, 1, 5],
+                        [4, 3, 2, 5, 1],
+                        [4, 3, 5, 1, 2],
+                        [4, 3, 5, 2, 1],
+                        [4, 5, 1, 2, 3],
+                        [4, 5, 1, 3, 2],
+                        [4, 5, 2, 1, 3],
+                        [4, 5, 2, 3, 1],
+                        [4, 5, 3, 1, 2],
+                        [4, 5, 3, 2, 1],
+                        [5, 1, 2, 3, 4],
+                        [5, 1, 2, 4, 3],
+                        [5, 1, 3, 2, 4],
+                        [5, 1, 3, 4, 2],
+                        [5, 1, 4, 2, 3],
+                        [5, 1, 4, 3, 2],
+                        [5, 2, 1, 3, 4],
+                        [5, 2, 1, 4, 3],
+                        [5, 2, 3, 1, 4],
+                        [5, 2, 3, 4, 1],
+                        [5, 2, 4, 1, 3],
+                        [5, 2, 4, 3, 1],
+                        [5, 3, 1, 2, 4],
+                        [5, 3, 1, 4, 2],
+                        [5, 3, 2, 1, 4],
+                        [5, 3, 2, 4, 1],
+                        [5, 3, 4, 1, 2],
+                        [5, 3, 4, 2, 1],
+                        [5, 4, 1, 2, 3],
+                        [5, 4, 1, 3, 2],
+                        [5, 4, 2, 1, 3],
+                        [5, 4, 2, 3, 1],
+                        [5, 4, 3, 1, 2],
+                        [5, 4, 3, 2, 1],
+                    ]
+                )
+            }),
+        ]),
         it("prepend", do{
             let vals = [2, 3].vals();
             let it1 = Itertools.prepend(1, vals);
@@ -738,6 +902,12 @@ let success = run([
             assertTrue(
                 Iter.toArray(it2) == [0, 1, 2, 3]
             )
+        }),
+        it("product", do{
+            let vals = [1, 2, 3, 4].vals();
+            let product = Itertools.product(vals, Nat.mul);
+    
+            assertTrue(product == ?24)
         }),
         it("range", do {
             let iter = DoubleEndedIter.range(0, 5);
@@ -879,6 +1049,17 @@ let success = run([
         
            
         }),
+        it("stepBy", do{
+            let vals = [1, 2, 3, 4, 5].vals();
+            let iter = Itertools.stepBy(vals, 2);
+
+            assertAllTrue([
+                iter.next() == ?1,
+                iter.next() == ?3,
+                iter.next() == ?5,
+                iter.next() == null
+            ])
+        }),
         it("successor", do{
             let optionSquaresOfSquares = func(n: Nat) : ?Nat{
                 let square = n * n;
@@ -900,16 +1081,11 @@ let success = run([
                 ]
             )
         }),
-        it("stepBy", do{
-            let vals = [1, 2, 3, 4, 5].vals();
-            let iter = Itertools.stepBy(vals, 2);
-
-            assertAllTrue([
-                iter.next() == ?1,
-                iter.next() == ?3,
-                iter.next() == ?5,
-                iter.next() == null
-            ])
+        it("sum", do{
+            let vals = [1, 2, 3, 4].vals();
+            let sum = Itertools.sum(vals, Nat.add);
+    
+            assertTrue(sum == ?10)
         }),
         it("take", do{
             let iter = Iter.fromArray([1, 2, 3, 4, 5]);

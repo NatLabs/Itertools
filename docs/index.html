@@ -17,7 +17,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
   let deiter = Deiter.fromArray(arr);
 
   // reverse double ended iterator
-  let revDeiter = Deiter.rev(deiter);
+  let revDeiter = Deiter.reverse(deiter);
 
   // Double Ended Iter gets typecasted to an Iter typw
   let chunks = Itertools.chunks(revDeiter, 3);
@@ -45,7 +45,7 @@ efficient iterators for solving different problems:</p>
 <ul><li>An example, using <code>range</code> and <code>sum</code> to find the sum of values from 1 to 25:</li></ul>
 
 <pre class="motoko"><code class="motoko">    let range = Itertools.range(1, 25 + 1);
-    let sum = Itertools.sum(range);
+    let sum = Itertools.sum(range, Nat.add);
 
     assert sum == ?325;</code></pre>
 
@@ -74,4 +74,4 @@ efficient iterators for solving different problems:</p>
 <p>An iterator equipped with a <code>peek</code> method that returns the next value without advancing the iterator.</p>
 <p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko 
 so it is compatible with all the function defined for the <code>Iter</code> type.</p>
-</div></li></ul></div></html>
+</div></li><li class="index-item"><a class="index-item-link" href="Utils/ArrayMut.html">Utils/ArrayMut</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/Nat.html">Utils/Nat</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/TrieMap.html">Utils/TrieMap</a><div class="index-item-comment"></div></li></ul></div></html>

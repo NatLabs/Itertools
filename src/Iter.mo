@@ -40,7 +40,7 @@
 /// 
 /// ```motoko
 ///     let range = Itertools.range(1, 25 + 1);
-///     let sum = Itertools.sum(range);
+///     let sum = Itertools.sum(range, Nat.add);
 ///
 ///     assert sum == ?325;
 /// ```
@@ -79,78 +79,27 @@ import Buffer "mo:base/Buffer";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
 import Char "mo:base/Char";
+import Func "mo:base/Func";
 import Array "mo:base/Array";
 import Debug "mo:base/Debug";
 import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
 import Heap "mo:base/Heap";
+import TrieMap "mo:base/TrieMap";
+import Stack "mo:base/Stack";
 import Prelude "mo:base/Prelude";
+
 import {format; print} "mo:format";
 
 import PeekableIter "PeekableIter";
+import Deiter "Deiter";
+
+import ArrayMut_Utils "Utils/ArrayMut";
+import Nat_Utils "Utils/Nat";
+import TrieMap_Utils "Utils/TrieMap";
 
 module {
-
-    // ==============================================================================================
-    // =============================== Integer Accumulation Methods ===============================
-    // ==============================================================================================
-
-    /// Consumes an iterator of integers and returns the sum of all values.
-    /// An empty iterator returns `null`.
-    ///
-    /// ### Example
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4].vals();
-    ///     let sum = Itertools.sum(vals);
-    ///
-    ///     assert sum == ?10;
-    /// ```
-    public func sum(iter: Iter.Iter<Int>): ?Int{
-        var acc : Int = 0;
-        var i = 0;
-        for(n in iter){
-            acc := acc + n;
-            if (i==0){
-                i+=1;
-            }
-        };
-
-        if (i > 0){
-            ?acc
-        }else{
-            null
-        }
-    };
-
-    /// Consumes an iterator of integers and returns the product of all values.
-    /// An empty iterator returns null.
-    ///
-    /// ### Example
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4].vals();
-    ///     let prod = Itertools.product(vals);
-    ///
-    ///     assert prod == ?24;
-    /// ```
-    public func product(iter: Iter.Iter<Int>): ?Int{
-        var acc : Int = 1;
-        var i = 0;
-        for(n in iter){
-            acc := acc * n;
-            if (i==0){
-                i+=1;
-            }
-        };
-
-        if (i > 0){
-            ?acc
-        }else{
-            null
-        }
-    };
 
     // ==============================================================================================
     // =============================== Generic Iterator Methods ===============================
@@ -332,6 +281,59 @@ module {
         };
     };
 
+    /// Counts the frequency of an element in the iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let a = [1, 2, 3, 1, 2, 3].vals();
+    ///
+    ///     let freq = Itertools.count(a, 1, Nat.equal);
+    ///
+    ///     assert freq == 2;
+    /// ```
+    public func count<A>(iter: Iter.Iter<A>, element: A, isEq: (A, A) -> Bool): Nat{
+        var count = 0;
+        
+        for ( item in iter ){
+            if(isEq(element, item)){
+                count += 1;
+            };
+        };
+
+        count
+    };
+
+    /// Returns a TrieMap with the frequency of each element in the iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let a = "motoko".chars();
+    ///
+    ///     let freqMap = Itertools.countAll(a, Char.hash, Char.equal);
+    ///     
+    ///     let res = Iter.toArray(freqMap.entries());
+    ///     
+    ///     assert res == [('k', 1), ('m', 1), ('o', 3), ('t', 1)];
+    /// ```
+    public func countAll<A>(iter: Iter.Iter<A>, isEq: (A, A) -> Bool, hashFn: (A) -> Hash.Hash): TrieMap.TrieMap<A, Nat>{
+        var map = TrieMap.TrieMap<A, Nat>(isEq, hashFn);
+
+        func increment(n: Nat): Nat{
+            n + 1
+        };
+
+        for (item in iter){
+            TrieMap_Utils.putOrUpdate(map, item, 1, increment);
+        };
+
+        map
+    };
+
+
     /// Chains two iterators of the same type together, so that the elements produced by the 
     /// second come after the elements produced by the first.
     /// 
@@ -486,15 +488,13 @@ module {
         let cbns = Buffer.Buffer<Nat>(size);
 
         let indices = Buffer.Buffer<Nat>(size);
-        for (i in Iter.range(0, Int.abs(size - 1))){
+        for (i in range(0, size)){
             indices.add(i);
         };
 
         var bufferIsFilled = false;
 
         func getNextCombination() : ?[Nat] {
-            // print("indices: {}", [#numArray(indices.toArray())]);
-            // print("cbns: {}", [#numArray(cbns.toArray())]);
 
             // fill buffer incrementally 
             if (not bufferIsFilled){
@@ -518,8 +518,6 @@ module {
             }else{
                 if (indices.size() > cbns.size()){
                     let i = indices.get(cbns.size());
-
-                    // print("indices[{}] = {}", [#num(cbns.size()), #num(i)]);
 
                     if ( i >= buffer.size()){
                         if (cbns.size() == 0){
@@ -1171,6 +1169,52 @@ module {
         reduce( Iter.map<A, B>(iter, f), accFn )
     };
 
+    /// Maps a Result-returning function over an Iter and 
+    /// returns either the first error or an iter of successful 
+    /// values.
+    ///
+    /// ### Example
+    ///
+    /// - decode utf8 encoded bytes into a string
+    /// ```motoko
+    ///
+    ///     let vals = [72, 101, 108, 108, 111, 44, 20, 87, 111, 114, 108, 100].vals();
+    ///
+    ///     let decodeUtf8 = func (n : Nat) : Result.Result<Iter.Iter<Char>, Text> {
+    ///         if (n <= 127){
+    ///             let c =  Char.fromNat32(
+    ///                 Nat32.fromNat(x)
+    ///             );
+    ///             #ok(c)
+    ///         }else{
+    ///             #err("Invalid UTF8")
+    ///         };
+    ///     };
+    ///
+    ///     let res = Itertools.mapResult<Nat, Char>(vals, decodeUtf8);
+    ///
+    ///     switch(res){
+    ///         case (#ok(iter)) {
+    ///             assert Itertools.toText(iter) == "Hello, World!";
+    ///         };
+    ///         case (#err(msg)) {
+    ///             assert msg == "Invalid UTF8";
+    ///         };
+    ///     };
+    ///
+    /// ```
+    // public func mapResult<A, B>(iter: Iter.Iter<A>, f: (A) -> Result.Result<B, Text>): Result.Result<Iter.Iter<B>, Text>{
+    //     switch(reduce(iter, f)){
+    //         case (#ok(iter)) {
+    //             return #ok(iter);
+    //         };
+    //         case (#err(msg)) {
+    //             return #err(msg);
+    //         };
+    //     };
+    // };
+
+
     /// Returns an iterator that maps and yields elements while the 
     /// predicate is true.
     /// The predicate is true if it returns an optional value and 
@@ -1783,6 +1827,66 @@ module {
         PeekableIter.fromIter<T>(iter)
     };
 
+    /// Returns an iterator that yeilds all the permutations of the
+    /// elements of the iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3].vals();
+    ///     let perms = Itertools.permutations(vals, Nat.compare);
+    ///
+    ///     assert Iter.toArray(perms) == [
+    ///         [1, 2, 3], [1, 3, 2], 
+    ///         [2, 1, 3], [2, 3, 1], 
+    ///         [3, 1, 2], [3, 2, 1]
+    ///     ];
+    /// ```
+    public func permutations<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order ): Iter.Iter<[A]>{
+        let arr = Iter.toArrayMut<A>(iter);
+        let n = arr.size();
+
+        let totalPermutations = Nat_Utils.factorial(n);
+        var permutationsLeft = totalPermutations;
+
+        object{
+            public func next() : ?[A]{
+                if (permutationsLeft == totalPermutations){
+                    permutationsLeft -= 1;
+                    return ?Array.freeze(arr);
+                };
+
+                if (permutationsLeft == 0){
+                    return null;
+                };
+
+                permutationsLeft -=1;
+
+                var i = Int.abs(n - 2);
+                
+                while (i > 0 and not (cmp(arr[i], arr[i + 1]) == #less)){
+                    i-= 1;
+                };
+
+                var j = i+1;
+
+                for (k in range(i + 1, n)){
+                    if (cmp(arr[k], arr[i]) == #greater){
+                        if (cmp(arr[k], arr[j]) == #less) {
+                            j := k;
+                        };
+                    };
+                };
+                
+                ArrayMut_Utils.swap(arr, i, j);
+                ArrayMut_Utils.reverseFrom(arr, i + 1);
+
+                ?Array.freeze(arr)
+            };
+        };
+    };
+
     /// Add a value to the front of an iterator.
     ///
     /// ### Example
@@ -1806,6 +1910,30 @@ module {
                 }
             };
         }
+    };
+
+    /// Consumes an iterator of integers and returns the product of all values.
+    /// An empty iterator returns null.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let prod = Itertools.product(vals, Nat.mul);
+    ///
+    ///     assert prod == ?24;
+    /// ```
+    public func product<A>(iter: Iter.Iter<A>, mul: (A, A) -> A): ?A{
+        var acc : A = switch(iter.next()){
+            case (?n) n;
+            case (_) return null;
+        };
+
+        for(n in iter){
+            acc := mul(acc, n);
+        };
+
+        ?acc
     };
 
     /// Returns a `Nat` iterator that yields numbers in range [start, end).
@@ -2012,7 +2140,6 @@ module {
         peekableIter
     };
 
-
     /// Returns overlapping tuple pairs from the given iterator.
     /// The first element of the iterator is paired with the second element, and the 
     /// second is paired with the third element, and so on. 
@@ -2168,6 +2295,38 @@ module {
         (copy.vals(), chain(copy.vals(), iter))
     };
 
+    /// Returns every nth element of the iterator.
+    /// n must be greater than zero.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5].vals();
+    ///     let iter = Itertools.stepBy(vals, 2);
+    ///
+    ///     assert iter.next() == ?1;
+    ///     assert iter.next() == ?3;
+    ///     assert iter.next() == ?5;
+    ///     assert iter.next() == null;
+    /// ```
+    public func stepBy<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
+        assert n > 0;
+
+        return object{
+            public func next(): ?A{
+                switch(iter.next()){
+                    case (?item){
+                        ignore skip(iter, Int.abs(n - 1));
+                        ?item
+                    };
+                    case (_){
+                        return null;
+                    };
+                };
+            }
+        };
+    };
+
     /// Creates an iterator from the given value a where the next
     /// elements are the results of the given function applied to 
     /// the previous element.
@@ -2222,39 +2381,31 @@ module {
         }
     };
 
-
-
-    /// Returns every nth element of the iterator.
-    /// n must be greater than zero.
+    /// Consumes an iterator of integers and returns the sum of all values.
+    /// An empty iterator returns `null`.
     ///
     /// ### Example
     /// ```motoko
     ///
-    ///     let vals = [1, 2, 3, 4, 5].vals();
-    ///     let iter = Itertools.stepBy(vals, 2);
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let sum = Itertools.sum(vals, Nat.add);
     ///
-    ///     assert iter.next() == ?1;
-    ///     assert iter.next() == ?3;
-    ///     assert iter.next() == ?5;
-    ///     assert iter.next() == null;
+    ///     assert sum == ?10;
     /// ```
-    public func stepBy<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
-        assert n > 0;
-
-        return object{
-            public func next(): ?A{
-                switch(iter.next()){
-                    case (?item){
-                        ignore skip(iter, Int.abs(n - 1));
-                        ?item
-                    };
-                    case (_){
-                        return null;
-                    };
-                };
-            }
+    public func sum<A>(iter: Iter.Iter<A>, add: (A, A) -> A): ?A{
+        var acc : A = switch(iter.next()){
+            case (?n) n;
+            case (_) return null;
         };
+
+        for(n in iter){
+            acc := add(acc, n);
+        };
+
+        ?acc
     };
+
+    
 
     /// Returns an iterator with the first n elements of the given iter
     /// > Be aware that this returns a ref to the original iterator so
@@ -2674,7 +2825,6 @@ module {
         }
     };
 
-
     // ==============================================================================================
     // =============================== Iterator Collection Methods ===============================
     // ==============================================================================================
@@ -2712,5 +2862,4 @@ module {
         let textIter = Iter.map<Char, Text>(charIter, func(c){Char.toText(c)});
         Text.join("", textIter);
     };
-
-}
+};
