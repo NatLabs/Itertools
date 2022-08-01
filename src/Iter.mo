@@ -86,10 +86,7 @@ import Hash "mo:base/Hash";
 import Text "mo:base/Text";
 import TrieSet "mo:base/TrieSet";
 import Heap "mo:base/Heap";
-<<<<<<< HEAD
 import TrieMap "mo:base/TrieMap";
-=======
->>>>>>> 63ba3c1226d9c8735939b10e0778feb607a6f94d
 import Stack "mo:base/Stack";
 import Prelude "mo:base/Prelude";
 
@@ -97,12 +94,6 @@ import {format; print} "mo:format";
 
 import PeekableIter "PeekableIter";
 import Deiter "Deiter";
-<<<<<<< HEAD
-=======
-
-import ArrayMut_Utils "Utils/ArrayMut";
-import Nat_Utils "Utils/Nat";
->>>>>>> 63ba3c1226d9c8735939b10e0778feb607a6f94d
 
 import ArrayMut_Utils "Utils/ArrayMut";
 import Nat_Utils "Utils/Nat";
@@ -1852,11 +1843,6 @@ module {
     ///         [3, 1, 2], [3, 2, 1]
     ///     ];
     /// ```
-<<<<<<< HEAD
-=======
-    /// Todo: Learn how to do this for normal vectors before 
-    ///       trying to do this for iterators.
->>>>>>> 63ba3c1226d9c8735939b10e0778feb607a6f94d
     public func permutations<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order ): Iter.Iter<[A]>{
         let arr = Iter.toArrayMut<A>(iter);
         let n = arr.size();

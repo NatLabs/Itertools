@@ -124,3 +124,13 @@ For a complete list of functions and data types, see the [Itertools documentatio
 #### Unimplemented Methods
 
 - [ ] isSorted
+  
+- [ ] toList
+  
+- [ ] toDeque
+
+- [ ] toStack
+
+- [ ] toTrieSet
+
+Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=4234801670
