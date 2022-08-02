@@ -371,14 +371,28 @@ let success = run([
         }),
 
         it("flatten", do{
+            let nestedIter = [
+                [1].vals(),
+                [2, 3].vals(),
+                [4, 5, 6].vals()
+            ].vals();
+
+            let flattened = Itertools.flatten(nestedIter);
+            let res = Iter.toArray(flattened);
+
+            assertTrue( res == [1, 2, 3, 4, 5, 6] )
+
+        }),
+
+        it("flattenArray", do{
             let arr = [
                 [1, 2, 3],
                 [4, 5, 6],
                 [7, 8, 9]
             ];
 
-            let iter = Itertools.flatten(arr.vals());
-            let res = Iter.toArray(iter);
+            let flattened = Itertools.flattenArray(arr);
+            let res = Iter.toArray(flattened);
 
             assertTrue( res == [1, 2, 3, 4, 5, 6, 7, 8, 9] )
 

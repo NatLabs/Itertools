@@ -812,48 +812,73 @@ module {
         return res;
     };
 
-    /// Returns an iterator with all the arrays from the given iterator flattened.
+    /// Flattens nested iterators into a single iterator.
     ///
     /// ### Example
     ///
     /// ```motoko
     ///
-    ///     let vals = [[1], [2, 3], [4, 5, 6]].vals();
-    ///     let iter = Itertools.flatten(vals);
+    ///     let nestedIter = [
+    ///         [1].vals(),
+    ///         [2, 3].vals(),
+    ///         [4, 5, 6].vals()
+    ///     ].vals();
     ///
-    ///     assert Iter.toArray(iter) == [1, 2, 3, 4, 5, 6];
+    ///     let flattened = Itertools.flatten(nestedIter);
+    ///     assert Iter.toArray(flattened) == [1, 2, 3, 4, 5, 6];
     /// ```
-    public func flatten<A>(iter: Iter.Iter<[A]>): Iter.Iter<A>{
-        let store  = Buffer.Buffer<A>(8);
-        var i = 0;
-
-        return object{
-            public func next(): ?A{
-                switch(iter.next()){
-                    case(?arr){
-                        for (val in arr.vals()){
-                            store.add(val);
-                        };
-
-                        let tmp = i;
-                        i+=1;
-
-                        ?store.get(tmp)
-                    };
-                    case(_){
-                        if ( i < store.size()){
-                            let tmp = i;
-                            i+=1;
-
-                            ?store.get(tmp)
-                        } else {
-                            null
-                        };
-                    }
-                };
-            }
+            
+    public func flatten<A>(nestedIter: Iter.Iter<Iter.Iter<A>>) : Iter.Iter<A> {
+        var iter : Iter.Iter<A> = switch (nestedIter.next()){
+            case (?_iter){
+                _iter
+            };
+            case (_){
+                return empty<A>();
+            };
         };
+
+        object {
+            public func next(): ?A {
+                switch(iter.next()){
+                    case (?val) ?val;
+                    case (_){
+                        switch(nestedIter.next()){
+                            case (?_iter){
+                                iter :=_iter;
+                                iter.next()
+                            };
+                            case (_) null;
+                        };
+                    };
+                };
+            };
+        };
+    }; 
+
+
+    /// Returns an flattened iterator with all the values in a nested array 
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let arr = [[1], [2, 3], [4, 5, 6]];
+    ///     let flattened = Itertools.flatten(arr);
+    ///
+    ///     assert Iter.toArray(flattened) == [1, 2, 3, 4, 5, 6];
+    /// ```
+    public func flattenArray<A>(nestedArray: [[A]]): Iter.Iter<A>{
+        flatten(
+            Iter.map(
+                nestedArray.vals(),
+                func(arr: [A]) : Iter.Iter<A> {
+                    arr.vals()
+                }
+            )
+        )
     };
+    
 
     /// Groups nearby elements into arrays based on result from the given function and returns them along with the result of elements in that group.
     ///
@@ -2405,8 +2430,6 @@ module {
         ?acc
     };
 
-    
-
     /// Returns an iterator with the first n elements of the given iter
     /// > Be aware that this returns a ref to the original iterator so
     /// > using it will cause the original iterator to be skipped.
@@ -2504,7 +2527,6 @@ module {
     ///     assert iter2.next() == ?3;
     ///     assert iter2.next() == null;
     /// ```
-
     public func tee<A>(iter: Iter.Iter<A>): (Iter.Iter<A>, Iter.Iter<A>){
         let array = Iter.toArray(iter);
 
