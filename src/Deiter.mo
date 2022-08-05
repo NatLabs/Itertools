@@ -218,18 +218,14 @@ module {
     };
   };
 
-  /// Converts an iterator to a deque.
-  public func toDeque<T>(deiter: Deiter<T>): Deque.Deque<T> {
-    var deq = Deque.empty<T>();
+    /// Converts an iterator to a deque.
+    public func toDeque<T>(deiter: Deiter<T>): Deque.Deque<T> {
+        var dq = Deque.empty<T>();
 
-    label l loop {
-        switch(deiter.next_back()){
-          case (?val){
-            deq := Deque.pushFront(deq, val);
-          };
-          case (null) break l;
-        }
+        for (item in deiter){
+            dq := Deque.pushBack(dq, item);
+        };
+
+        dq
     };
-    deq
-  };
 };

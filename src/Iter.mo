@@ -84,10 +84,13 @@ import Array "mo:base/Array";
 import Debug "mo:base/Debug";
 import Hash "mo:base/Hash";
 import Text "mo:base/Text";
+import Trie "mo:base/Trie";
 import TrieSet "mo:base/TrieSet";
 import Heap "mo:base/Heap";
 import TrieMap "mo:base/TrieMap";
 import Stack "mo:base/Stack";
+import List "mo:base/List";
+import Deque "mo:base/Deque";
 import Prelude "mo:base/Prelude";
 
 import {format; print} "mo:format";
@@ -100,10 +103,6 @@ import Nat_Utils "Utils/Nat";
 import TrieMap_Utils "Utils/TrieMap";
 
 module {
-
-    // ==============================================================================================
-    // =============================== Generic Iterator Methods ===============================
-    // ==============================================================================================
 
     /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.
     ///  
@@ -494,63 +493,58 @@ module {
 
         var bufferIsFilled = false;
 
-        func getNextCombination() : ?[Nat] {
-
-            // fill buffer incrementally 
-            if (not bufferIsFilled){
-                switch(iter.next()){
-                    case (?n){
-                        buffer.add(n);
-                    };
-                    case (_){
-                        bufferIsFilled := true;
-                    };
-                };
-            };
-            
-            // recursively build combinations
-            if (indices.size() == 0){
-                null
-            }else if (cbns.size() == size){
-                let res = cbns.toArray();
-                ignore cbns.removeLast();
-                ?res
-            }else{
-                if (indices.size() > cbns.size()){
-                    let i = indices.get(cbns.size());
-
-                    if ( i >= buffer.size()){
-                        if (cbns.size() == 0){
-                            null
-                        }else{
-
-                            ignore indices.removeLast();
-
-                            if (indices.size() == 0){
-                                return null;
-                            };
-
-                            ignore cbns.removeLast();
-                            getNextCombination()
-                        }
-                    }else{
-                        indices.put(cbns.size(), i + 1);
-                        cbns.add(buffer.get(i));
-
-                        getNextCombination()
-                    }
-                }else{
-                    indices.add(
-                        indices.get(indices.size() - 1)
-                    );
-                    getNextCombination()
-                }
-            }
-        };
-
         object{
             public func next(): ?[Nat]{
-                getNextCombination()
+                // fill buffer incrementally 
+                if (not bufferIsFilled){
+                    switch(iter.next()){
+                        case (?n){
+                            buffer.add(n);
+                        };
+                        case (_){
+                            bufferIsFilled := true;
+                        };
+                    };
+                };
+                
+                // recursively build combinations
+                if (indices.size() == 0){
+                    null
+                }else if (cbns.size() == size){
+                    let res = cbns.toArray();
+                    ignore cbns.removeLast();
+                    ?res
+                }else{
+                    if (indices.size() > cbns.size()){
+                        let i = indices.get(cbns.size());
+
+                        if ( i >= buffer.size()){
+                            if (cbns.size() == 0){
+                                null
+                            }else{
+
+                                ignore indices.removeLast();
+
+                                if (indices.size() == 0){
+                                    return null;
+                                };
+
+                                ignore cbns.removeLast();
+                                next()
+                            }
+                        }else{
+                            indices.put(cbns.size(), i + 1);
+                            cbns.add(buffer.get(i));
+
+                            next()
+                        }
+                    }else{
+                        indices.add(
+                            indices.get(indices.size() - 1)
+                        );
+                        next()
+                    }
+                }
             }
         }
     };
@@ -2870,6 +2864,28 @@ module {
         return buf;
     };
 
+    /// Converts an iterator to a deque.
+    public func toDeque<T>(iter: Iter.Iter<T>): Deque.Deque<T> {
+        var dq = Deque.empty<T>();
+
+        for (item in iter){
+            dq := Deque.pushBack(dq, item);
+        };
+
+        dq
+    };
+
+    /// Converts an Iter into a List
+    public func toList<A>(iter: Iter.Iter<A>): List.List<A> {
+        var list = List.nil<A>();
+
+        for (item in iter){
+            list := List.push(item, list);
+        };
+        
+        list
+    };
+
     /// Collects an iterator of characters into a text    
     ///
     /// ### Example
@@ -2883,5 +2899,43 @@ module {
     public func toText(charIter: Iter.Iter<Char>): Text{
         let textIter = Iter.map<Char, Text>(charIter, func(c){Char.toText(c)});
         Text.join("", textIter);
+    };
+
+    /// Converts a TrieSet into an Iter
+    public func fromTrieSet<A>(set: TrieSet.Set<A>): Iter.Iter<A> {
+        Iter.map<(A, ()), A>(
+            Trie.iter<A, ()>(set), 
+            func((item, _)) { item }
+        );
+    };
+
+    /// Collects an iterator into a TrieSet
+    ///
+    /// ### Example
+    /// ```motoko
+    ///     import Hash "mo:base/Hash";
+    ///     import TrieSet "mo:base/TrieSet";
+    ///
+    ///     let vals = [1, 1, 2, 3, 4, 4, 5].vals();
+    ///     let set = Itertools.toTrieSet(vals, Hash.hash, Nat.equal); 
+    ///
+    ///     let setIter = Itertools.fromTrieSet(set);
+    ///     assert Iter.toArray(setIter) == [1, 2, 3, 4, 5];
+    ///
+    /// ```
+    public func toTrieSet<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): TrieSet.Set<A> {
+        var set = TrieSet.empty<A>();
+
+        label l for (item in iter){
+            let hash = hashFn(item);
+
+            if (TrieSet.mem(set, item, hash, isEq)){
+                continue l;
+            }else{
+                set := TrieSet.put(set, item, hash, isEq);
+            }
+        };
+
+        set
     };
 };

@@ -119,18 +119,15 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 #### Iterator to Collection Methods
 
-[toBuffer](https://tomijaga.github.io/Itertools.mo/Iter.html#toBuffer), [toText](https://tomijaga.github.io/Itertools.mo/Iter.html#toText)
+[toBuffer](https://tomijaga.github.io/Itertools.mo/Iter.html#toBuffer), [toDeque](https://tomijaga.github.io/Itertools.mo/Iter.html#toDeque), [toText](https://tomijaga.github.io/Itertools.mo/Iter.html#toText), [fromTrieSet](https://tomijaga.github.io/Itertools.mo/Iter.html#fromTrieSet), [toTrieSet](https://tomijaga.github.io/Itertools.mo/Iter.html#toTrieSet)
 
 #### Unimplemented Methods
 
 - [ ] isSorted
   
-- [ ] toList
-  
-- [ ] toDeque
-
-- [ ] toStack
-
-- [ ] toTrieSet
+<!-- add tests -->
+- [ ] ~~toDeque~~
+- [ ] ~~fromTrieSet~~
+- [ ] ~~toTrieSet~~
 
 Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=4234801670
