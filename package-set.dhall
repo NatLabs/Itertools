@@ -5,12 +5,6 @@ let vessel_package_set =
 let Package =
     { name : Text, version : Text, repo : Text, dependencies : List Text }
 
-let additions = [
-  { name = "format"
-  , repo = "https://github.com/tomijaga/format.mo"
-  , version = "main"
-  , dependencies = [ "base" ]
-  },
-] : List Package
+let additions = [] : List Package
 
 in  aviate_labs # vessel_package_set # additions

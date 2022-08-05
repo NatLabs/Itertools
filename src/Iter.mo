@@ -93,8 +93,6 @@ import List "mo:base/List";
 import Deque "mo:base/Deque";
 import Prelude "mo:base/Prelude";
 
-import {format; print} "mo:format";
-
 import PeekableIter "PeekableIter";
 import Deiter "Deiter";
 
