@@ -125,9 +125,4 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 - [ ] isSorted
   
-<!-- add tests -->
-- [ ] ~~toDeque~~
-- [ ] ~~fromTrieSet~~
-- [ ] ~~toTrieSet~~
-
-Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=4234801670
+Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=3946301136

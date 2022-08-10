@@ -8,20 +8,11 @@ import ActorSpec "./utils/ActorSpec";
 import Deiter "../src/Deiter";
 import Itertools "../src/Iter";
 
+import { DequeUtils } "../src/Utils";
 
 let {
     assertTrue; assertFalse; assertAllTrue; describe; it; skip; pending; run
 } = ActorSpec;
-
-func arrayToDeque(array: [Nat]) : Deque.Deque<Nat> {
-    var deque = Deque.empty<Nat>();
-
-    for (elem in array.vals()) {
-        deque := Deque.pushBack<Nat>(deque, elem);
-    };
-
-    return deque;
-};
 
 let success = run([
     describe("Double Ended Iter", [
@@ -54,7 +45,7 @@ let success = run([
             ])
         }), 
         it("fromDeque", do {
-            let deque = arrayToDeque([1, 2, 3, 4, 5]);
+            let deque = DequeUtils.fromArray([1, 2, 3, 4, 5]);
             let deiter = Deiter.fromDeque<Nat>(deque);
 
             assertAllTrue([
@@ -68,7 +59,7 @@ let success = run([
             ])
         }),
         it("reverse", do {
-            let deque = arrayToDeque([1, 2, 3, 4, 5]);
+            let deque = DequeUtils.fromArray([1, 2, 3, 4, 5]);
             let deiter = Deiter.fromDeque<Nat>(deque);
             let revIter = Deiter.reverse(deiter);
 

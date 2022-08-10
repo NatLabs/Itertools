@@ -765,7 +765,6 @@ module {
         };
     };
 
-
     /// Returns the accumulated result of applying of the given
     /// function to each element and the previous result starting with
     /// the initial value.
@@ -978,47 +977,6 @@ module {
         }
     };
 
-    /// Alternates between two iterators of the same type until both are exhausted.
-    ///
-    /// ### Example
-    ///
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4].vals();
-    ///     let vals2 = [10, 20].vals();
-    ///
-    ///     let iter = Itertools.interleave(vals, vals2);
-    ///
-    ///     assert iter.next() == ?1
-    ///     assert iter.next() == ?10
-    ///     assert iter.next() == ?2
-    ///     assert iter.next() == ?20
-    ///     assert iter.next() == ?3
-    ///     assert iter.next() == ?4
-    ///     assert iter.next() == null
-    /// ```
-    public func interleaveLongest<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
-        var iter1 = _iter1;
-        var iter2 = _iter2;
-
-        return object{
-            public func next ():?A {
-                
-                switch (iter1.next()){
-                    case (?val) {
-                        let tmp = iter1;
-                        iter1 := iter2;
-                        iter2 := tmp;
-
-                        return ?val;
-                    };
-
-                    case (_) iter2.next();
-                };
-            };
-        };
-    };
-
     /// Alternates between two iterators of the same type until one is exhausted.
     ///
     /// ### Example
@@ -1060,6 +1018,47 @@ module {
         };
     };
 
+
+    /// Alternates between two iterators of the same type until both are exhausted.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4].vals();
+    ///     let vals2 = [10, 20].vals();
+    ///
+    ///     let iter = Itertools.interleave(vals, vals2);
+    ///
+    ///     assert iter.next() == ?1
+    ///     assert iter.next() == ?10
+    ///     assert iter.next() == ?2
+    ///     assert iter.next() == ?20
+    ///     assert iter.next() == ?3
+    ///     assert iter.next() == ?4
+    ///     assert iter.next() == null
+    /// ```
+    public func interleaveLongest<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+        var iter1 = _iter1;
+        var iter2 = _iter2;
+
+        return object{
+            public func next ():?A {
+                
+                switch (iter1.next()){
+                    case (?val) {
+                        let tmp = iter1;
+                        iter1 := iter2;
+                        iter2 := tmp;
+
+                        return ?val;
+                    };
+
+                    case (_) iter2.next();
+                };
+            };
+        };
+    };
 
     /// Returns an iterator that inserts a value between each pair 
     /// of values in an iterator.
@@ -1368,7 +1367,6 @@ module {
 
         return min;
     };
-
 
     /// Returns a tuple of the minimum and maximum value in an iterator.
     /// The first element is the minimum, the second the maximum.

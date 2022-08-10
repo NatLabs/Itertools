@@ -11,6 +11,7 @@ import Hash "mo:base/Hash";
 import Float "mo:base/Float";
 import Func "mo:base/Func";
 import Text "mo:base/Text";
+import Trie "mo:base/Trie";
 
 import ActorSpec "./utils/ActorSpec";
 
@@ -1285,6 +1286,13 @@ let success = run([
             assertTrue( buffer.toArray() == ['a', 'b', 'c'] )
         }),
 
+        it("toDeque", do{
+            let chars = "abc".chars();
+            let deque = Itertools.toDeque<Char>(chars);
+
+            assertTrue( DequeUtils.toArray(deque) == ['a', 'b', 'c'] )
+        }),
+
         it("toText", do{
             let chars = "abc".chars();
             let text = Itertools.toText(chars);
@@ -1292,6 +1300,23 @@ let success = run([
             assertTrue( text == "abc" )
         }),
 
+        it("toTrieSet", do{
+            let chars = "abbcacd".chars();
+            let trieSet = Itertools.toTrieSet<Char>(chars, Char.toNat32, Char.equal);
+            let setIter = Iter.map(
+                Trie.iter<Char, ()>(trieSet), 
+                func((c, _): (Char, ())):Char { c }
+            );
+
+            assertTrue( Iter.toArray(setIter) == ['a', 'b', 'c', 'd'] )
+        }),
+
+        it("fromTrieSet", do{
+            let set = Itertools.toTrieSet([1, 1, 3, 2, 3, 4].vals(), Hash.hash, Nat.equal);
+            let iter = Itertools.fromTrieSet(set);
+
+            assertTrue( Iter.toArray(iter) == [1, 3, 2, 4] )
+        }),
     ])
 ]);
 
