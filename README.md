@@ -139,4 +139,6 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 - [ ] isSorted
   
+- [ ] flatMap
+  
 Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=3946301136
