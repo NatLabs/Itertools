@@ -271,7 +271,7 @@ let success = run([
         it("countAll", do{
             let iter = Iter.map("motoko".chars(), Char.toText);
 
-            let freqMap = Itertools.countAll(iter, Text.equal, Text.hash);
+            let freqMap = Itertools.countAll(iter, Text.hash, Text.equal,);
             
             let res = Iter.toArray(freqMap.entries());
 

@@ -316,7 +316,7 @@ module {
     ///     
     ///     assert res == [('k', 1), ('m', 1), ('o', 3), ('t', 1)];
     /// ```
-    public func countAll<A>(iter: Iter.Iter<A>, isEq: (A, A) -> Bool, hashFn: (A) -> Hash.Hash): TrieMap.TrieMap<A, Nat>{
+    public func countAll<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): TrieMap.TrieMap<A, Nat>{
         var map = TrieMap.TrieMap<A, Nat>(isEq, hashFn);
 
         func increment(n: Nat): Nat{
