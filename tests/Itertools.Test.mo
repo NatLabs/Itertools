@@ -37,7 +37,7 @@ let success = run([
 
             let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
             let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-            let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
+            let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
 
             assertTrue(Iter.toArray(evenIndices) == [1, 3, 5])
         }),
@@ -481,12 +481,12 @@ let success = run([
     
             assertTrue( res == [0, 2, 4, 6, 8] )
         }),
-        it("mapFilter", do{
+        it("filterMap", do{
             let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
 
             let isEven = func( x : Nat ) : Bool { x % 2 == 0};
             let square = func( x : Nat ) : Nat {x * x};
-            let it = Itertools.mapFilter(vals, isEven, square);
+            let it = Itertools.filterMap(vals, isEven, square);
     
             assertAllTrue([
                 it.next() == ?4,

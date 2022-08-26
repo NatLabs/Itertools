@@ -54,7 +54,7 @@
 ///
 ///     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
 ///     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-///     let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
+///     let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
 ///
 ///     assert Iter.toArray(evenIndices) == [1, 3, 5];
 /// ```
@@ -685,6 +685,33 @@ module {
         };
     };
 
+    /// Returns an iterator that filters elements based on a predicate and 
+    /// maps them to a new value based on the second argument.
+    ///
+    /// ### Example
+    /// - An example filtering odd numbers and squaring them:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
+    ///     
+    ///     let isEven = func( x : Nat ) : Bool { x % 2 == 0};
+    ///     let square = func( x : Nat ) : Nat {x * x};
+    ///     let it = Itertools.filterMap(vals, isEven, square);
+    ///
+    ///     assert it.next() == ?4
+    ///     assert it.next() == ?16
+    ///     assert it.next() == ?36
+    ///     assert it.next() == ?64
+    ///     assert it.next() == ?100
+    ///     assert it.next() == null
+    /// ```
+    public func filterMap<A, B>(iter: Iter.Iter<A>, filter: (A) -> Bool, map: (A) -> B): Iter.Iter<B>{
+
+        let filteredIter = Iter.filter(iter, filter);
+        let mappedIter = Iter.map(filteredIter, map);
+        return mappedIter;
+    };
     
     /// Looks for an element in an iterator that matches a predicate.
     ///
@@ -1125,34 +1152,6 @@ module {
                 }
             };
         };
-    };
-
-    /// Returns an iterator that filters elements based on a predicate and 
-    /// maps them to a new value based on the second argument.
-    ///
-    /// ### Example
-    /// - An example filtering odd numbers and squaring them:
-    ///
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
-    ///     
-    ///     let isEven = func( x : Nat ) : Bool { x % 2 == 0};
-    ///     let square = func( x : Nat ) : Nat {x * x};
-    ///     let it = Itertools.mapFilter(vals, isEven, square);
-    ///
-    ///     assert it.next() == ?4
-    ///     assert it.next() == ?16
-    ///     assert it.next() == ?36
-    ///     assert it.next() == ?64
-    ///     assert it.next() == ?100
-    ///     assert it.next() == null
-    /// ```
-    public func mapFilter<A, B>(iter: Iter.Iter<A>, filter: (A) -> Bool, map: (A) -> B): Iter.Iter<B>{
-
-        let filteredIter = Iter.filter(iter, filter);
-        let mappedIter = Iter.map(filteredIter, map);
-        return mappedIter;
     };
 
     /// Maps the elements of an iterator and accumulates them into a single value.

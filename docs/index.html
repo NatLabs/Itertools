@@ -56,7 +56,7 @@ efficient iterators for solving different problems:</p>
 
     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-    let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
+    let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
 
     assert Iter.toArray(evenIndices) == [1, 3, 5];</code></pre>
 
@@ -74,4 +74,4 @@ efficient iterators for solving different problems:</p>
 <p>An iterator equipped with a <code>peek</code> method that returns the next value without advancing the iterator.</p>
 <p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko 
 so it is compatible with all the function defined for the <code>Iter</code> type.</p>
-</div></li><li class="index-item"><a class="index-item-link" href="Utils/ArrayMut.html">Utils/ArrayMut</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/Nat.html">Utils/Nat</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/TrieMap.html">Utils/TrieMap</a><div class="index-item-comment"></div></li></ul></div></html>
+</div></li><li class="index-item"><a class="index-item-link" href="Utils/ArrayMut.html">Utils/ArrayMut</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/Deque.html">Utils/Deque</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/Nat.html">Utils/Nat</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/TrieMap.html">Utils/TrieMap</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/lib.html">Utils/lib</a><div class="index-item-comment"></div></li></ul></div></html>
