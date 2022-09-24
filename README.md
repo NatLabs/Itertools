@@ -102,16 +102,17 @@ Ways you can contribute:
 ## Documentation 
 For a complete list of functions and data types, see the [Itertools documentation](https://tomijaga.github.io/Itertools.mo/index.html)
 
+Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=3946301136
 
 ### PeekableIter
-|  |  |
-| ---- | ------------------ |
+| | |
+|-|-|
 | Iter to PeekableIter | [fromIter](https://tomijaga.github.io/Itertools.mo/PeekableIter.html#fromIter) |
 
 
 ### Deiter - (Double-Ended Iterator)
-|  |  |
-| ---- | ------------------ |
+| | |
+|-|-|
 | Main Methods |  [reverse](https://tomijaga.github.io/Itertools.mo/Deiter.html#reverse), [range](https://tomijaga.github.io/Itertools.mo/Deiter.html#range), [intRange](https://tomijaga.github.io/Itertools.mo/Deiter.html#intRange), |
 | Collection to DeIter | [fromArray](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromArray), [fromArrayMut](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromArrayMut), [fromDeque](https://tomijaga.github.io/Itertools.mo/Deiter.html#fromDeque) |
 | DeIter to Collection | [toArray](https://tomijaga.github.io/Itertools.mo/Deiter.html#toArray), [toArrayMut](https://tomijaga.github.io/Itertools.mo/Deiter.html#toArrayMut), [toDeque](https://tomijaga.github.io/Itertools.mo/Deiter.html#toDeque) |
@@ -119,26 +120,18 @@ For a complete list of functions and data types, see the [Itertools documentatio
 
 ### Iter
 
-|  |  |
-| ---- | ------------------ |
+| | |
+|-|-|
 | Augmenting | [accumulate](https://tomijaga.github.io/Itertools.mo/Iter.html#accumulate), [countAll](https://tomijaga.github.io/Itertools.mo/Iter.html#countAll), [enumerate](https://tomijaga.github.io/Itertools.mo/Iter.html#enumerate), [flatten](https://tomijaga.github.io/Itertools.mo/Iter.html#flatten), [flattenArray](https://tomijaga.github.io/Itertools.mo/Iter.html#flattenArray), [intersperse](https://tomijaga.github.io/Itertools.mo/Iter.html#intersperse), [mapEntries](https://tomijaga.github.io/Itertools.mo/Iter.html#mapEntries), [mapWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#mapWhile), [pad](https://tomijaga.github.io/Itertools.mo/Iter.html#pad), [padWithFn](https://tomijaga.github.io/Itertools.mo/Iter.html#padWithFn), [partitionInPlace](https://tomijaga.github.io/Itertools.mo/Iter.html#partitionInPlace), [prepend](https://tomijaga.github.io/Itertools.mo/Iter.html#prepend), [successor](https://tomijaga.github.io/Itertools.mo/Iter.html#successor), [uniqueCheck](https://tomijaga.github.io/Itertools.mo/Iter.html#uniqueCheck) |
 | Combining | [interleave](https://tomijaga.github.io/Itertools.mo/Iter.html#interleave), [interleaveLongest](https://tomijaga.github.io/Itertools.mo/Iter.html#interleaveLongest), [merge](https://tomijaga.github.io/Itertools.mo/Iter.html#merge), [kmerge](https://tomijaga.github.io/Itertools.mo/Iter.html#kmerge), [zip](https://tomijaga.github.io/Itertools.mo/Iter.html#zip), [zip3](https://tomijaga.github.io/Itertools.mo/Iter.html#zip3), [zipLongest](https://tomijaga.github.io/Itertools.mo/Iter.html#zipLongest) |
 | Combinatorics | [combinations](https://tomijaga.github.io/Itertools.mo/Iter.html#combinations), [cartesianProduct](https://tomijaga.github.io/Itertools.mo/Iter.html#cartesianProduct), [permutations](https://tomijaga.github.io/Itertools.mo/Iter.html#permutations) |
 | Look ahead | [peekable](https://tomijaga.github.io/Itertools.mo/Iter.html#peekable), [spy](https://tomijaga.github.io/Itertools.mo/Iter.html#spy) |
 | Grouping | [chunks](https://tomijaga.github.io/Itertools.mo/Iter.html#chunks), [chunksExact](https://tomijaga.github.io/Itertools.mo/Iter.html#chunksExact), [groupBy](https://tomijaga.github.io/Itertools.mo/Iter.html#groupBy), [splitAt](https://tomijaga.github.io/Itertools.mo/Iter.html#splitAt), [tuples](https://tomijaga.github.io/Itertools.mo/Iter.html#tuples), [triples](https://tomijaga.github.io/Itertools.mo/Iter.html#triples), [unzip](https://tomijaga.github.io/Itertools.mo/Iter.html#unzip), |
 | Infinite | [cycle](https://tomijaga.github.io/Itertools.mo/Iter.html#cycle), [repeat](https://tomijaga.github.io/Itertools.mo/Iter.html#repeat),  |
-| Selecting | [find](https://tomijaga.github.io/Itertools.mo/Iter.html#find), [findIndex](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndex), [findIndices](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndices), [filterMap](https://tomijaga.github.io/Itertools.mo/Iter.html#filterMap),  [max](https://tomijaga.github.io/Itertools.mo/Iter.html#max), [min](https://tomijaga.github.io/Itertools.mo/Iter.html#min), [minmax](https://tomijaga.github.io/Itertools.mo/Iter.html#minmax), [nth](https://tomijaga.github.io/Itertools.mo/Iter.html#nth), [nthOrDefault](https://tomijaga.github.io/Itertools.mo/Iter.html#nthOrDefault), [skip](https://tomijaga.github.io/Itertools.mo/Iter.html#skip), [skipWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#skipWhile),  [stepBy](https://tomijaga.github.io/Itertools.mo/Iter.html#stepBy), [take](https://tomijaga.github.io/Itertools.mo/Iter.html#take), [takeWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#takeWhile), [unique](https://tomijaga.github.io/Itertools.mo/Iter.html#unique) |
+| Selecting | [find](https://tomijaga.github.io/Itertools.mo/Iter.html#find), [findIndex](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndex), [findIndices](https://tomijaga.github.io/Itertools.mo/Iter.html#findIndices), [mapFilter](https://tomijaga.github.io/Itertools.mo/Iter.html#mapFilter),  [max](https://tomijaga.github.io/Itertools.mo/Iter.html#max), [min](https://tomijaga.github.io/Itertools.mo/Iter.html#min), [minmax](https://tomijaga.github.io/Itertools.mo/Iter.html#minmax), [nth](https://tomijaga.github.io/Itertools.mo/Iter.html#nth), [nthOrDefault](https://tomijaga.github.io/Itertools.mo/Iter.html#nthOrDefault), [skip](https://tomijaga.github.io/Itertools.mo/Iter.html#skip), [skipWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#skipWhile),  [stepBy](https://tomijaga.github.io/Itertools.mo/Iter.html#stepBy), [take](https://tomijaga.github.io/Itertools.mo/Iter.html#take), [takeWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#takeWhile), [unique](https://tomijaga.github.io/Itertools.mo/Iter.html#unique) |
 | Sliding Window |[slidingTuples](https://tomijaga.github.io/Itertools.mo/Iter.html#slidingTuples), [slidingTriples](https://tomijaga.github.io/Itertools.mo/Iter.html#slidingTriples) |
-| Summarising | [all](https://tomijaga.github.io/Itertools.mo/Iter.html#all), [any](https://tomijaga.github.io/Itertools.mo/Iter.html#any), [count](https://tomijaga.github.io/Itertools.mo/Iter.html#count), [equal](https://tomijaga.github.io/Itertools.mo/Iter.html#equal), [fold](https://tomijaga.github.io/Itertools.mo/Iter.html#fold), [mapReduce]( https://tomijaga.github.io/Itertools.mo/Iter.html#mapReduce), [notEqual](https://tomijaga.github.io/Itertools.mo/Iter.html#notEqual), [isPartitioned](https://tomijaga.github.io/Itertools.mo/Iter.html#isPartitioned), [isUnique](https://tomijaga.github.io/Itertools.mo/Iter.html#isUnique), [product](https://tomijaga.github.io/Itertools.mo/Iter.html#product), [reduce](https://tomijaga.github.io/Itertools.mo/Iter.html#reduce), [sum](https://tomijaga.github.io/Itertools.mo/Iter.html#sum), |
+| Summarising | [all](https://tomijaga.github.io/Itertools.mo/Iter.html#all), [any](https://tomijaga.github.io/Itertools.mo/Iter.html#any), [count](https://tomijaga.github.io/Itertools.mo/Iter.html#count), [equal](https://tomijaga.github.io/Itertools.mo/Iter.html#equal), [fold](https://tomijaga.github.io/Itertools.mo/Iter.html#fold), [mapReduce]( https://tomijaga.github.io/Itertools.mo/Iter.html#mapReduce), [notEqual](https://tomijaga.github.io/Itertools.mo/Iter.html#notEqual), [isSorted](https://tomijaga.github.io/Itertools.mo/Iter.html#isSorted), [isSortedDesc](https://tomijaga.github.io/Itertools.mo/Iter.html#isSortedDesc), [isPartitioned](https://tomijaga.github.io/Itertools.mo/Iter.html#isPartitioned), [isUnique](https://tomijaga.github.io/Itertools.mo/Iter.html#isUnique), [product](https://tomijaga.github.io/Itertools.mo/Iter.html#product), [reduce](https://tomijaga.github.io/Itertools.mo/Iter.html#reduce), [sum](https://tomijaga.github.io/Itertools.mo/Iter.html#sum), |
 | Collection to Iter | [fromTrieSet](https://tomijaga.github.io/Itertools.mo/Iter.html#fromTrieSet) | 
 | Iter to Collection | [toBuffer](https://tomijaga.github.io/Itertools.mo/Iter.html#toBuffer), [toDeque](https://tomijaga.github.io/Itertools.mo/Iter.html#toDeque), [toText](https://tomijaga.github.io/Itertools.mo/Iter.html#toText), [toTrieSet](https://tomijaga.github.io/Itertools.mo/Iter.html#toTrieSet) |
 | Others | [inspect](https://tomijaga.github.io/Itertools.mo/Iter.html#inspect), [range](https://tomijaga.github.io/Itertools.mo/Iter.html#range), [intRange](https://tomijaga.github.io/Itertools.mo/Iter.html#intRange),  [ref](https://tomijaga.github.io/Itertools.mo/Iter.html#ref), [sort](https://tomijaga.github.io/Itertools.mo/Iter.html#sort), [tee](https://tomijaga.github.io/Itertools.mo/Iter.html#tee),          |
-
-
-#### Unimplemented Methods
-
-- [ ] isSorted
   
-- [ ] flatMap
-  
-Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=3946301136

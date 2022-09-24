@@ -54,7 +54,7 @@
 ///
 ///     let isEven = func ( x : (Int, Int)) : Bool { x.1 % 2 == 0 };
 ///     let mapIndex = func (x : (Int, Int)) : Int { x.0 };
-///     let evenIndices = Itertools.filterMap(iterWithIndices, isEven, mapIndex);
+///     let evenIndices = Itertools.mapFilter(iterWithIndices, isEven, mapIndex);
 ///
 ///     assert Iter.toArray(evenIndices) == [1, 3, 5];
 /// ```
@@ -187,7 +187,6 @@ module {
     ///     assert Itertools.all(a, isEven) == false;
     ///     assert Itertools.all(b, isEven) == true;
     /// ```
-
     public func all<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): Bool{
         for ( item in iter ){
             if(not predicate(item)){
@@ -329,7 +328,6 @@ module {
 
         map
     };
-
 
     /// Chains two iterators of the same type together, so that the elements produced by the 
     /// second come after the elements produced by the first.
@@ -597,7 +595,6 @@ module {
         }
     };
 
-
     /// Returns an iterator that returns tuples with the index of the element
     /// and the element.
     ///
@@ -683,34 +680,7 @@ module {
             case ((?a, null)) false;
             case ((null, null)) true;
         };
-    };
 
-    /// Returns an iterator that filters elements based on a predicate and 
-    /// maps them to a new value based on the second argument.
-    ///
-    /// ### Example
-    /// - An example filtering odd numbers and squaring them:
-    ///
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
-    ///     
-    ///     let isEven = func( x : Nat ) : Bool { x % 2 == 0};
-    ///     let square = func( x : Nat ) : Nat {x * x};
-    ///     let it = Itertools.filterMap(vals, isEven, square);
-    ///
-    ///     assert it.next() == ?4
-    ///     assert it.next() == ?16
-    ///     assert it.next() == ?36
-    ///     assert it.next() == ?64
-    ///     assert it.next() == ?100
-    ///     assert it.next() == null
-    /// ```
-    public func filterMap<A, B>(iter: Iter.Iter<A>, filter: (A) -> Bool, map: (A) -> B): Iter.Iter<B>{
-
-        let filteredIter = Iter.filter(iter, filter);
-        let mappedIter = Iter.map(filteredIter, map);
-        return mappedIter;
     };
     
     /// Looks for an element in an iterator that matches a predicate.
@@ -845,7 +815,7 @@ module {
     ///     let flattened = Itertools.flatten(nestedIter);
     ///     assert Iter.toArray(flattened) == [1, 2, 3, 4, 5, 6];
     /// ```
-            
+    
     public func flatten<A>(nestedIter: Iter.Iter<Iter.Iter<A>>) : Iter.Iter<A> {
         var iter : Iter.Iter<A> = switch (nestedIter.next()){
             case (?_iter){
@@ -874,7 +844,6 @@ module {
         };
     }; 
 
-
     /// Returns an flattened iterator with all the values in a nested array 
     ///
     /// ### Example
@@ -896,7 +865,6 @@ module {
             )
         )
     };
-    
 
     /// Groups nearby elements into arrays based on result from the given function and returns them along with the result of elements in that group.
     ///
@@ -1033,7 +1001,7 @@ module {
                     case (?val, ?val2) {
 
                         let tmp = iter1;
-                        iter1 := chain([val2].vals(), iter2);
+                        iter1 := prepend(val2, iter2);
                         iter2 := tmp;
 
                         return ?val;
@@ -1122,6 +1090,76 @@ module {
         };
     };
 
+    /// Checks if all the elements in an iterator are sorted in ascending order
+    /// that for every element `a` ans its proceding element `b`, `a <= b`.
+    ///
+    /// Returns true if iterator is empty
+    ///
+    /// #Example
+    ///
+    /// ```motoko
+    /// import Nat "mo:base/Nat";
+    ///
+    ///     let a = [1, 2, 3, 4];
+    ///     let b = [1, 4, 2, 3];
+    ///     let c = [4, 3, 2, 1];
+    ///
+    /// assert Itertools.isSorted(a.vals(), Nat.compare) == true;
+    /// assert Itertools.isSorted(b.vals(), Nat.compare) == false;
+    /// assert Itertools.isSorted(c.vals(), Nat.compare) == false;
+    ///
+    /// ```
+    public func isSorted<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool{
+        var prev = switch(iter.next()){
+            case (?n) {n};
+            case (null) return true;
+        };
+
+        for (item in iter){
+            if (cmp(prev, item) == #greater){
+                return false;
+            };
+            prev := item;
+        };
+
+        true
+    };
+
+    /// Checks if all the elements in an iterator are sorted in descending order
+    ///
+    /// Returns true if iterator is empty
+    ///
+    /// #Example
+    ///
+    /// ```motoko
+    /// import Nat "mo:base/Nat";
+    ///
+    ///     let a = [1, 2, 3, 4];
+    ///     let b = [1, 4, 2, 3];
+    ///     let c = [4, 3, 2, 1];
+    ///
+    /// assert Itertools.isSortedDesc(a.vals(), Nat.compare) == false;
+    /// assert Itertools.isSortedDesc(b.vals(), Nat.compare) == false;
+    /// assert Itertools.isSortedDesc(c.vals(), Nat.compare) == true;
+    ///
+    /// ```
+    public func isSortedDesc<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool{
+        var prev = switch(iter.next()){
+            case (?n) {n};
+            case (null) return true;
+        };
+
+        for (item in iter){
+            if (cmp(prev, item) == #less){
+                return false;
+            };
+            prev := item;
+        };
+
+        true
+    };
+    
+
     /// Returns an iterator adaptor that mutates elements of an iterator by applying the given function to each entry.
     /// Each entry consists of the index of the element and the element itself.
     ///
@@ -1152,6 +1190,54 @@ module {
                 }
             };
         };
+    };
+
+    /// Returns an iterator that filters elements based on a predicate and 
+    /// maps them to a new value based on the second argument.
+    ///
+    /// ### Example
+    /// - An example filtering odd numbers and squaring them:
+    ///
+    /// ```motoko
+    ///
+    ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
+    ///     
+    ///     let filterOddSquareEven = func( x : Nat ) : Nat {
+    ///         if (x % 2 == 1){
+    ///             null
+    ///         }else{
+    ///             ?(x * x)
+    ///         }
+    ///      };
+    ///    
+    ///     let it = Itertools.mapFilter(vals, filterOddSquareEven);
+    ///
+    ///     assert it.next() == ?4
+    ///     assert it.next() == ?16
+    ///     assert it.next() == ?36
+    ///     assert it.next() == ?64
+    ///     assert it.next() == ?100
+    ///     assert it.next() == null
+    /// ```
+    public func mapFilter<A, B>(iter: Iter.Iter<A>, optMapFn: (A) -> ?B) : Iter.Iter<B>{
+
+        func getNext() : ?B {
+            switch(iter.next()){
+                case(?val) {
+                    switch(optMapFn(val)){
+                        case(?newVal){ ?newVal };
+                        case(_){ getNext() };
+                    };
+                };
+                case (_) null;
+            };
+        };
+
+        object{
+            public func next() : ?B{
+                getNext()
+            };
+        }
     };
 
     /// Maps the elements of an iterator and accumulates them into a single value.
