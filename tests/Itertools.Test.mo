@@ -289,7 +289,7 @@ let success = run([
         }),
         it("cycle", do{
             let chars = "abc".chars();
-            let it = Itertools.cycle(chars);
+            let it = Itertools.cycle(chars, 2);
     
             assertAllTrue([
                 it.next() == ?'a',
@@ -301,6 +301,11 @@ let success = run([
                 it.next() == ?'c',
 
                 it.next() == ?'a',
+                it.next() == ?'b',
+                it.next() == ?'c',
+
+                it.next() == null,
+                it.next() == null,
             ])
         }),
         it("enumerate", do{
@@ -909,17 +914,6 @@ let success = run([
             let sum = Itertools.reduce(vals, add);
        
             assertTrue(sum == ?15);
-        }),
-        it("ref(erence)", do{
-            let iter = Iter.fromArray([1, 2, 3]);
-            let refIter = Itertools.ref(iter);
-
-            assertAllTrue([
-                iter.next() == ?1,
-                refIter.next() == ?2,
-                iter.next() == ?3,
-                refIter.next() == null
-            ])
         }),
         it("repeat", do{
             let iter = Itertools.repeat(1, 3);

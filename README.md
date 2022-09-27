@@ -119,7 +119,6 @@ Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=3946301136
 
 
 ### Iter
-
 | | |
 |-|-|
 | Augmenting | [accumulate](https://tomijaga.github.io/Itertools.mo/Iter.html#accumulate), [countAll](https://tomijaga.github.io/Itertools.mo/Iter.html#countAll), [enumerate](https://tomijaga.github.io/Itertools.mo/Iter.html#enumerate), [flatten](https://tomijaga.github.io/Itertools.mo/Iter.html#flatten), [flattenArray](https://tomijaga.github.io/Itertools.mo/Iter.html#flattenArray), [intersperse](https://tomijaga.github.io/Itertools.mo/Iter.html#intersperse), [mapEntries](https://tomijaga.github.io/Itertools.mo/Iter.html#mapEntries), [mapWhile](https://tomijaga.github.io/Itertools.mo/Iter.html#mapWhile), [pad](https://tomijaga.github.io/Itertools.mo/Iter.html#pad), [padWithFn](https://tomijaga.github.io/Itertools.mo/Iter.html#padWithFn), [partitionInPlace](https://tomijaga.github.io/Itertools.mo/Iter.html#partitionInPlace), [prepend](https://tomijaga.github.io/Itertools.mo/Iter.html#prepend), [successor](https://tomijaga.github.io/Itertools.mo/Iter.html#successor), [uniqueCheck](https://tomijaga.github.io/Itertools.mo/Iter.html#uniqueCheck) |

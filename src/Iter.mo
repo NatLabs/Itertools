@@ -378,11 +378,11 @@ module {
     /// ```
     public func chunks<A>(iter: Iter.Iter<A>, size: Nat): Iter.Iter<[A]>{
         assert size > 0;
+        var buf = Buffer.Buffer<A>(size);
 
         object{
             public func next(): ?[A]{
                 var i = 0;
-                var buf = Buffer.Buffer<A>(size);
 
                 label l while (i < size){
                     switch(iter.next()){
@@ -399,7 +399,9 @@ module {
                 if (buf.size() == 0){
                     null
                 }else{
-                    ?buf.toArray()
+                    let tmp = ?buf.toArray();
+                    buf.clear();
+                    tmp
                 }
             }
         }
@@ -545,15 +547,15 @@ module {
         }
     };
 
-    /// Creates an iterator that loops infinitely over the values of a
-    /// given iterator.
+    /// Creates an iterator that loops over the values of a
+    /// given iterator `n` times.
     /// 
     /// ### Example
     ///
     /// ```motoko
     ///
     ///     let chars = "abc".chars();
-    ///     let it = Itertools.cycle(chars);
+    ///     let it = Itertools.cycle(chars, 3);
     ///
     ///     assert it.next() == ?'a';
     ///     assert it.next() == ?'b';
@@ -564,33 +566,46 @@ module {
     ///     assert it.next() == ?'c';
     ///
     ///     assert it.next() == ?'a';
-    ///     // ...
+    ///     assert it.next() == ?'b';
+    ///     assert it.next() == ?'c';
+    ///
+    ///     assert it.next() == null;
     /// ```
-    public func cycle<A>(iter: Iter.Iter<A>): Iter.Iter<A>{
+    public func cycle<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A>{
         var buf = Buffer.Buffer<A>(1);
+        var buf_index = 0;
         var i = 0;
 
         return object{
             public func next(): ?A{
-                switch(iter.next()){
-                    case (?x){
-                        buf.add(x);
-                        ?x
-                    };
-                    case (null) {
-                        if(buf.size() == 0){
-                            null
-                        }else{
-                            if (i < buf.size()){
-                                i+=1;
-                                ?buf.get(i - 1)
+                if ( i == n){
+                    null
+                }else{
+                    switch(iter.next()){
+                        case (?x){
+                            buf.add(x);
+                            ?x
+                        };
+                        case (null) {
+                            if(buf.size() == 0){
+                                null
                             }else{
-                                i:=1;
-                                ?buf.get(i - 1)
-                            };
-                        }
+                                if (buf_index < buf.size()){
+                                    buf_index+=1;
+                                    ?buf.get(buf_index - 1)
+                                }else{
+                                    i+=1;
+                                    if (i < n){
+                                        buf_index:=1;
+                                        ?buf.get(buf_index - 1)
+                                    }else{
+                                        null
+                                    }
+                                };
+                            }
+                        };
                     };
-                };
+                }
             }
         }
     };
@@ -2125,38 +2140,13 @@ module {
         }
     };
 
-    /// Returns a reference to the iterator
-    ///
-    /// Instead of using this method you could copy the ptr directly:
-    /// ```motoko
-    ///     let iter = Itertools.range(1, 5);
-    ///     let ref = iter;
-    /// ```
-    ///
-    /// #### Example
-    /// ```motoko
-    ///
-    ///     let iter = Iter.fromArray([1, 2, 3]);
-    ///     let refIter = Itertools.ref(iter);
-    ///
-    ///     assert iter.next() == ?1;
-    ///     assert refIter.next() == ?2;
-    ///     assert iter.next() == ?3;
-    ///     assert refIter.next() == null;
-    ///     assert iter.next() == null;
-    /// ```
-
-    public func ref<A>(iter: Iter.Iter<A>): Iter.Iter<A>{
-        return iter;
-    };
-
     /// Returns an iterator that repeats a given value `n` times.
     /// To repeat a value infinitely, use `Iter.make` from the base library.
     ///
     /// ### Example
     /// ```motoko
     ///
-    ///     let iter = Itertools.repeat(3, 1);
+    ///     let iter = Itertools.repeat(1, 3);
     ///
     ///     assert iter.next() == ?1;
     ///     assert iter.next() == ?1;
@@ -2506,7 +2496,7 @@ module {
     };
 
     /// Returns an iterator with the first n elements of the given iter
-    /// > Be aware that this returns a ref to the original iterator so
+    /// > Be aware that this returns a reference to the original iterator so
     /// > using it will cause the original iterator to be skipped.
     /// 
     /// If you want to keep the original iterator, use `spy` instead.
