@@ -1,5 +1,5 @@
 /// Main module with utility functions for working efficiently with iterators.
-/// 
+///
 /// See the [`Iter`](https://internetcomputer.org/docs/current/references/motoko-ref/iter#iter-1) module from the base lib for more information on the `Iter` type.
 ///
 ///
@@ -11,7 +11,7 @@
 ///     import Iter "mo:base/Iter";
 ///     import Itertools "mo:itertools/Iter";
 /// ```
-/// 
+///
 /// Converting data types to iterators is the next step.
 /// - Array
 ///     - `[1, 2, 3, 4, 5].vals()`
@@ -23,7 +23,7 @@
 /// - Text
 ///     - `"Hello, world!".chars()`
 ///     - `Text.split("a,b,c", #char ',')`
-///  
+///
 /// - Buffer
 ///   - `buffer.toArray().vals()`
 ///
@@ -33,11 +33,11 @@
 /// For conversion of other data types to iterators, you can look in the [base library](https://internetcomputer.org/docs/current/references/motoko-ref/array) for the specific data type's documentation.
 ///
 ///
-/// Here are some examples of using the functions in this library to create simple and 
+/// Here are some examples of using the functions in this library to create simple and
 /// efficient iterators for solving different problems:
 ///
 /// - An example, using `range` and `sum` to find the sum of values from 1 to 25:
-/// 
+///
 /// ```motoko
 ///     let range = Itertools.range(1, 25 + 1);
 ///     let sum = Itertools.sum(range, Nat.add);
@@ -64,19 +64,20 @@
 ///
 /// ```motoko
 ///     let vals = [5, 3, 3, 7, 8, 10].vals();
-///     
+///
 ///     let tuples = Itertools.slidingTuples(vals);
 ///     // Iter.toArray(tuples) == [(5, 3), (3, 3), (3, 7), (7, 8), (8, 10)]
-///     
+///
 ///     let diff = func (x : (Int, Int)) : Int { x.1 - x.0 };
 ///     let iter = Iter.map(tuples, diff);
-/// 
+///
 ///     assert Iter.toArray(iter) == [-2, 0, 4, 1, 2];
 /// ```
 
 import Order "mo:base/Order";
 import Buffer "mo:base/Buffer";
 import Int "mo:base/Int";
+import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
 import Char "mo:base/Char";
 import Func "mo:base/Func";
@@ -103,12 +104,12 @@ import TrieMap_Utils "Utils/TrieMap";
 module {
 
     /// Returns a reference to a modified iterator that returns the accumulated values based on the given predicate.
-    ///  
+    ///
     /// ### Example
     /// - An example calculating the running sum of a iterator:
     ///
     /// ```motoko
-    ///    
+    ///
     ///     let vals = [1, 2, 3, 4].vals();
     ///     let it = Itertools.accumulate(vals, func(a, b) { a + b });
     ///
@@ -140,8 +141,8 @@ module {
     ///     type Point = { x: Int, y: Int };
     ///
     ///     let vals: [Point] = [{ x = 1, y = 2 }, { x = 3, y = 4 }].vals();
-    ///     
-    ///     let it = Itertools.accumulate<Point>(vals, func(a, b) { 
+    ///
+    ///     let it = Itertools.accumulate<Point>(vals, func(a, b) {
     ///         return { x = a.x + b.x, y = a.y + b.y };
     ///     });
     ///
@@ -149,26 +150,26 @@ module {
     ///     assert it.next() == ?{ x = 4, y = 6 };
     ///     assert it.next() == null;
     /// ```
-    public func accumulate<A>(iter: Iter.Iter<A>, predicate: (A, A) -> A): Iter.Iter<A>{
+    public func accumulate<A>(iter : Iter.Iter<A>, predicate : (A, A) -> A) : Iter.Iter<A> {
         var acc = iter.next();
 
-        return object{
-            public func next(): ?A{
-                switch(acc, iter.next()){
-                    case (?_acc, ?n){
+        return object {
+            public func next() : ?A {
+                switch (acc, iter.next()) {
+                    case (?_acc, ?n) {
                         let tmp = acc;
                         acc := ?predicate(_acc, n);
-                        return tmp;  
+                        return tmp;
                     };
-                    case (?_acc, null) { 
+                    case (?_acc, null) {
                         acc := null;
                         return ?_acc;
                     };
-                    case(_, _){
+                    case (_, _) {
                         return null;
                     };
-                }
-            }
+                };
+            };
         };
     };
 
@@ -187,9 +188,9 @@ module {
     ///     assert Itertools.all(a, isEven) == false;
     ///     assert Itertools.all(b, isEven) == true;
     /// ```
-    public func all<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): Bool{
-        for ( item in iter ){
-            if(not predicate(item)){
+    public func all<A>(iter : Iter.Iter<A>, predicate : (A) -> Bool) : Bool {
+        for (item in iter) {
+            if (not predicate(item)) {
                 return false;
             };
         };
@@ -211,9 +212,9 @@ module {
     ///     assert Itertools.any(a, isEven) == true;
     ///     assert Itertools.any(b, isEven) == false;
     /// ```
-    public func any<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): Bool{
-        for ( item in iter ){
-            if(predicate(item)){
+    public func any<A>(iter : Iter.Iter<A>, predicate : (A) -> Bool) : Bool {
+        for (item in iter) {
+            if (predicate(item)) {
                 return true;
             };
         };
@@ -232,48 +233,48 @@ module {
     ///     let it = Itertools.cartesianProduct(a, b);
     ///
     ///     assert Iter.toArray(it) == [
-    ///         (1, 'a'), (1, 'b'), (1, 'c'), 
-    ///         (2, 'a'), (2, 'b'), (2, 'c'), 
+    ///         (1, 'a'), (1, 'b'), (1, 'c'),
+    ///         (2, 'a'), (2, 'b'), (2, 'c'),
     ///         (3, 'a'), (3, 'b'), (3, 'c')
     ///     ];
     ///
     /// ```
-    public func cartesianProduct<A, B>(iterA: Iter.Iter<A>, iterB: Iter.Iter<B>): Iter.Iter<(A, B)>{
+    public func cartesianProduct<A, B>(iterA : Iter.Iter<A>, iterB : Iter.Iter<B>) : Iter.Iter<(A, B)> {
         var optionA = iterA.next();
 
         let buffer = Buffer.Buffer<B>(8);
         var i = 0;
 
-        return object{
-            public func next(): ?(A, B){
-                switch(optionA, iterB.next()){
-                    case (?a, ?b){
+        return object {
+            public func next() : ?(A, B) {
+                switch (optionA, iterB.next()) {
+                    case (?a, ?b) {
                         buffer.add(b);
                         return ?(a, b);
                     };
-                    case (?a, _){
-                        if (i == buffer.size() or i == 0){
-                            switch (iterA.next()){
-                                case (?a){
+                    case (?a, _) {
+                        if (i == buffer.size() or i == 0) {
+                            switch (iterA.next()) {
+                                case (?a) {
                                     i := 1;
                                     optionA := ?a;
                                     return ?(a, buffer.get(0));
                                 };
-                                case (null){
+                                case (null) {
                                     return null;
                                 };
                             };
-                        }else{
+                        } else {
                             let tmp = buffer.get(i);
-                            i+=1;
+                            i += 1;
                             ?(a, tmp);
-                        }
+                        };
                     };
-                    case (_){
+                    case (_) {
                         return null;
                     };
-                }
-            }
+                };
+            };
         };
     };
 
@@ -289,16 +290,16 @@ module {
     ///
     ///     assert freq == 2;
     /// ```
-    public func count<A>(iter: Iter.Iter<A>, element: A, isEq: (A, A) -> Bool): Nat{
+    public func count<A>(iter : Iter.Iter<A>, element : A, isEq : (A, A) -> Bool) : Nat {
         var count = 0;
-        
-        for ( item in iter ){
-            if(isEq(element, item)){
+
+        for (item in iter) {
+            if (isEq(element, item)) {
                 count += 1;
             };
         };
 
-        count
+        count;
     };
 
     /// Returns a TrieMap with the frequency of each element in the iterator.
@@ -310,31 +311,31 @@ module {
     ///     let a = "motoko".chars();
     ///
     ///     let freqMap = Itertools.countAll(a, Char.hash, Char.equal);
-    ///     
+    ///
     ///     let res = Iter.toArray(freqMap.entries());
-    ///     
+    ///
     ///     assert res == [('k', 1), ('m', 1), ('o', 3), ('t', 1)];
     /// ```
-    public func countAll<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): TrieMap.TrieMap<A, Nat>{
+    public func countAll<A>(iter : Iter.Iter<A>, hashFn : (A) -> Hash.Hash, isEq : (A, A) -> Bool) : TrieMap.TrieMap<A, Nat> {
         var map = TrieMap.TrieMap<A, Nat>(isEq, hashFn);
 
-        func increment(n: Nat): Nat{
-            n + 1
+        func increment(n : Nat) : Nat {
+            n + 1;
         };
 
-        for (item in iter){
+        for (item in iter) {
             TrieMap_Utils.putOrUpdate(map, item, 1, increment);
         };
 
-        map
+        map;
     };
 
-    /// Chains two iterators of the same type together, so that the elements produced by the 
+    /// Chains two iterators of the same type together, so that the elements produced by the
     /// second come after the elements produced by the first.
-    /// 
+    ///
     /// ### Example
     /// ```motoko
-    /// 
+    ///
     ///    let iter1 = [1, 2].vals();
     ///    let iter2 = [3, 4].vals();
     ///    let chained = Itertools.chain(iter1, iter2);
@@ -345,18 +346,18 @@ module {
     ///     assert chained.next() == ?4
     ///     assert chained.next() == null
     /// ```
-    public func chain<A>(a: Iter.Iter<A>, b: Iter.Iter<A>): Iter.Iter<A>{
-        return object{
-            public func next(): ?A{
-                switch(a.next()){
-                    case (?x){
-                        ?x
+    public func chain<A>(a : Iter.Iter<A>, b : Iter.Iter<A>) : Iter.Iter<A> {
+        return object {
+            public func next() : ?A {
+                switch (a.next()) {
+                    case (?x) {
+                        ?x;
                     };
                     case (null) {
-                        b.next()
+                        b.next();
                     };
                 };
-            }
+            };
         };
     };
 
@@ -376,35 +377,35 @@ module {
     ///     assert it.next() == ?[10];
     ///     assert it.next() == null;
     /// ```
-    public func chunks<A>(iter: Iter.Iter<A>, size: Nat): Iter.Iter<[A]>{
+    public func chunks<A>(iter : Iter.Iter<A>, size : Nat) : Iter.Iter<[A]> {
         assert size > 0;
         var buf = Buffer.Buffer<A>(size);
 
-        object{
-            public func next(): ?[A]{
+        object {
+            public func next() : ?[A] {
                 var i = 0;
 
-                label l while (i < size){
-                    switch(iter.next()){
-                        case (?val){
+                label l while (i < size) {
+                    switch (iter.next()) {
+                        case (?val) {
                             buf.add(val);
-                            i:= i + 1;
+                            i := i + 1;
                         };
-                        case (_){
+                        case (_) {
                             break l;
                         };
                     };
                 };
 
-                if (buf.size() == 0){
-                    null
-                }else{
+                if (buf.size() == 0) {
+                    null;
+                } else {
                     let tmp = ?buf.toArray();
                     buf.clear();
-                    tmp
-                }
-            }
-        }
+                    tmp;
+                };
+            };
+        };
     };
 
     /// Returns an iterator that accumulates elements into an arrays with exactly `n` elements.
@@ -423,27 +424,27 @@ module {
     ///     assert it.next() == ?[7, 8, 9];
     ///     assert it.next() == null;
     /// ```
-    public func chunksExact<A>(iter: Iter.Iter<A>, size: Nat): Iter.Iter<[A]>{
+    public func chunksExact<A>(iter : Iter.Iter<A>, size : Nat) : Iter.Iter<[A]> {
         assert size > 0;
 
         let chunksIter = chunks(iter, size);
 
-        object{
-            public func next(): ?[A]{
-                switch(chunksIter.next()){
-                    case (?chunk){
-                        if (chunk.size() == size){
-                            ?chunk
-                        }else{
-                            null
+        object {
+            public func next() : ?[A] {
+                switch (chunksIter.next()) {
+                    case (?chunk) {
+                        if (chunk.size() == size) {
+                            ?chunk;
+                        } else {
+                            null;
                         };
                     };
-                    case (null){
-                        null
+                    case (null) {
+                        null;
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
     /// Returns an array of combinations of size `n` from the given iterable.
@@ -478,78 +479,78 @@ module {
     ///     assert it.next() == ?[3, 4];
     ///     assert it.next() == null;
     /// ```
-    public func combinations(iter: Iter.Iter<Nat>, size: Nat): Iter.Iter<[Nat]>{
+    public func combinations(iter : Iter.Iter<Nat>, size : Nat) : Iter.Iter<[Nat]> {
         assert size > 0;
 
         let buffer = Buffer.Buffer<Nat>(8);
         let cbns = Buffer.Buffer<Nat>(size);
 
         let indices = Buffer.Buffer<Nat>(size);
-        for (i in range(0, size)){
+        for (i in range(0, size)) {
             indices.add(i);
         };
 
         var bufferIsFilled = false;
 
-        object{
-            public func next(): ?[Nat]{
-                // fill buffer incrementally 
-                if (not bufferIsFilled){
-                    switch(iter.next()){
-                        case (?n){
+        object {
+            public func next() : ?[Nat] {
+                // fill buffer incrementally
+                if (not bufferIsFilled) {
+                    switch (iter.next()) {
+                        case (?n) {
                             buffer.add(n);
                         };
-                        case (_){
+                        case (_) {
                             bufferIsFilled := true;
                         };
                     };
                 };
-                
+
                 // recursively build combinations
-                if (indices.size() == 0){
-                    null
-                }else if (cbns.size() == size){
+                if (indices.size() == 0) {
+                    null;
+                } else if (cbns.size() == size) {
                     let res = cbns.toArray();
                     ignore cbns.removeLast();
-                    ?res
-                }else{
-                    if (indices.size() > cbns.size()){
+                    ?res;
+                } else {
+                    if (indices.size() > cbns.size()) {
                         let i = indices.get(cbns.size());
 
-                        if ( i >= buffer.size()){
-                            if (cbns.size() == 0){
-                                null
-                            }else{
+                        if (i >= buffer.size()) {
+                            if (cbns.size() == 0) {
+                                null;
+                            } else {
 
                                 ignore indices.removeLast();
 
-                                if (indices.size() == 0){
+                                if (indices.size() == 0) {
                                     return null;
                                 };
 
                                 ignore cbns.removeLast();
-                                next()
-                            }
-                        }else{
+                                next();
+                            };
+                        } else {
                             indices.put(cbns.size(), i + 1);
                             cbns.add(buffer.get(i));
 
-                            next()
-                        }
-                    }else{
+                            next();
+                        };
+                    } else {
                         indices.add(
-                            indices.get(indices.size() - 1)
+                            indices.get(indices.size() - 1),
                         );
-                        next()
-                    }
-                }
-            }
-        }
+                        next();
+                    };
+                };
+            };
+        };
     };
 
     /// Creates an iterator that loops over the values of a
     /// given iterator `n` times.
-    /// 
+    ///
     /// ### Example
     ///
     /// ```motoko
@@ -571,73 +572,73 @@ module {
     ///
     ///     assert it.next() == null;
     /// ```
-    public func cycle<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A>{
+    public func cycle<A>(iter : Iter.Iter<A>, n : Nat) : Iter.Iter<A> {
         var buf = Buffer.Buffer<A>(1);
         var buf_index = 0;
         var i = 0;
 
-        return object{
-            public func next(): ?A{
-                if ( i == n){
-                    null
-                }else{
-                    switch(iter.next()){
-                        case (?x){
+        return object {
+            public func next() : ?A {
+                if (i == n) {
+                    null;
+                } else {
+                    switch (iter.next()) {
+                        case (?x) {
                             buf.add(x);
-                            ?x
+                            ?x;
                         };
                         case (null) {
-                            if(buf.size() == 0){
-                                null
-                            }else{
-                                if (buf_index < buf.size()){
-                                    buf_index+=1;
-                                    ?buf.get(buf_index - 1)
-                                }else{
-                                    i+=1;
-                                    if (i < n){
-                                        buf_index:=1;
-                                        ?buf.get(buf_index - 1)
-                                    }else{
-                                        null
-                                    }
+                            if (buf.size() == 0) {
+                                null;
+                            } else {
+                                if (buf_index < buf.size()) {
+                                    buf_index += 1;
+                                    ?buf.get(buf_index - 1);
+                                } else {
+                                    i += 1;
+                                    if (i < n) {
+                                        buf_index := 1;
+                                        ?buf.get(buf_index - 1);
+                                    } else {
+                                        null;
+                                    };
                                 };
-                            }
+                            };
                         };
                     };
-                }
-            }
-        }
+                };
+            };
+        };
     };
 
     /// Returns an iterator that returns tuples with the index of the element
     /// and the element.
     ///
     /// The index starts at 0 and is the first item in the tuple.
-    /// 
+    ///
     /// ```motoko
-    /// 
+    ///
     ///     let chars = "abc".chars();
     ///     let iter = Itertools.enumerate(chars);
     ///
     ///     for ((i, c) in iter){
-    ///         Debug.print((i, c)); 
+    ///         Debug.print((i, c));
     ///     };
-    ///     
+    ///
     ///     // (0, 'a')
     ///     // (1, 'b')
     ///     // (2, 'c')
     /// ```
-    public func enumerate<A>(iter: Iter.Iter<A> ): Iter.Iter<(Nat, A)> {
-        var i =0;
-        return object{
-            public func next ():?(Nat, A) {
+    public func enumerate<A>(iter : Iter.Iter<A>) : Iter.Iter<(Nat, A)> {
+        var i = 0;
+        return object {
+            public func next() : ?(Nat, A) {
                 let nextVal = iter.next();
 
                 switch nextVal {
                     case (?v) {
                         let val = ?(i, v);
-                        i+= 1;
+                        i += 1;
 
                         return val;
                     };
@@ -657,12 +658,12 @@ module {
     ///     assert it.next() == null;
     ///
     /// ```
-    public func empty<A>(): Iter.Iter<A> {
-        return object{
-            public func next(): ?A{
-                null
-            }
-        }
+    public func empty<A>() : Iter.Iter<A> {
+        return object {
+            public func next() : ?A {
+                null;
+            };
+        };
     };
 
     /// Checks if two iterators are equal.
@@ -681,15 +682,15 @@ module {
     ///
     ///     assert not Itertools.equal(it3, it4, Nat.compare);
     /// ```
-    public func equal<A>(iter1: Iter.Iter<A>, iter2: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool {
+    public func equal<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Bool {
 
-        switch( (iter1.next(), iter2.next())){
-            case((?a, ?b)){
-                if (cmp(a, b) == #equal){
-                    equal<A>(iter1, iter2, cmp)
-                }else{
-                    false
-                }
+        switch ((iter1.next(), iter2.next())) {
+            case ((?a, ?b)) {
+                if (cmp(a, b) == #equal) {
+                    equal<A>(iter1, iter2, cmp);
+                } else {
+                    false;
+                };
             };
             case ((null, ?b)) false;
             case ((?a, null)) false;
@@ -697,7 +698,7 @@ module {
         };
 
     };
-    
+
     /// Looks for an element in an iterator that matches a predicate.
     ///
     /// ### Example
@@ -712,10 +713,10 @@ module {
     ///
     ///     assert res == ?2
     /// ```
-    public func find<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): ?A{
-        for (val in iter){
-            if (predicate(val)){
-                return ?val
+    public func find<A>(iter : Iter.Iter<A>, predicate : (A) -> Bool) : ?A {
+        for (val in iter) {
+            if (predicate(val)) {
+                return ?val;
             };
         };
         return null;
@@ -734,13 +735,13 @@ module {
     ///
     ///     assert res == ?1;
     /// ```
-    public func findIndex<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): ?Nat{
+    public func findIndex<A>(iter : Iter.Iter<A>, predicate : (A) -> Bool) : ?Nat {
         var i = 0;
-        for (val in iter){
-            if (predicate(val)){
-                return ?i
+        for (val in iter) {
+            if (predicate(val)) {
+                return ?i;
             };
-            i+=1;
+            i += 1;
         };
         return null;
     };
@@ -759,21 +760,21 @@ module {
     ///     assert Iter.toArray(res) == [1, 3, 5];
     ///
     /// ```
-    public func findIndices<A>(iter: Iter.Iter<A>, predicate: (A) -> Bool): Iter.Iter<Nat>{
+    public func findIndices<A>(iter : Iter.Iter<A>, predicate : (A) -> Bool) : Iter.Iter<Nat> {
         var i = 0;
-        return object{
-            public func next(): ?Nat{
-                for (val in iter){
-                    i+=1;
+        return object {
+            public func next() : ?Nat {
+                for (val in iter) {
+                    i += 1;
 
-                    if (predicate(val)){
+                    if (predicate(val)) {
                         return ?(i - 1);
                     };
 
                 };
 
                 return null;
-            }
+            };
         };
     };
 
@@ -790,25 +791,25 @@ module {
     ///     import Nat8 "mo:base/Nat8";
     ///
     ///     let arr : [Nat8] = [1, 2, 3, 4, 5];
-    ///     let sumToNat = func(acc: Nat, n: Nat8): Nat { 
+    ///     let sumToNat = func(acc: Nat, n: Nat8): Nat {
     ///         acc + Nat8.toNat(n)
     ///     };
     ///
     ///     let sum = Itertools.fold<Nat8, Nat>(
-    ///         arr.vals(), 
-    ///         200, 
+    ///         arr.vals(),
+    ///         200,
     ///         sumToNat
     ///     );
     ///
     ///     assertTrue(sum == 215)
     /// ```
     ///
-    /// You can easily fold from the right to left using a 
+    /// You can easily fold from the right to left using a
     /// [`Deiter`](Deiter.html) to reverse the iterator before folding.
 
-    public func fold<A, B>(iter: Iter.Iter<A>, initial: B, f: (B, A) -> B): B{
+    public func fold<A, B>(iter : Iter.Iter<A>, initial : B, f : (B, A) -> B) : B {
         var res = initial;
-        for (val in iter){
+        for (val in iter) {
             res := f(res, val);
         };
 
@@ -830,26 +831,26 @@ module {
     ///     let flattened = Itertools.flatten(nestedIter);
     ///     assert Iter.toArray(flattened) == [1, 2, 3, 4, 5, 6];
     /// ```
-    
-    public func flatten<A>(nestedIter: Iter.Iter<Iter.Iter<A>>) : Iter.Iter<A> {
-        var iter : Iter.Iter<A> = switch (nestedIter.next()){
-            case (?_iter){
-                _iter
+
+    public func flatten<A>(nestedIter : Iter.Iter<Iter.Iter<A>>) : Iter.Iter<A> {
+        var iter : Iter.Iter<A> = switch (nestedIter.next()) {
+            case (?_iter) {
+                _iter;
             };
-            case (_){
+            case (_) {
                 return empty<A>();
             };
         };
 
         object {
-            public func next(): ?A {
-                switch(iter.next()){
+            public func next() : ?A {
+                switch (iter.next()) {
                     case (?val) ?val;
-                    case (_){
-                        switch(nestedIter.next()){
-                            case (?_iter){
-                                iter :=_iter;
-                                iter.next()
+                    case (_) {
+                        switch (nestedIter.next()) {
+                            case (?_iter) {
+                                iter := _iter;
+                                iter.next();
                             };
                             case (_) null;
                         };
@@ -857,9 +858,9 @@ module {
                 };
             };
         };
-    }; 
+    };
 
-    /// Returns an flattened iterator with all the values in a nested array 
+    /// Returns an flattened iterator with all the values in a nested array
     ///
     /// ### Example
     ///
@@ -870,15 +871,15 @@ module {
     ///
     ///     assert Iter.toArray(flattened) == [1, 2, 3, 4, 5, 6];
     /// ```
-    public func flattenArray<A>(nestedArray: [[A]]): Iter.Iter<A>{
+    public func flattenArray<A>(nestedArray : [[A]]) : Iter.Iter<A> {
         flatten(
             Iter.map(
                 nestedArray.vals(),
-                func(arr: [A]) : Iter.Iter<A> {
-                    arr.vals()
-                }
-            )
-        )
+                func(arr : [A]) : Iter.Iter<A> {
+                    arr.vals();
+                },
+            ),
+        );
     };
 
     /// Groups nearby elements into arrays based on result from the given function and returns them along with the result of elements in that group.
@@ -893,7 +894,7 @@ module {
     ///     let groups = Itertools.groupBy(vals, isFactorOf30);
     ///
     ///     assert Iter.toArray(groups) == [
-    ///         ([1, 2, 3], true), 
+    ///         ([1, 2, 3], true),
     ///         ([4], false),
     ///         ([5, 6], true),
     ///         ([7, 8, 9], false),
@@ -901,47 +902,47 @@ module {
     ///     ];
     ///
     /// ```
-    public func groupBy<A, B>(iter: Iter.Iter<A>, pred: (A) -> Bool): Iter.Iter<([A], Bool)>{
-        let group  = Buffer.Buffer<A>(8);
+    public func groupBy<A, B>(iter : Iter.Iter<A>, pred : (A) -> Bool) : Iter.Iter<([A], Bool)> {
+        let group = Buffer.Buffer<A>(8);
 
-        func nextGroup() : ?([A], Bool){
-            switch(iter.next()){
-                case(?val){
-                    if (group.size() == 0){
+        func nextGroup() : ?([A], Bool) {
+            switch (iter.next()) {
+                case (?val) {
+                    if (group.size() == 0) {
                         group.add(val);
                         return nextGroup();
                     };
 
-                    if(pred(group.get(0)) ==  pred(val)){
+                    if (pred(group.get(0)) == pred(val)) {
                         group.add(val);
-                        nextGroup()
-                    }else{
+                        nextGroup();
+                    } else {
                         let arr = group.toArray();
 
                         group.clear();
                         group.add(val);
 
-                        ?(arr, pred(arr[0]))
+                        ?(arr, pred(arr[0]));
                     };
                 };
-                case(_){
-                    if (group.size() == 0){
-                        null
-                    }else{
+                case (_) {
+                    if (group.size() == 0) {
+                        null;
+                    } else {
                         let arr = group.toArray();
-                        
+
                         group.clear();
 
-                        ?(arr, pred(arr[0]))
-                    }
-                }
+                        ?(arr, pred(arr[0]));
+                    };
+                };
             };
         };
 
-        return object{
-            public func next(): ?([A], Bool){
-                nextGroup()
-            }
+        return object {
+            public func next() : ?([A], Bool) {
+                nextGroup();
+            };
         };
     };
 
@@ -970,21 +971,21 @@ module {
     ///     This value [ +2 ] is even.
     ///     This value [ +4 ] is even.
     /// ```
-    public func inspect<A>(iter: Iter.Iter<A>, callback: (A) -> ()): Iter.Iter<A>{
+    public func inspect<A>(iter : Iter.Iter<A>, callback : (A) -> ()) : Iter.Iter<A> {
 
-        object{
-            public func next() : ?A{
-                switch(iter.next()){
-                    case(?a){
+        object {
+            public func next() : ?A {
+                switch (iter.next()) {
+                    case (?a) {
                         callback(a);
-                        ?a
+                        ?a;
                     };
-                    case(_){
-                        null
+                    case (_) {
+                        null;
                     };
-                }
-            }
-        }
+                };
+            };
+        };
     };
 
     /// Alternates between two iterators of the same type until one is exhausted.
@@ -1005,14 +1006,14 @@ module {
     ///     assert iter.next() == null
     /// ```
 
-    public func interleave<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+    public func interleave<A>(_iter1 : Iter.Iter<A>, _iter2 : Iter.Iter<A>) : Iter.Iter<A> {
         var iter1 = _iter1;
         var iter2 = _iter2;
 
-        return object{
-            public func next () : ?A {
-                
-                switch (iter1.next(), iter2.next()){
+        return object {
+            public func next() : ?A {
+
+                switch (iter1.next(), iter2.next()) {
                     case (?val, ?val2) {
 
                         let tmp = iter1;
@@ -1027,7 +1028,6 @@ module {
             };
         };
     };
-
 
     /// Alternates between two iterators of the same type until both are exhausted.
     ///
@@ -1048,14 +1048,14 @@ module {
     ///     assert iter.next() == ?4
     ///     assert iter.next() == null
     /// ```
-    public func interleaveLongest<A>(_iter1: Iter.Iter<A>, _iter2: Iter.Iter<A>): Iter.Iter<A>{
+    public func interleaveLongest<A>(_iter1 : Iter.Iter<A>, _iter2 : Iter.Iter<A>) : Iter.Iter<A> {
         var iter1 = _iter1;
         var iter2 = _iter2;
 
-        return object{
-            public func next ():?A {
-                
-                switch (iter1.next()){
+        return object {
+            public func next() : ?A {
+
+                switch (iter1.next()) {
                     case (?val) {
                         let tmp = iter1;
                         iter1 := iter2;
@@ -1070,7 +1070,7 @@ module {
         };
     };
 
-    /// Returns an iterator that inserts a value between each pair 
+    /// Returns an iterator that inserts a value between each pair
     /// of values in an iterator.
     ///
     /// ### Example
@@ -1083,24 +1083,24 @@ module {
     ///     assert Iter.toArray(iter) == [1, 10, 2, 10, 3];
     ///
     /// ```
-    public func intersperse<A>(_iter: Iter.Iter<A>, val: A): Iter.Iter<A>{
+    public func intersperse<A>(_iter : Iter.Iter<A>, val : A) : Iter.Iter<A> {
         let iter = peekable(_iter);
         var even = true;
 
-        return object{
-            public func next () : ?A {
-                switch(iter.peek()){
+        return object {
+            public func next() : ?A {
+                switch (iter.peek()) {
                     case (?item) {
                         if (even) {
                             even := false;
                             return iter.next();
-                        }else{
+                        } else {
                             even := true;
                             return ?val;
                         };
                     };
                     case (_) null;
-                }
+                };
             };
         };
     };
@@ -1124,20 +1124,20 @@ module {
     /// assert Itertools.isSorted(c.vals(), Nat.compare) == false;
     ///
     /// ```
-    public func isSorted<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool{
-        var prev = switch(iter.next()){
-            case (?n) {n};
+    public func isSorted<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Bool {
+        var prev = switch (iter.next()) {
+            case (?n) { n };
             case (null) return true;
         };
 
-        for (item in iter){
-            if (cmp(prev, item) == #greater){
+        for (item in iter) {
+            if (cmp(prev, item) == #greater) {
                 return false;
             };
             prev := item;
         };
 
-        true
+        true;
     };
 
     /// Checks if all the elements in an iterator are sorted in descending order
@@ -1158,22 +1158,21 @@ module {
     /// assert Itertools.isSortedDesc(c.vals(), Nat.compare) == true;
     ///
     /// ```
-    public func isSortedDesc<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool{
-        var prev = switch(iter.next()){
-            case (?n) {n};
+    public func isSortedDesc<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Bool {
+        var prev = switch (iter.next()) {
+            case (?n) { n };
             case (null) return true;
         };
 
-        for (item in iter){
-            if (cmp(prev, item) == #less){
+        for (item in iter) {
+            if (cmp(prev, item) == #less) {
                 return false;
             };
             prev := item;
         };
 
-        true
+        true;
     };
-    
 
     /// Returns an iterator adaptor that mutates elements of an iterator by applying the given function to each entry.
     /// Each entry consists of the index of the element and the element itself.
@@ -1192,22 +1191,22 @@ module {
     ///     assert Iter.toArray(iter) == [0, 2, 4, 6, 8];
     ///
     /// ```
-    public func mapEntries<A, B>(iter: Iter.Iter<A>, f: (Nat, A) -> B): Iter.Iter<B>{
+    public func mapEntries<A, B>(iter : Iter.Iter<A>, f : (Nat, A) -> B) : Iter.Iter<B> {
         let entries = enumerate(iter);
 
-        return object{
-            public func next () : ?B {
-                switch(entries.next()){
+        return object {
+            public func next() : ?B {
+                switch (entries.next()) {
                     case (?(i, val)) {
                         return ?f(i, val);
                     };
                     case (_) null;
-                }
+                };
             };
         };
     };
 
-    /// Returns an iterator that filters elements based on a predicate and 
+    /// Returns an iterator that filters elements based on a predicate and
     /// maps them to a new value based on the second argument.
     ///
     /// ### Example
@@ -1216,7 +1215,7 @@ module {
     /// ```motoko
     ///
     ///     let vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].vals();
-    ///     
+    ///
     ///     let filterOddSquareEven = func( x : Nat ) : Nat {
     ///         if (x % 2 == 1){
     ///             null
@@ -1224,7 +1223,7 @@ module {
     ///             ?(x * x)
     ///         }
     ///      };
-    ///    
+    ///
     ///     let it = Itertools.mapFilter(vals, filterOddSquareEven);
     ///
     ///     assert it.next() == ?4
@@ -1234,25 +1233,25 @@ module {
     ///     assert it.next() == ?100
     ///     assert it.next() == null
     /// ```
-    public func mapFilter<A, B>(iter: Iter.Iter<A>, optMapFn: (A) -> ?B) : Iter.Iter<B>{
+    public func mapFilter<A, B>(iter : Iter.Iter<A>, optMapFn : (A) -> ?B) : Iter.Iter<B> {
 
         func getNext() : ?B {
-            switch(iter.next()){
-                case(?val) {
-                    switch(optMapFn(val)){
-                        case(?newVal){ ?newVal };
-                        case(_){ getNext() };
+            switch (iter.next()) {
+                case (?val) {
+                    switch (optMapFn(val)) {
+                        case (?newVal) { ?newVal };
+                        case (_) { getNext() };
                     };
                 };
                 case (_) null;
             };
         };
 
-        object{
-            public func next() : ?B{
-                getNext()
+        object {
+            public func next() : ?B {
+                getNext();
             };
-        }
+        };
     };
 
     /// Maps the elements of an iterator and accumulates them into a single value.
@@ -1264,10 +1263,10 @@ module {
     ///
     ///     let vals = [13, 15, 20, 15, 11, 15].vals();
     ///
-    ///     let natToChar = func (x : Nat) : Text { 
+    ///     let natToChar = func (x : Nat) : Text {
     ///         Char.toText(
     ///             Char.fromNat32(
-    ///                 Nat32.fromNat(x) + 96 
+    ///                 Nat32.fromNat(x) + 96
     ///             )
     ///         )
     ///     };
@@ -1281,12 +1280,12 @@ module {
     ///     assert res == ?"motoko";
     ///
     /// ```
-    public func mapReduce<A, B>(iter: Iter.Iter<A>, f: (A) -> B, accFn: (B, B) -> B): ?B{
-        reduce( Iter.map<A, B>(iter, f), accFn )
+    public func mapReduce<A, B>(iter : Iter.Iter<A>, f : (A) -> B, accFn : (B, B) -> B) : ?B {
+        reduce(Iter.map<A, B>(iter, f), accFn);
     };
 
-    /// Maps a Result-returning function over an Iter and 
-    /// returns either the first error or an iter of successful 
+    /// Maps a Result-returning function over an Iter and
+    /// returns either the first error or an iter of successful
     /// values.
     ///
     /// ### Example
@@ -1330,11 +1329,10 @@ module {
     //     };
     // };
 
-
-    /// Returns an iterator that maps and yields elements while the 
+    /// Returns an iterator that maps and yields elements while the
     /// predicate is true.
-    /// The predicate is true if it returns an optional value and 
-    /// false if it 
+    /// The predicate is true if it returns an optional value and
+    /// false if it
     /// returns null.
     ///
     /// ### Example
@@ -1343,7 +1341,7 @@ module {
     ///
     ///     let vals = [1, 2, 3, 4, 5].vals();
     ///
-    ///     let squareIntLessThan4 = func( x : Int ) : ?Int { 
+    ///     let squareIntLessThan4 = func( x : Int ) : ?Int {
     ///         if (x < 4){
     ///             return ?(x * x);
     ///         }else{
@@ -1360,29 +1358,29 @@ module {
     ///     assert it.next() == null;
     ///
     /// ```
-    public func mapWhile<A, B>(iter: Iter.Iter<A>, pred: (A) -> ?B): Iter.Iter<B>{
+    public func mapWhile<A, B>(iter : Iter.Iter<A>, pred : (A) -> ?B) : Iter.Iter<B> {
         var ctrl = true;
-        return object{
-            public func next(): ?B{
-                if (ctrl == false){
+        return object {
+            public func next() : ?B {
+                if (ctrl == false) {
                     return null;
                 };
 
-                switch( iter.next()) {
+                switch (iter.next()) {
                     case (?n) {
-                        switch (pred(n)){
+                        switch (pred(n)) {
                             case (?v) {
-                                ?v
+                                ?v;
                             };
                             case (null) {
                                 ctrl := false;
-                                null
+                                null;
                             };
                         };
                     };
                     case (_) null;
                 };
-            }
+            };
         };
     };
 
@@ -1408,20 +1406,20 @@ module {
     ///
     ///     assert max == null;
     /// ```
-    public func max<A>(iter: Iter.Iter<A>, cmp: (A, A)-> Order.Order ): ?A{
-        var max: ?A = null;
+    public func max<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : ?A {
+        var max : ?A = null;
 
-        for (val in iter){
-            switch(max){
+        for (val in iter) {
+            switch (max) {
                 case (?m) {
-                    if (cmp(val, m) == #greater){
+                    if (cmp(val, m) == #greater) {
                         max := ?val;
-                    }
+                    };
                 };
-                case (null){
+                case (null) {
                     max := ?val;
-                }
-            }
+                };
+            };
         };
 
         return max;
@@ -1449,20 +1447,20 @@ module {
     ///
     ///     assert min == null;
     /// ```
-    public func min<A>(iter: Iter.Iter<A>, cmp: (A, A)-> Order.Order ): ?A{
-        var min: ?A = null;
+    public func min<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : ?A {
+        var min : ?A = null;
 
-        for (val in iter){
-            switch(min){
+        for (val in iter) {
+            switch (min) {
                 case (?m) {
-                    if (cmp(val, m) ==  #less ){
+                    if (cmp(val, m) == #less) {
                         min := ?val;
-                    }
+                    };
                 };
-                case (null){
+                case (null) {
                     min := ?val;
-                }
-            }
+                };
+            };
         };
 
         return min;
@@ -1504,23 +1502,17 @@ module {
     ///
     ///     assert minmax == ?(8, 8);
     /// ```
-    public func minmax<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): ?(A, A){
-        let (_min, _max) = switch(iter.next()){
+    public func minmax<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : ?(A, A) {
+        let (_min, _max) = switch (iter.next()) {
             case (?a) {
-                switch (iter.next()){
+                switch (iter.next()) {
                     case (?b) {
-                        switch(cmp(a, b)){
-                            case (#less) {
-                                (a, b)
-                            };
-                            case (_){
-                                (b, a)
-                            };
-                        }
+                        switch (cmp(a, b)) {
+                            case (#less) { (a, b) };
+                            case (_) { (b, a) };
+                        };
                     };
-                    case (_) {
-                        (a, a)
-                    };
+                    case (_) { (a, a) };
                 };
             };
             case (_) {
@@ -1531,13 +1523,13 @@ module {
         var min = _min;
         var max = _max;
 
-        for (val in iter){
+        for (val in iter) {
             let order = cmp(val, min);
-            if (order == #less){
+            if (order == #less) {
                 min := val;
-            }else if (order == #greater){
+            } else if (order == #greater) {
                 max := val;
-            }
+            };
         };
 
         ?(min, max)
@@ -1571,32 +1563,32 @@ module {
     ///
     ///     assert Iter.toArray(merged) == [5, 2, 3, 8, 4, 1];
     /// ```
-    public func merge<A>(iter1: Iter.Iter<A>, iter2: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Iter.Iter<A>{
+    public func merge<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Iter.Iter<A> {
         let p1 = peekable(iter1);
         let p2 = peekable(iter2);
 
-        object{
-            public func next() : ?A{
-                switch(p1.peek(), p2.peek()){
+        object {
+            public func next() : ?A {
+                switch (p1.peek(), p2.peek()) {
                     case (?a, ?b) {
-                        if (cmp(a, b) == #less){
-                            p1.next()
-                        }else{
-                            p2.next()
-                        }
+                        if (cmp(a, b) == #less) {
+                            p1.next();
+                        } else {
+                            p2.next();
+                        };
                     };
-                    case(_, ?b) {
-                        p2.next()
+                    case (_, ?b) {
+                        p2.next();
                     };
-                    case(?a, _) {
-                        p1.next()
+                    case (?a, _) {
+                        p1.next();
                     };
-                    case(_) {
-                        null
+                    case (_) {
+                        null;
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
     /// Returns an iterator that merges `k` iterators in order based on the `cmp` function.
@@ -1615,45 +1607,45 @@ module {
     ///     assert Iter.toArray(merged) == [1, 3, 4, 5, 6, 7, 8, 4, 1];
     /// ```
 
-    public func kmerge<A>(iters: [Iter.Iter<A>], cmp: (A, A) -> Order.Order): Iter.Iter<A>{
+    public func kmerge<A>(iters : [Iter.Iter<A>], cmp : (A, A) -> Order.Order) : Iter.Iter<A> {
         type Index<A> = (A, Nat);
 
-        let cmpIters = func (a: Index<A>, b: Index<A>) : Order.Order {
-            cmp(a.0, b.0)
+        let cmpIters = func(a : Index<A>, b : Index<A>) : Order.Order {
+            cmp(a.0, b.0);
         };
 
         let heap = Heap.Heap<Index<A>>(cmpIters);
 
-        for ((i, iter) in enumerate(iters.vals())){
-            switch(iter.next()){
-                case(?a){
+        for ((i, iter) in enumerate(iters.vals())) {
+            switch (iter.next()) {
+                case (?a) {
                     heap.put((a, i));
                 };
-                case(_){
+                case (_) {
 
                 };
             };
         };
 
-        object{
-            public func next() : ?A{
-                switch(heap.removeMin()){
+        object {
+            public func next() : ?A {
+                switch (heap.removeMin()) {
                     case (?(min, i)) {
-                        switch( iters[i].next() ){
-                            case(?a){
+                        switch (iters[i].next()) {
+                            case (?a) {
                                 heap.put((a, i));
                             };
-                            case(_){};
+                            case (_) {};
                         };
 
-                        ?min
+                        ?min;
                     };
-                    case(_) {
-                        null
+                    case (_) {
+                        null;
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
     /// Checks if two iterators are not equal.
@@ -1672,21 +1664,20 @@ module {
     ///
     ///     assert not Itertools.notEqual(vals3, vals4);
     /// ```
-    public func notEqual<A>(iter1: Iter.Iter<A>, iter2: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Bool{
-        switch(iter1.next(), iter2.next()){
+    public func notEqual<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Bool {
+        switch (iter1.next(), iter2.next()) {
             case (?a, ?b) {
-                if (not (cmp(a, b) == #equal)){
-                    true
-                }else{
-                    notEqual(iter1, iter2, cmp)
-                }
+                if (not (cmp(a, b) == #equal)) {
+                    true;
+                } else {
+                    notEqual(iter1, iter2, cmp);
+                };
             };
-            case(_, ?b) true;
-            case(?a, _) true;
-            case(_, _) false;
+            case (_, ?b) true;
+            case (?a, _) true;
+            case (_, _) false;
         };
     };
-
 
     /// Returns the nth element of an iterator.
     /// Consumes the first n elements of the iterator.
@@ -1701,7 +1692,7 @@ module {
     ///     assert nth == ?3;
     /// ```
     ///
-    public func nth<A>(iter: Iter.Iter<A>, n: Nat): ?A{
+    public func nth<A>(iter : Iter.Iter<A>, n : Nat) : ?A {
         let skippedIter = skip<A>(iter, n);
         return skippedIter.next();
     };
@@ -1717,8 +1708,8 @@ module {
     ///     assert Itertools.nthOrDefault(vals, 3, -1) == ?3;
     ///     assert Itertools.nthOrDefault(vals, 3, -1) == ?-1;
     /// ```
-    public func nthOrDefault<A>(iter: Iter.Iter<A>, n: Nat, defaultValue: A): A{
-        switch(nth<A>(iter, n)){
+    public func nthOrDefault<A>(iter : Iter.Iter<A>, n : Nat, defaultValue : A) : A {
+        switch (nth<A>(iter, n)) {
             case (?a) {
                 return a;
             };
@@ -1739,27 +1730,27 @@ module {
     ///
     ///     assert Iter.toArray(padded) == [1, 2, 3, 0, 0, 0];
     /// ```
-    public func pad<A>(iter: Iter.Iter<A>, length: Nat, value: A ): Iter.Iter<A>{
+    public func pad<A>(iter : Iter.Iter<A>, length : Nat, value : A) : Iter.Iter<A> {
         var count = 0;
 
-        object{
-            public func next() : ?A{
-                switch(iter.next()){
+        object {
+            public func next() : ?A {
+                switch (iter.next()) {
                     case (?a) {
                         count += 1;
-                        ?a
+                        ?a;
                     };
                     case (_) {
-                        if (count < length){
-                            count +=1;
-                            ?value
-                        }else{
-                            null
+                        if (count < length) {
+                            count += 1;
+                            ?value;
+                        } else {
+                            null;
                         };
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
     /// Pads an iterator with the result of a given function until it is of a certain length.
@@ -1768,41 +1759,40 @@ module {
     ///
     /// ```motoko
     ///
-    ///     
+    ///
     ///     let vals = [1, 2, 3].vals();
     ///     let incrementIndex = func (i: Nat) { i + 1 };
     ///
     ///     let padded = Itertools.padWithFn(vals, 6, incrementIndex);
     ///assert Iter.toArray(padded) == [1, 2, 3, 4, 5, 6];
     /// ```
-    public func padWithFn<A>(iter: Iter.Iter<A>, length: Nat, f: (Nat) -> A): Iter.Iter<A>{
-        var count: Nat = 0;
+    public func padWithFn<A>(iter : Iter.Iter<A>, length : Nat, f : (Nat) -> A) : Iter.Iter<A> {
+        var count : Nat = 0;
 
-        object{
-            public func next() : ?A{
-                switch(iter.next()){
+        object {
+            public func next() : ?A {
+                switch (iter.next()) {
                     case (?a) {
                         count += 1;
-                        ?a
+                        ?a;
                     };
                     case (_) {
-                        if (count < length){
-                            count +=1;
-                            ?f(count - 1)
-                        }else{
-                            null
+                        if (count < length) {
+                            count += 1;
+                            ?f(count - 1);
+                        } else {
+                            null;
                         };
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
-
-    /// Takes a partition function that returns `true` or `false` 
+    /// Takes a partition function that returns `true` or `false`
     /// for each element in the iterator.
     /// The iterator is partitioned into a tuple of two arrays.
-    /// The first array contains the elements all elements that 
+    /// The first array contains the elements all elements that
     /// returned `true` and the second array contains the elements
     /// that returned `false`.
     ///
@@ -1820,22 +1810,22 @@ module {
     ///     assert odd == [1, 3, 5];
     ///
     /// ```
-    public func partition<A>(iter: Iter.Iter<A>, f: (A) -> Bool): ([A], [A]){
+    public func partition<A>(iter : Iter.Iter<A>, f : (A) -> Bool) : ([A], [A]) {
         let firstGroup = Buffer.Buffer<A>(8);
         let secondGroup = Buffer.Buffer<A>(8);
 
-        for (val in iter){
-            if (f(val)){
+        for (val in iter) {
+            if (f(val)) {
                 firstGroup.add(val);
-            }else{
+            } else {
                 secondGroup.add(val);
             };
         };
 
-        (firstGroup.toArray(), secondGroup.toArray())
+        (firstGroup.toArray(), secondGroup.toArray());
     };
 
-    /// Partitions an iterator in place so that the values that 
+    /// Partitions an iterator in place so that the values that
     /// return `true` from the `predicate` are on the left and the
     /// values that return `false` are on the right.
     ///
@@ -1851,41 +1841,41 @@ module {
     ///     assert Iter.toArray(iter) == [0, 2, 4, 1, 3, 5];
     ///
     /// ```
-    public func partitionInPlace<A>(iter: Iter.Iter<A>, f: (A) -> Bool): Iter.Iter<A> {
+    public func partitionInPlace<A>(iter : Iter.Iter<A>, f : (A) -> Bool) : Iter.Iter<A> {
         let secondGroup = Buffer.Buffer<A>(8);
         var i = 0;
 
         object {
-            public func next() : ?A{
+            public func next() : ?A {
                 label l loop {
-                    switch (iter.next()){
+                    switch (iter.next()) {
                         case (?a) {
-                            if (f(a)){
+                            if (f(a)) {
                                 return ?a;
-                            }else{
+                            } else {
                                 secondGroup.add(a);
                             };
                         };
                         case (_) {
-                            if (i >= secondGroup.size()){
+                            if (i >= secondGroup.size()) {
                                 return null;
-                            }else{
+                            } else {
                                 break l;
-                            }
+                            };
                         };
                     };
                 };
 
                 let tmp_index = i;
-                i+=1;
+                i += 1;
                 return ?secondGroup.get(tmp_index);
             };
-        }
+        };
     };
-    
-    /// Checks if an iterator is partitioned by a predicate into 
+
+    /// Checks if an iterator is partitioned by a predicate into
     /// two consecutive groups.
-    /// The first n elements of the iterator return `true` when 
+    /// The first n elements of the iterator return `true` when
     /// passed to the predicate, and the rest return `false`.
     ///
     /// ### Example
@@ -1900,34 +1890,34 @@ module {
     ///     assert res == true;
     /// ```
 
-    public func isPartitioned<A>(iter: Iter.Iter<A>, f: (A) -> Bool): Bool{
+    public func isPartitioned<A>(iter : Iter.Iter<A>, f : (A) -> Bool) : Bool {
         var inFirstGroup = true;
-      
-        for (val in iter){
-            if (f(val)){
-                if (not inFirstGroup){
+
+        for (val in iter) {
+            if (f(val)) {
+                if (not inFirstGroup) {
                     return false;
                 };
-            }else{
-                if (inFirstGroup){
+            } else {
+                if (inFirstGroup) {
                     inFirstGroup := false;
                 };
-            }
+            };
         };
 
         return true;
     };
 
     /// Returns a peekable iterator.
-    /// The iterator has a `peek` method that returns the next value 
+    /// The iterator has a `peek` method that returns the next value
     /// without consuming the iterator.
     ///
     /// ### Example
     /// ```motoko
-    ///     
+    ///
     ///     let vals = Iter.fromArray([1, 2]);
     ///     let peekIter = Itertools.peekable(vals);
-    ///     
+    ///
     ///     assert peekIter.peek() == ?1;
     ///     assert peekIter.next() == ?1;
     ///
@@ -1938,8 +1928,8 @@ module {
     ///     assert peekIter.peek() == null;
     ///     assert peekIter.next() == null;
     /// ```
-    public func peekable<T>(iter: Iter.Iter<T>) : PeekableIter.PeekableIter<T> {
-        PeekableIter.fromIter<T>(iter)
+    public func peekable<T>(iter : Iter.Iter<T>) : PeekableIter.PeekableIter<T> {
+        PeekableIter.fromIter<T>(iter);
     };
 
     /// Returns an iterator that yeilds all the permutations of the
@@ -1953,51 +1943,51 @@ module {
     ///     let perms = Itertools.permutations(vals, Nat.compare);
     ///
     ///     assert Iter.toArray(perms) == [
-    ///         [1, 2, 3], [1, 3, 2], 
-    ///         [2, 1, 3], [2, 3, 1], 
+    ///         [1, 2, 3], [1, 3, 2],
+    ///         [2, 1, 3], [2, 3, 1],
     ///         [3, 1, 2], [3, 2, 1]
     ///     ];
     /// ```
-    public func permutations<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order ): Iter.Iter<[A]>{
+    public func permutations<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Iter.Iter<[A]> {
         let arr = Iter.toArrayMut<A>(iter);
         let n = arr.size();
 
         let totalPermutations = Nat_Utils.factorial(n);
         var permutationsLeft = totalPermutations;
 
-        object{
-            public func next() : ?[A]{
-                if (permutationsLeft == totalPermutations){
+        object {
+            public func next() : ?[A] {
+                if (permutationsLeft == totalPermutations) {
                     permutationsLeft -= 1;
                     return ?Array.freeze(arr);
                 };
 
-                if (permutationsLeft == 0){
+                if (permutationsLeft == 0) {
                     return null;
                 };
 
-                permutationsLeft -=1;
+                permutationsLeft -= 1;
 
                 var i = Int.abs(n - 2);
-                
-                while (i > 0 and not (cmp(arr[i], arr[i + 1]) == #less)){
-                    i-= 1;
+
+                while (i > 0 and not (cmp(arr[i], arr[i + 1]) == #less)) {
+                    i -= 1;
                 };
 
-                var j = i+1;
+                var j = i +1;
 
-                for (k in range(i + 1, n)){
-                    if (cmp(arr[k], arr[i]) == #greater){
+                for (k in range(i + 1, n)) {
+                    if (cmp(arr[k], arr[i]) == #greater) {
                         if (cmp(arr[k], arr[j]) == #less) {
                             j := k;
                         };
                     };
                 };
-                
+
                 ArrayMut_Utils.swap(arr, i, j);
                 ArrayMut_Utils.reverseFrom(arr, i + 1);
 
-                ?Array.freeze(arr)
+                ?Array.freeze(arr);
             };
         };
     };
@@ -2013,18 +2003,18 @@ module {
     ///
     ///     assert Iter.toArray(iter) == [1, 2, 3];
     /// ```
-    public func prepend<A>(value: A, iter: Iter.Iter<A>) : Iter.Iter<A> {
+    public func prepend<A>(value : A, iter : Iter.Iter<A>) : Iter.Iter<A> {
         var popped = false;
         object {
             public func next() : ?A {
-                if (popped){
-                    iter.next()
-                }else{
+                if (popped) {
+                    iter.next();
+                } else {
                     popped := true;
-                    ?value
-                }
+                    ?value;
+                };
             };
-        }
+        };
     };
 
     /// Consumes an iterator of integers and returns the product of all values.
@@ -2038,17 +2028,17 @@ module {
     ///
     ///     assert prod == ?24;
     /// ```
-    public func product<A>(iter: Iter.Iter<A>, mul: (A, A) -> A): ?A{
-        var acc : A = switch(iter.next()){
+    public func product<A>(iter : Iter.Iter<A>, mul : (A, A) -> A) : ?A {
+        var acc : A = switch (iter.next()) {
             case (?n) n;
             case (_) return null;
         };
 
-        for(n in iter){
+        for (n in iter) {
             acc := mul(acc, n);
         };
 
-        ?acc
+        ?acc;
     };
 
     /// Returns a `Nat` iterator that yields numbers in range [start, end).
@@ -2066,17 +2056,17 @@ module {
     ///     assert iter.next() == ?4;
     ///     assert iter.next() == null;
     /// ```
-    public func range(start: Nat, end: Nat): Iter.Iter<Nat>{
-        var i: Int = start;
+    public func range(start : Nat, end : Nat) : Iter.Iter<Nat> {
+        var i : Int = start;
 
         return object {
-            public func next(): ?Nat {
-                if (i < end ) {
+            public func next() : ?Nat {
+                if (i < end) {
                     i += 1;
                     return ?Int.abs(i - 1);
                 } else {
                     return null;
-                }
+                };
             };
         };
     };
@@ -2094,17 +2084,17 @@ module {
     ///     assert iter.next() == ?3;
     ///     assert iter.next() == null;
     /// ```
-    public func intRange(start: Int, end: Int): Iter.Iter<Int>{
-        var i: Int = start;
+    public func intRange(start : Int, end : Int) : Iter.Iter<Int> {
+        var i : Int = start;
 
         return object {
-            public func next(): ?Int {
-                if (i < end ) {
+            public func next() : ?Int {
+                if (i < end) {
                     i += 1;
                     return ?i;
                 } else {
                     return null;
-                }
+                };
             };
         };
     };
@@ -2123,21 +2113,21 @@ module {
     ///
     ///     assert sum == ?15;
     /// ```
-    public func reduce<A>(iter: Iter.Iter<A>, f: (A, A) -> A): ?A{
-        switch (iter.next()){
+    public func reduce<A>(iter : Iter.Iter<A>, f : (A, A) -> A) : ?A {
+        switch (iter.next()) {
             case (?a) {
                 var acc = a;
 
-                for (val in iter){
+                for (val in iter) {
                     acc := f(acc, val);
                 };
 
-                ?acc
+                ?acc;
             };
             case (_) {
                 return null;
             };
-        }
+        };
     };
 
     /// Returns an iterator that repeats a given value `n` times.
@@ -2153,17 +2143,17 @@ module {
     ///     assert iter.next() == ?1;
     ///     assert iter.next() == null;
     /// ```
-    public func repeat<A>(item: A, n: Nat): Iter.Iter<A>{
+    public func repeat<A>(item : A, n : Nat) : Iter.Iter<A> {
         var i = 0;
-        return object{
-            public func next(): ?A{
-                if (i < n){
+        return object {
+            public func next() : ?A {
+                if (i < n) {
                     i += 1;
                     return ?item;
-                }else{
-                    null
-                }
-            }
+                } else {
+                    null;
+                };
+            };
         };
     };
 
@@ -2180,20 +2170,20 @@ module {
     ///     assert iter.next() == ?5;
     ///     assert iter.next() == null;
     /// ```
-    public func skip<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A>{
+    public func skip<A>(iter : Iter.Iter<A>, n : Nat) : Iter.Iter<A> {
         var i = 0;
-        label l while (i < n){
-            switch(iter.next()){
-                case (?val){
-                    i:= i + 1;
+        label l while (i < n) {
+            switch (iter.next()) {
+                case (?val) {
+                    i := i + 1;
                 };
-                case (_){
+                case (_) {
                     break l;
                 };
             };
         };
 
-        iter
+        iter;
     };
 
     /// Skips elements continuously while the predicate is true.
@@ -2209,30 +2199,30 @@ module {
     ///     assert Iter.toArray(iter) == [3, 4, 5];
     ///
     /// ```
-    public func skipWhile<A>(iter: Iter.Iter<A>, pred: (A) -> Bool): Iter.Iter<A>{
+    public func skipWhile<A>(iter : Iter.Iter<A>, pred : (A) -> Bool) : Iter.Iter<A> {
         let peekableIter = peekable(iter);
 
-        label l loop{
-            switch(peekableIter.peek()){
-                case (?val){
-                    if (not pred(val)){
+        label l loop {
+            switch (peekableIter.peek()) {
+                case (?val) {
+                    if (not pred(val)) {
                         break l;
                     };
 
                     ignore peekableIter.next();
                 };
-                case (_){
+                case (_) {
                     break l;
                 };
             };
         };
 
-        peekableIter
+        peekableIter;
     };
 
     /// Returns overlapping tuple pairs from the given iterator.
-    /// The first element of the iterator is paired with the second element, and the 
-    /// second is paired with the third element, and so on. 
+    /// The first element of the iterator is paired with the second element, and the
+    /// second is paired with the third element, and so on.
     /// ?(a, b), ?(b, c), ?(c, d), ...
     ///
     /// If the iterator has fewer than two elements, an null value is returned.
@@ -2250,18 +2240,18 @@ module {
     ///     assert pairs.next() == ?(4, 5);
     ///     assert pairs.next() == null;
     /// ```
-    public func slidingTuples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A)>{
+    public func slidingTuples<A>(iter : Iter.Iter<A>) : Iter.Iter<(A, A)> {
         var prev = iter.next();
 
-        return object{
-            public func next(): ?(A, A){
-                switch(prev, iter.next()){
-                    case (?_prev, ?curr){
+        return object {
+            public func next() : ?(A, A) {
+                switch (prev, iter.next()) {
+                    case (?_prev, ?curr) {
                         let tmp = (_prev, curr);
                         prev := ?curr;
-                        ?tmp
+                        ?tmp;
                     };
-                    case(_){
+                    case (_) {
                         return null;
                     };
                 };
@@ -2287,20 +2277,20 @@ module {
     ///     assert triples.next() == ?(3, 4, 5);
     ///     assert triples.next() == null;
     /// ```
-    public func slidingTriples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A, A)>{
+    public func slidingTriples<A>(iter : Iter.Iter<A>) : Iter.Iter<(A, A, A)> {
         var a = iter.next();
         var b = iter.next();
 
-        return object{
-            public func next(): ?(A, A, A){
-                switch(a, b, iter.next()){
-                    case (?_a, ?_b, ?curr){
+        return object {
+            public func next() : ?(A, A, A) {
+                switch (a, b, iter.next()) {
+                    case (?_a, ?_b, ?curr) {
                         let tmp = (_a, _b, curr);
                         a := b;
                         b := ?curr;
-                        ?tmp
+                        ?tmp;
                     };
-                    case(_){
+                    case (_) {
                         return null;
                     };
                 };
@@ -2318,18 +2308,18 @@ module {
     ///
     ///     assert Iter.toArray(sorted) == [1, 3, 4, 5, 8];
     /// ```
-    public func sort<A>(iter: Iter.Iter<A>, cmp: (A, A) -> Order.Order): Iter.Iter<A>{
+    public func sort<A>(iter : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Iter.Iter<A> {
         let heap = Heap.Heap<A>(cmp);
 
-        for (val in iter){
+        for (val in iter) {
             heap.put(val);
         };
 
-        object{
-            public func next(): ?A{
-                heap.removeMin()
-            }
-        }
+        object {
+            public func next() : ?A {
+                heap.removeMin();
+            };
+        };
     };
 
     /// Returns a tuple of iterators where the first element is the first n elements of the iterator, and the second element is the remaining elements.
@@ -2351,12 +2341,12 @@ module {
     ///     assert left.next() == null;
     ///     assert right.next() == null;
     /// ```
-    public func splitAt<A>(iter: Iter.Iter<A>, n: Nat): (Iter.Iter<A>, Iter.Iter<A>) {
+    public func splitAt<A>(iter : Iter.Iter<A>, n : Nat) : (Iter.Iter<A>, Iter.Iter<A>) {
         var left = Iter.toArray(take(iter, n)).vals();
-        (left, iter)
+        (left, iter);
     };
 
-    /// Returns a tuple of iterators where the first element is an iterator with a copy of 
+    /// Returns a tuple of iterators where the first element is an iterator with a copy of
     /// the first n elements of the iterator, and the second element is the original iterator
     /// with all the elements
     ///
@@ -2366,7 +2356,7 @@ module {
     ///     let vals = [1, 2, 3, 4, 5].vals();
     ///     let (copy, iter) = Itertools.spy(vals, 3);
     ///
-    ///     assert copy.next() == ?1;  
+    ///     assert copy.next() == ?1;
     ///     assert copy.next() == ?2;
     ///     assert copy.next() == ?3;
     ///     assert copy.next() == null;
@@ -2379,10 +2369,10 @@ module {
     ///     assert vals.next() == null;
     /// ```
 
-    public func spy<A>(iter: Iter.Iter<A>, n: Nat): (Iter.Iter<A>, Iter.Iter<A>) {
-        // let firstN = 
+    public func spy<A>(iter : Iter.Iter<A>, n : Nat) : (Iter.Iter<A>, Iter.Iter<A>) {
+        // let firstN =
         var copy = Iter.toArray(take(iter, n));
-        (copy.vals(), chain(copy.vals(), iter))
+        (copy.vals(), chain(copy.vals(), iter));
     };
 
     /// Returns every nth element of the iterator.
@@ -2399,30 +2389,30 @@ module {
     ///     assert iter.next() == ?5;
     ///     assert iter.next() == null;
     /// ```
-    public func stepBy<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A> {
+    public func stepBy<A>(iter : Iter.Iter<A>, n : Nat) : Iter.Iter<A> {
         assert n > 0;
 
-        return object{
-            public func next(): ?A{
-                switch(iter.next()){
-                    case (?item){
+        return object {
+            public func next() : ?A {
+                switch (iter.next()) {
+                    case (?item) {
                         ignore skip(iter, Int.abs(n - 1));
-                        ?item
+                        ?item;
                     };
-                    case (_){
+                    case (_) {
                         return null;
                     };
                 };
-            }
+            };
         };
     };
 
     /// Creates an iterator from the given value a where the next
-    /// elements are the results of the given function applied to 
+    /// elements are the results of the given function applied to
     /// the previous element.
     ///
-    /// The function takes the previous value and returns an Optional 
-    /// value.  If the function returns null when the function 
+    /// The function takes the previous value and returns an Optional
+    /// value.  If the function returns null when the function
     /// returns null.
     ///
     /// ### Example
@@ -2440,35 +2430,35 @@ module {
     ///     };
     ///
     ///     let succIter = Itertools.successor(
-    ///          2, 
+    ///          2,
     ///          optionSquaresOfSquares
     ///     );
     ///
     ///     let res = Iter.toArray(succIter);
     ///
     ///     assert res == [
-    ///         2, 4, 16, 256, 65_536, 4_294_967_296, 
+    ///         2, 4, 16, 256, 65_536, 4_294_967_296,
     ///     ];
     ///
     /// ```
-    public func successor<A>(start: A, f: (A) -> ?A) : Iter.Iter<A>{
+    public func successor<A>(start : A, f : (A) -> ?A) : Iter.Iter<A> {
         var curr = start;
 
-        object{
-            public func next(): ?A{
-                switch(f(curr)){
-                    case(?n){
+        object {
+            public func next() : ?A {
+                switch (f(curr)) {
+                    case (?n) {
                         let prev = curr;
                         curr := n;
 
-                        ?prev
+                        ?prev;
                     };
-                    case(_){
-                        null
+                    case (_) {
+                        null;
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
     /// Consumes an iterator of integers and returns the sum of all values.
@@ -2482,25 +2472,25 @@ module {
     ///
     ///     assert sum == ?10;
     /// ```
-    public func sum<A>(iter: Iter.Iter<A>, add: (A, A) -> A): ?A{
-        var acc : A = switch(iter.next()){
+    public func sum<A>(iter : Iter.Iter<A>, add : (A, A) -> A) : ?A {
+        var acc : A = switch (iter.next()) {
             case (?n) n;
             case (_) return null;
         };
 
-        for(n in iter){
+        for (n in iter) {
             acc := add(acc, n);
         };
 
-        ?acc
+        ?acc;
     };
 
     /// Returns an iterator with the first n elements of the given iter
     /// > Be aware that this returns a reference to the original iterator so
     /// > using it will cause the original iterator to be skipped.
-    /// 
+    ///
     /// If you want to keep the original iterator, use `spy` instead.
-    /// 
+    ///
     /// Note that using the returned iterator and the given iterator at the same time will cause the values in both iterators to be skipped.
     ///
     /// ### Example
@@ -2520,15 +2510,15 @@ module {
     ///     assert iter.next() == null;
     /// ```
 
-    public func take<A>(iter: Iter.Iter<A>, n: Nat): Iter.Iter<A>{
+    public func take<A>(iter : Iter.Iter<A>, n : Nat) : Iter.Iter<A> {
         var i = 0;
-        return object{
-            public func next(): ?A{
-                if (i < n){
-                    i:= i + 1;
-                    iter.next()
-                }else{
-                    null
+        return object {
+            public func next() : ?A {
+                if (i < n) {
+                    i := i + 1;
+                    iter.next();
+                } else {
+                    null;
                 };
             };
         };
@@ -2548,29 +2538,29 @@ module {
     ///     assert it.next() == ?2;
     ///     assert it.next() == null;
     /// ```
-    public func takeWhile<A>(iter: Iter.Iter<A>, predicate: A -> Bool): Iter.Iter<A>{
+    public func takeWhile<A>(iter : Iter.Iter<A>, predicate : A -> Bool) : Iter.Iter<A> {
         var iterate = true;
-        return object{
-            public func next(): ?A{
-                if (iterate){
-                    switch(iter.next()){
-                        case (?item){
-                            if (predicate(item)){
-                                ?item
-                            }else{
+        return object {
+            public func next() : ?A {
+                if (iterate) {
+                    switch (iter.next()) {
+                        case (?item) {
+                            if (predicate(item)) {
+                                ?item;
+                            } else {
                                 iterate := false;
-                                null
+                                null;
                             };
                         };
-                        case (_){
+                        case (_) {
                             iterate := false;
                             return null;
                         };
                     };
-                }else{
+                } else {
                     return null;
-                }
-            }
+                };
+            };
         };
     };
 
@@ -2592,7 +2582,7 @@ module {
     ///     assert iter2.next() == ?3;
     ///     assert iter2.next() == null;
     /// ```
-    public func tee<A>(iter: Iter.Iter<A>): (Iter.Iter<A>, Iter.Iter<A>){
+    public func tee<A>(iter : Iter.Iter<A>) : (Iter.Iter<A>, Iter.Iter<A>) {
         let array = Iter.toArray(iter);
 
         return (array.vals(), array.vals());
@@ -2614,20 +2604,20 @@ module {
     ///     assert it.next() == ?(1, 2);
     ///     assert it.next() == ?(3, 4);
     ///     assert it.next() == null;
-    /// 
+    ///
     /// ```
-    public func tuples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A)>{
-        return object{
-            public func next(): ?(A, A){
-                switch(iter.next(), iter.next()){
-                    case(?a, ?b){
-                        ?(a, b)
+    public func tuples<A>(iter : Iter.Iter<A>) : Iter.Iter<(A, A)> {
+        return object {
+            public func next() : ?(A, A) {
+                switch (iter.next(), iter.next()) {
+                    case (?a, ?b) {
+                        ?(a, b);
                     };
-                    case(_){
-                        null
+                    case (_) {
+                        null;
                     };
                 };
-            }
+            };
         };
     };
 
@@ -2647,18 +2637,18 @@ module {
     ///     assert it.next() == null;
     ///
     /// ```
-    public func triples<A>(iter: Iter.Iter<A>): Iter.Iter<(A, A, A)>{
-        return object{
-            public func next(): ?(A, A, A){
-                switch(iter.next(), iter.next(), iter.next()){
-                    case(?a, ?b, ?c){
-                        ?(a, b, c)
+    public func triples<A>(iter : Iter.Iter<A>) : Iter.Iter<(A, A, A)> {
+        return object {
+            public func next() : ?(A, A, A) {
+                switch (iter.next(), iter.next(), iter.next()) {
+                    case (?a, ?b, ?c) {
+                        ?(a, b, c);
                     };
-                    case(_){
-                        null
+                    case (_) {
+                        null;
                     };
                 };
-            }
+            };
         };
     };
 
@@ -2678,39 +2668,39 @@ module {
     ///     assert it.next() == null;
     ///
     /// ```
-    public func unique<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): Iter.Iter<A> {
+    public func unique<A>(iter : Iter.Iter<A>, hashFn : (A) -> Hash.Hash, isEq : (A, A) -> Bool) : Iter.Iter<A> {
         var set = TrieSet.empty<A>();
 
-        return object{
-            public func next(): ?A{
-                var res: ?A = null;
+        return object {
+            public func next() : ?A {
+                var res : ?A = null;
 
                 label l loop {
-                    switch(iter.next()){
-                        case (?item){
+                    switch (iter.next()) {
+                        case (?item) {
                             let hash = hashFn(item);
 
-                            if (TrieSet.mem<A>(set, item, hash, isEq)){
+                            if (TrieSet.mem<A>(set, item, hash, isEq)) {
                                 continue l;
                             };
 
                             set := TrieSet.put<A>(set, item, hash, isEq);
                             res := ?item;
-                            
+
                             break l;
                         };
-                        case (_){
+                        case (_) {
                             break l;
                         };
                     };
                 };
 
                 return res;
-            }
-        }
+            };
+        };
     };
 
-    /// Returns an iterator with the elements of the given iter and a boolean 
+    /// Returns an iterator with the elements of the given iter and a boolean
     /// indicating if the element is unique.
     ///
     /// ### Example
@@ -2728,32 +2718,32 @@ module {
     ///
     /// ```
     public func uniqueCheck<A>(
-        iter: Iter.Iter<A>, 
-        hashFn: (A) -> Hash.Hash, 
-        isEq: (A, A) -> Bool
-    ): Iter.Iter<(A, Bool)> {
+        iter : Iter.Iter<A>,
+        hashFn : (A) -> Hash.Hash,
+        isEq : (A, A) -> Bool,
+    ) : Iter.Iter<(A, Bool)> {
         var set = TrieSet.empty<A>();
 
-        return object{
-            public func next(): ?(A, Bool){
-                var res: ?(A, Bool) = null;
+        return object {
+            public func next() : ?(A, Bool) {
+                var res : ?(A, Bool) = null;
 
-                switch(iter.next()){
-                    case (?item){
+                switch (iter.next()) {
+                    case (?item) {
                         let hash = hashFn(item);
-                        if (TrieSet.mem<A>(set, item, hash, isEq)){
-                            ?(item, false)
-                        }else{
+                        if (TrieSet.mem<A>(set, item, hash, isEq)) {
+                            ?(item, false);
+                        } else {
                             set := TrieSet.put<A>(set, item, hash, isEq);
-                            ?(item, true)
-                        }
+                            ?(item, true);
+                        };
                     };
-                    case (_){
-                        null
+                    case (_) {
+                        null;
                     };
                 };
-            }
-        }
+            };
+        };
     };
 
     /// Returns `true` if all the elements in the given iter are unique.
@@ -2772,13 +2762,13 @@ module {
     ///     assert res == false;
     ///
     /// ```
-    public func isUnique<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): Bool {
+    public func isUnique<A>(iter : Iter.Iter<A>, hashFn : (A) -> Hash.Hash, isEq : (A, A) -> Bool) : Bool {
         var set = TrieSet.empty<A>();
 
-        for (item in iter){
+        for (item in iter) {
             let hash = hashFn(item);
 
-            if (TrieSet.mem<A>(set, item, hash, isEq)){
+            if (TrieSet.mem<A>(set, item, hash, isEq)) {
                 return false;
             };
 
@@ -2788,7 +2778,6 @@ module {
         return true;
     };
 
-    
     /// Unzips an iterator of tuples into a tuple of arrays.
     ///
     /// ### Example
@@ -2800,21 +2789,20 @@ module {
     ///     assert arr1 == [1, 2, 3];
     ///     assert arr2 == ['a', 'b', 'c'];
     /// ```
-    public func unzip<A>(iter: Iter.Iter<(A, A)>): ([A], [A]){
+    public func unzip<A>(iter : Iter.Iter<(A, A)>) : ([A], [A]) {
         var buf1 = Buffer.Buffer<A>(1);
         var buf2 = Buffer.Buffer<A>(1);
 
-        for ((a, b) in iter){
+        for ((a, b) in iter) {
             buf1.add(a);
             buf2.add(b);
         };
 
-        (buf1.toArray(), buf2.toArray())
+        (buf1.toArray(), buf2.toArray());
     };
 
-
-    /// Zips two iterators into one iterator of tuples 
-    /// The length of the zipped iterator is equal to the length 
+    /// Zips two iterators into one iterator of tuples
+    /// The length of the zipped iterator is equal to the length
     /// of the shorter iterator
     ///
     /// ### Example
@@ -2830,15 +2818,15 @@ module {
     ///     assert zipped.next() == null;
     /// ```
 
-    public func zip<A, B>(a: Iter.Iter<A>, b:Iter.Iter<B>): Iter.Iter<(A, B)>{
-        object{
-            public func next(): ?(A, B){
-                switch(a.next(), b.next()){
-                    case(?valueA, ?valueB) ?(valueA, valueB);
-                    case(_, _) null;
-                }
-            }
-        }
+    public func zip<A, B>(a : Iter.Iter<A>, b : Iter.Iter<B>) : Iter.Iter<(A, B)> {
+        object {
+            public func next() : ?(A, B) {
+                switch (a.next(), b.next()) {
+                    case (?valueA, ?valueB) ?(valueA, valueB);
+                    case (_, _) null;
+                };
+            };
+        };
     };
 
     /// Zips three iterators into one iterator of tuples
@@ -2859,15 +2847,15 @@ module {
     ///     assert zipped.next() == ?(3, 'c', 3.74);
     ///     assert zipped.next() == null;
     /// ```
-    public func zip3<A, B, C>(a: Iter.Iter<A>, b:Iter.Iter<B>, c:Iter.Iter<C>): Iter.Iter<(A, B, C)>{
-        object{
-            public func next(): ?(A, B, C){
-                switch(a.next(), b.next(), c.next()){
-                    case(?valueA, ?valueB, ?valueC) ?(valueA, valueB, valueC);
-                    case(_) null;
-                }
-            }
-        }
+    public func zip3<A, B, C>(a : Iter.Iter<A>, b : Iter.Iter<B>, c : Iter.Iter<C>) : Iter.Iter<(A, B, C)> {
+        object {
+            public func next() : ?(A, B, C) {
+                switch (a.next(), b.next(), c.next()) {
+                    case (?valueA, ?valueB, ?valueC) ?(valueA, valueB, valueC);
+                    case (_) null;
+                };
+            };
+        };
     };
 
     public type Either<A, B> = {
@@ -2899,22 +2887,48 @@ module {
     ///     assert zipped.next() == ?#left(5);
     ///     assert zipped.next() == null;
     /// ```
-    public func zipLongest<A, B>(iterA: Iter.Iter<A>, iterB:Iter.Iter<B>): Iter.Iter<EitherOr<A, B>>{
-        object{
-            public func next(): ?EitherOr<A, B>{
-                switch(iterA.next(), iterB.next()){
-                    case(?a, ?b) ?#both(a, b);
-                    case(?a, _)  ?#left(a);
-                    case(_, ?b)  ?#right(b);
-                    case(_, _) null;
-                }
-            }
-        }
+    public func zipLongest<A, B>(iterA : Iter.Iter<A>, iterB : Iter.Iter<B>) : Iter.Iter<EitherOr<A, B>> {
+        object {
+            public func next() : ?EitherOr<A, B> {
+                switch (iterA.next(), iterB.next()) {
+                    case (?a, ?b) ?#both(a, b);
+                    case (?a, _) ?#left(a);
+                    case (_, ?b) ?#right(b);
+                    case (_, _) null;
+                };
+            };
+        };
     };
 
     // ==============================================================================================
     // =============================== Iterator Collection Methods ===============================
     // ==============================================================================================
+
+    /// Transforms a slice of an array into an iterator
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let arr = [1, 2, 3, 4, 5];
+    ///     let slicedIter = Itertools.fromArraySlice(arr, 2, arr.size());
+    ///
+    ///     assert Iter.toArray(slicedIter) == [3, 4, 5];
+    /// ```
+    public func fromArraySlice<A>(arr : [A], start : Nat, end : Nat) : Iter.Iter<A> {
+        var i = start;
+        var j = Nat.min(end, arr.size());
+
+        object {
+            public func next() : ?A {
+                if (i < j) {
+                    i += 1;
+                    ?arr[i - 1];
+                } else {
+                    null;
+                };
+            };
+        };
+    };
 
     /// Collects an iterator of any type into a buffer
     ///
@@ -2926,9 +2940,9 @@ module {
     ///
     ///     assert buf.toArray() == [1, 2, 3, 4, 5];
     /// ```
-    public func toBuffer<A>(iter: Iter.Iter<A>): Buffer.Buffer<A>{
+    public func toBuffer<A>(iter : Iter.Iter<A>) : Buffer.Buffer<A> {
         let buf = Buffer.Buffer<A>(8);
-        for (item in iter){
+        for (item in iter) {
             buf.add(item);
         };
 
@@ -2936,28 +2950,28 @@ module {
     };
 
     /// Converts an iterator to a deque.
-    public func toDeque<T>(iter: Iter.Iter<T>): Deque.Deque<T> {
+    public func toDeque<T>(iter : Iter.Iter<T>) : Deque.Deque<T> {
         var dq = Deque.empty<T>();
 
-        for (item in iter){
+        for (item in iter) {
             dq := Deque.pushBack(dq, item);
         };
 
-        dq
+        dq;
     };
 
     /// Converts an Iter into a List
-    public func toList<A>(iter: Iter.Iter<A>): List.List<A> {
+    public func toList<A>(iter : Iter.Iter<A>) : List.List<A> {
         var list = List.nil<A>();
 
-        for (item in iter){
+        for (item in iter) {
             list := List.push(item, list);
         };
-        
-        list
+
+        list;
     };
 
-    /// Collects an iterator of characters into a text    
+    /// Collects an iterator of characters into a text
     ///
     /// ### Example
     /// ```motoko
@@ -2967,16 +2981,16 @@ module {
     ///
     ///     assert text == "abc";
     /// ```
-    public func toText(charIter: Iter.Iter<Char>): Text{
-        let textIter = Iter.map<Char, Text>(charIter, func(c){Char.toText(c)});
+    public func toText(charIter : Iter.Iter<Char>) : Text {
+        let textIter = Iter.map<Char, Text>(charIter, func(c) { Char.toText(c) });
         Text.join("", textIter);
     };
 
     /// Converts a TrieSet into an Iter
-    public func fromTrieSet<A>(set: TrieSet.Set<A>): Iter.Iter<A> {
+    public func fromTrieSet<A>(set : TrieSet.Set<A>) : Iter.Iter<A> {
         Iter.map<(A, ()), A>(
-            Trie.iter<A, ()>(set), 
-            func((item, _)) { item }
+            Trie.iter<A, ()>(set),
+            func((item, _)) { item },
         );
     };
 
@@ -2988,25 +3002,25 @@ module {
     ///     import TrieSet "mo:base/TrieSet";
     ///
     ///     let vals = [1, 1, 2, 3, 4, 4, 5].vals();
-    ///     let set = Itertools.toTrieSet(vals, Hash.hash, Nat.equal); 
+    ///     let set = Itertools.toTrieSet(vals, Hash.hash, Nat.equal);
     ///
     ///     let setIter = Itertools.fromTrieSet(set);
     ///     assert Iter.toArray(setIter) == [1, 2, 3, 4, 5];
     ///
     /// ```
-    public func toTrieSet<A>(iter: Iter.Iter<A>, hashFn: (A) -> Hash.Hash, isEq: (A, A) -> Bool): TrieSet.Set<A> {
+    public func toTrieSet<A>(iter : Iter.Iter<A>, hashFn : (A) -> Hash.Hash, isEq : (A, A) -> Bool) : TrieSet.Set<A> {
         var set = TrieSet.empty<A>();
 
-        label l for (item in iter){
+        label l for (item in iter) {
             let hash = hashFn(item);
 
-            if (TrieSet.mem(set, item, hash, isEq)){
+            if (TrieSet.mem(set, item, hash, isEq)) {
                 continue l;
-            }else{
+            } else {
                 set := TrieSet.put(set, item, hash, isEq);
-            }
+            };
         };
 
-        set
+        set;
     };
 };
