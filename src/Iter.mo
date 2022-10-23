@@ -675,19 +675,19 @@ module {
     ///     let it1 = Itertools.range(1, 10);
     ///     let it2 = Itertools.range(1, 10);
     ///
-    ///     assert Itertools.equal(it1, it2, Nat.compare);
+    ///     assert Itertools.equal(it1, it2, Nat.equal);
     ///
     ///     let it3 = Itertools.range(1, 5);
     ///     let it4 = Itertools.range(1, 10);
     ///
-    ///     assert not Itertools.equal(it3, it4, Nat.compare);
+    ///     assert not Itertools.equal(it3, it4, Nat.equal);
     /// ```
-    public func equal<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Bool {
+    public func equal<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, isEq : (A, A) -> Bool) : Bool {
 
         switch ((iter1.next(), iter2.next())) {
             case ((?a, ?b)) {
-                if (cmp(a, b) == #equal) {
-                    equal<A>(iter1, iter2, cmp);
+                if (isEq(a, b)) {
+                    equal<A>(iter1, iter2, isEq);
                 } else {
                     false;
                 };
@@ -1657,20 +1657,20 @@ module {
     ///     let vals1 = [5, 6, 7].vals();
     ///     let vals2 = [1, 3, 4].vals();
     ///
-    ///     assert Itertools.notEqual(vals1, vals2);
+    ///     assert Itertools.notEqual(vals1, vals2, Nat.equal);
     ///
     ///     let vals3 = [1, 3, 4].vals();
     ///     let vals4 = [1, 3, 4].vals();
     ///
-    ///     assert not Itertools.notEqual(vals3, vals4);
+    ///     assert not Itertools.notEqual(vals3, vals4, Nat.equal));
     /// ```
-    public func notEqual<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, cmp : (A, A) -> Order.Order) : Bool {
+    public func notEqual<A>(iter1 : Iter.Iter<A>, iter2 : Iter.Iter<A>, isEq : (A, A) -> Bool) : Bool {
         switch (iter1.next(), iter2.next()) {
             case (?a, ?b) {
-                if (not (cmp(a, b) == #equal)) {
+                if (not isEq(a, b)) {
                     true;
                 } else {
-                    notEqual(iter1, iter2, cmp);
+                    notEqual(iter1, iter2, isEq);
                 };
             };
             case (_, ?b) true;

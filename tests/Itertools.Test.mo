@@ -611,7 +611,7 @@ let success = run([
                             let it2 = Iter.range(1, 5);
 
                             assertTrue(
-                                Itertools.equal(it1, it2, Nat.compare),
+                                Itertools.equal(it1, it2, Nat.equal),
                             );
                         },
                     ),
@@ -623,7 +623,7 @@ let success = run([
                             let it2 = Iter.range(1, 10);
 
                             assertFalse(
-                                Itertools.equal(it1, it2, Nat.compare),
+                                Itertools.equal(it1, it2, Nat.equal),
                             );
                         },
                     ),
@@ -1092,7 +1092,7 @@ let success = run([
                             let it2 = Iter.range(1, 5);
 
                             assertFalse(
-                                Itertools.notEqual(it1, it2, Nat.compare),
+                                Itertools.notEqual(it1, it2, Nat.equal),
                             );
                         },
                     ),
@@ -1104,7 +1104,7 @@ let success = run([
                             let it2 = Iter.range(1, 10);
 
                             assertTrue(
-                                Itertools.notEqual(it1, it2, Nat.compare),
+                                Itertools.notEqual(it1, it2, Nat.equal),
                             );
                         },
                     ),
