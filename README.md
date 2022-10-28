@@ -2,6 +2,10 @@
 
 A library with utility functions and data types for creating efficient iterators in Motoko. This library is inspired by the itertools libraries in both [python](https://github.com/more-itertools/more-itertools) and [rust](https://github.com/rust-itertools/itertools).
 
+## Documentation 
+For a complete list of functions and data types, see the [Itertools documentation](https://natlabs.github.io/Itertools.mo/index.html)
+
+Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=1138180896
 
 ## Getting started
 
@@ -81,11 +85,7 @@ Ways you can contribute:
 - Download and Install [vessel](https://github.com/dfinity/vessel) 
 - Run `make test` 
 
-## Documentation 
-For a complete list of functions and data types, see the [Itertools documentation](https://natlabs.github.io/Itertools.mo/index.html)
-
-Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=1138180896
-
+## Modules and Functions
 ### PeekableIter
 | | |
 |-|-|
