@@ -95,7 +95,6 @@ Any contributions to this library are welcome.
 Ways you can contribute:
 - Fix a bug or typo
 - Improve the documentation
-- Implement a [function that hasn't been implemented yet](#unimplemented-methods)
 - Make a function more efficient
 - Suggest a new function to add to the library
   
@@ -133,7 +132,3 @@ Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=2856905281
 | Collection to Iter | [fromArraySlice](https://natlabs.github.io/Itertools.mo/Iter.html#fromArraySlice), [fromTrieSet](https://natlabs.github.io/Itertools.mo/Iter.html#fromTrieSet) | 
 | Iter to Collection | [toBuffer](https://natlabs.github.io/Itertools.mo/Iter.html#toBuffer), [toDeque](https://natlabs.github.io/Itertools.mo/Iter.html#toDeque), [toText](https://natlabs.github.io/Itertools.mo/Iter.html#toText), [toTrieSet](https://natlabs.github.io/Itertools.mo/Iter.html#toTrieSet) |
 | Others | [inspect](https://natlabs.github.io/Itertools.mo/Iter.html#inspect), [range](https://natlabs.github.io/Itertools.mo/Iter.html#range), [intRange](https://natlabs.github.io/Itertools.mo/Iter.html#intRange),  [ref](https://natlabs.github.io/Itertools.mo/Iter.html#ref), [sort](https://natlabs.github.io/Itertools.mo/Iter.html#sort), [tee](https://natlabs.github.io/Itertools.mo/Iter.html#tee),          |
-  
-
-# Unimplemented Methods
-- run length encoding (`.runLength()`)
