@@ -97,11 +97,15 @@ Ways you can contribute:
 - Improve the documentation
 - Make a function more efficient
 - Suggest a new function to add to the library
-  
+
+## Tests
+- Download and Install [vessel](https://github.com/dfinity/vessel) 
+- Run `make test` 
+
 ## Documentation 
 For a complete list of functions and data types, see the [Itertools documentation](https://natlabs.github.io/Itertools.mo/index.html)
 
-Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=2856905281
+Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=1138180896
 
 ### PeekableIter
 | | |
