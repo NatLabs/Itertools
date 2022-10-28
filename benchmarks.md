@@ -35,7 +35,7 @@ This list shows the time and space complexity for calling functions that summari
 | `toDeque()` | `O(n)` | `O(n)` | | | 
 | `toList()` | `O(n)` | `O(n)` | | | 
 | `toText()` | `O(n)` | `O(n)` | | | 
-| `toTrieSet()` | `O(n)` | `O(n)` | | | 
+| `toTrieSet()` | `O(n log n)` | `O(n)` | | | 
 
 ### Iterator Adaptors
 
@@ -97,7 +97,9 @@ This list contains the time and space complexity for calling each function and f
 | `zip()` | `O(1)` | `O(1)` | `O(n)` | `O(n)` | | |
 | `zip3()` | `O(1)` | `O(1)` | `O(n)` | `O(n)` | | |
 | `zipLongest()` | `O(1)` | `O(1)` | `O(n)` | `O(n)` | | |
+| `fromArraySlice()` | `O(1)` | `O(1)` | `O(n)` | `O(n)` | | |
 | `fromTrieSet()` | `O(1)` | `O(1)` | `O(n)` | `O(n)` | | |
+
 
 
 
