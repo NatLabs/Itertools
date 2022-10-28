@@ -119,37 +119,7 @@ module {
     ///     assert it.next() == ?10;
     ///     assert it.next() == ?null;
     /// ```
-    ///
-    /// - An example calculating the running product of a iterator:
-    ///
-    /// ```motoko
-    ///
-    ///     let vals = [1, 2, 3, 4].vals();
-    ///     let it = Itertools.accumulate(vals, func(a, b) { a * b });
-    ///
-    ///     assert it.next() == ?1;
-    ///     assert it.next() == ?2;
-    ///     assert it.next() == ?6;
-    ///     assert it.next() == ?24;
-    ///     assert it.next() == ?null;
-    /// ```
-    ///
-    /// - An example with a record type:
-    ///
-    /// ```motoko
-    ///
-    ///     type Point = { x: Int, y: Int };
-    ///
-    ///     let vals: [Point] = [{ x = 1, y = 2 }, { x = 3, y = 4 }].vals();
-    ///
-    ///     let it = Itertools.accumulate<Point>(vals, func(a, b) {
-    ///         return { x = a.x + b.x, y = a.y + b.y };
-    ///     });
-    ///
-    ///     assert it.next() == ?{ x = 1, y = 2 };
-    ///     assert it.next() == ?{ x = 4, y = 6 };
-    ///     assert it.next() == null;
-    /// ```
+
     public func accumulate<A>(iter : Iter.Iter<A>, predicate : (A, A) -> A) : Iter.Iter<A> {
         var acc = iter.next();
 
@@ -197,7 +167,7 @@ module {
         return true;
     };
 
-    /// Checks if any element in the iterator satisfies the predicate.
+    /// Checks if at least one element in the iterator satisfies the predicate.
     ///
     /// ### Example
     /// - An example checking if any element in a iterator of integers is even:
@@ -221,7 +191,42 @@ module {
         return false;
     };
 
+    /// Adds an element to the end of an iterator.
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let iter = [1, 2, 3, 4].vals();
+    ///     let new_iter = Itertools.add(iter, 5);
+    ///
+    ///     assert Iter.toArray(new_iter) == [1, 2, 3, 4, 5]
+    ///
+    public func add<A>(iter : Iter.Iter<A>, elem : A) : Iter.Iter<A> {
+        var popped = false;
+
+        object {
+            public func next() : ?A {
+                switch (iter.next()) {
+                    case (?val) {
+                        ?val;
+                    };
+                    case (_) {
+                        if (popped) {
+                            null;
+                        } else {
+                            popped := true;
+                            ?elem;
+                        };
+                    };
+                };
+            };
+        };
+    };
+
     /// Returns the cartesian product of the given iterables as an iterator of tuples.
+    ///
+    /// The resulting iterator contains all the combinations between elements in the two given iterators.
     ///
     /// ### Example
     ///
@@ -302,7 +307,8 @@ module {
         count;
     };
 
-    /// Returns a TrieMap with the frequency of each element in the iterator.
+    /// Returns a TrieMap where the elements in the iterator are stored
+    /// as keys and the frequency of the elements are values
     ///
     /// ### Example
     ///
@@ -311,7 +317,6 @@ module {
     ///     let a = "motoko".chars();
     ///
     ///     let freqMap = Itertools.countAll(a, Char.hash, Char.equal);
-    ///
     ///     let res = Iter.toArray(freqMap.entries());
     ///
     ///     assert res == [('k', 1), ('m', 1), ('o', 3), ('t', 1)];
@@ -330,8 +335,8 @@ module {
         map;
     };
 
-    /// Chains two iterators of the same type together, so that the elements produced by the
-    /// second come after the elements produced by the first.
+    /// Chains two iterators of the same type together, so that all the
+    /// elements in the first iterator come before the second one.
     ///
     /// ### Example
     /// ```motoko
@@ -361,7 +366,7 @@ module {
         };
     };
 
-    /// Returns an iterator that accumulates elements into an arrays of `n` elements.
+    /// Returns an iterator that accumulates elements into arrays with a size less that or equal to the given `size`.
     ///
     /// ### Example
     /// - An example grouping a iterator of integers into arrays of size `3`:
@@ -408,8 +413,8 @@ module {
         };
     };
 
-    /// Returns an iterator that accumulates elements into an arrays with exactly `n` elements.
-    /// If the iterator is shorter than `n` elements, `None` is returned.
+    /// Returns an iterator that accumulates elements into arrays with sizes exactly equal to the given one.
+    /// If the iterator is shorter than `n` elements, `null` is returned.
     ///
     /// ### Example
     /// - An example grouping a iterator of integers into arrays of size `3`:
@@ -447,7 +452,7 @@ module {
         };
     };
 
-    /// Returns an array of combinations of size `n` from the given iterable.
+    /// Returns all the combinations of a given iterator.
     ///
     /// ### Example
     /// - An example grouping a iterator of integers into arrays of size `3`:
@@ -1284,51 +1289,6 @@ module {
         reduce(Iter.map<A, B>(iter, f), accFn);
     };
 
-    /// Maps a Result-returning function over an Iter and
-    /// returns either the first error or an iter of successful
-    /// values.
-    ///
-    /// ### Example
-    ///
-    /// - decode utf8 encoded bytes into a string
-    /// ```motoko
-    ///
-    ///     let vals = [72, 101, 108, 108, 111, 44, 20, 87, 111, 114, 108, 100].vals();
-    ///
-    ///     let decodeUtf8 = func (n : Nat) : Result.Result<Iter.Iter<Char>, Text> {
-    ///         if (n <= 127){
-    ///             let c =  Char.fromNat32(
-    ///                 Nat32.fromNat(x)
-    ///             );
-    ///             #ok(c)
-    ///         }else{
-    ///             #err("Invalid UTF8")
-    ///         };
-    ///     };
-    ///
-    ///     let res = Itertools.mapResult<Nat, Char>(vals, decodeUtf8);
-    ///
-    ///     switch(res){
-    ///         case (#ok(iter)) {
-    ///             assert Itertools.toText(iter) == "Hello, World!";
-    ///         };
-    ///         case (#err(msg)) {
-    ///             assert msg == "Invalid UTF8";
-    ///         };
-    ///     };
-    ///
-    /// ```
-    // public func mapResult<A, B>(iter: Iter.Iter<A>, f: (A) -> Result.Result<B, Text>): Result.Result<Iter.Iter<B>, Text>{
-    //     switch(reduce(iter, f)){
-    //         case (#ok(iter)) {
-    //             return #ok(iter);
-    //         };
-    //         case (#err(msg)) {
-    //             return #err(msg);
-    //         };
-    //     };
-    // };
-
     /// Returns an iterator that maps and yields elements while the
     /// predicate is true.
     /// The predicate is true if it returns an optional value and
@@ -1524,10 +1484,11 @@ module {
         var max = _max;
 
         for (val in iter) {
-            let order = cmp(val, min);
-            if (order == #less) {
+            if (cmp(val, min) == #less) {
                 min := val;
-            } else if (order == #greater) {
+            };
+
+            if (cmp(val, max) == #greater) {
                 max := val;
             };
         };
@@ -1639,6 +1600,55 @@ module {
                         };
 
                         ?min;
+                    };
+                    case (_) {
+                        null;
+                    };
+                };
+            };
+        };
+    };
+
+    /// Returns the run-length encoding of an Iterator
+    ///
+    /// ### Example
+    ///
+    /// ```motoko
+    ///
+    ///     let chars = "aaaabbbccd".chars();
+    ///
+    ///     let iter = Itertools.runLength(text.chars(), Char.equal);
+    ///     let res = Iter.toArray(iter);
+    ///
+    ///     assert res == [('a', 4), ('b', 3), ('c', 2), ('d', 1)]
+    ///
+    /// ```
+    public func runLength<A>(iter : Iter.Iter<A>, isEqual : (A, A) -> Bool) : Iter.Iter<(A, Nat)> {
+        var cnt = 1;
+        var curr = switch (iter.next()) {
+            case (?a) { ?a };
+            case (_) { return empty() };
+        };
+
+        object {
+            public func next() : ?(A, Nat) {
+                switch (curr, iter.next()) {
+                    case (?a, ?b) {
+                        if (isEqual(a, b)) {
+                            cnt += 1;
+                            next();
+                        } else {
+                            let tmp = (a, cnt);
+                            curr := ?b;
+                            cnt := 1;
+
+                            ?tmp;
+                        };
+                    };
+                    case (?a, _) {
+                        curr := null;
+
+                        ?(a, cnt);
                     };
                     case (_) {
                         null;

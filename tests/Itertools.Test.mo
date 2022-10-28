@@ -143,6 +143,19 @@ let success = run([
                 ],
             ),
             it(
+                "add",
+                do {
+                    let a = "moto";
+
+                    let iter = Itertools.add(Itertools.add(a.chars(), 'k'), 'o');
+                    let motoko = Itertools.toText(iter);
+
+                    assertTrue(
+                        motoko == "motoko",
+                    );
+                },
+            ),
+            it(
                 "all",
                 do {
 
@@ -1080,6 +1093,20 @@ let success = run([
                         },
                     ),
                 ],
+            ),
+
+            it(
+                "runLength",
+                do {
+                    let text = "aaaabbbccd";
+
+                    let iter = Itertools.runLength(text.chars(), Char.equal);
+                    let res = Iter.toArray(iter);
+
+                    assertTrue(
+                        res == [('a', 4), ('b', 3), ('c', 2), ('d', 1)],
+                    );
+                },
             ),
 
             describe(
