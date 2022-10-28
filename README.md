@@ -2,29 +2,8 @@
 
 A library with utility functions and data types for creating efficient iterators in Motoko. This library is inspired by the itertools libraries in both [python](https://github.com/more-itertools/more-itertools) and [rust](https://github.com/rust-itertools/itertools).
 
-This library is still a work in progress as there are a few [functions that have not been implemented yet](#unimplemented-methods). 
 
- ## Importing with vessel
-Your `package-set.dhall` file should look like this:
- ```dhall
-    let aviate_labs = https://github.com/aviate-labs/package-set/releases/download/v0.1.4/package-set.dhall
-
-    let Package =
-    { name : Text, version : Text, repo : Text, dependencies : List Text }
-
-    let additions = [
-        {   
-            name = "itertools",
-            version = "main",
-            repo = "https://github.com/tomijaga/Itertools.mo",
-            dependencies = ["base"] : List Text,
-         }
-     ] : List Package
-
-in aviate_labs # additions
-
- ```
- ## Getting started
+## Getting started
 
  To get started, you'll need to import the `Iter` module from both the base library and this one.
 
