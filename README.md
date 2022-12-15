@@ -31,7 +31,7 @@ Demo: https://m7sm4-2iaaa-aaaab-qabra-cai.raw.ic0.app/?tag=1138180896
      - `Text.split("a,b,c", #char ',')`
  
  - Buffer
-   - `buffer.toArray().vals()`
+   - `Buffer.toArray(buffer).vals()`
   
 
  For conversion of other data types to iterators, you can look in the [base library](https://internetcomputer.org/docs/current/references/motoko-ref/array) for the specific data type's documentation.

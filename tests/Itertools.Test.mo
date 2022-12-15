@@ -768,7 +768,7 @@ let success = run([
 
                     assertAllTrue([
                         res == [1, 2, 3, 4, 5],
-                        debugRes.toArray() == [
+                        Buffer.toArray(debugRes) == [
                             "This value [ 2 ] is even.",
                             "This value [ 4 ] is even.",
                         ],
@@ -1882,7 +1882,7 @@ let success = run([
                     let chars = "abc".chars();
                     let buffer = Itertools.toBuffer<Char>(chars);
 
-                    assertTrue(buffer.toArray() == ['a', 'b', 'c']);
+                    assertTrue(Buffer.toArray(buffer) == ['a', 'b', 'c']);
                 },
             ),
 

@@ -15,6 +15,7 @@ node_modules/
 dist/
 
 .vessel
+.mops
 .dfx
 dprint.json
 

@@ -25,7 +25,7 @@
 ///     - `Text.split("a,b,c", #char ',')`
 ///
 /// - Buffer
-///   - `buffer.toArray().vals()`
+///   - `Buffer.toArray(buffer).vals()`
 ///
 /// - [HashMap](https://internetcomputer.org/docs/current/references/motoko-ref/hashmap#hashmap-1)
 ///        - `map.entries()`
@@ -405,7 +405,7 @@ module {
                 if (buf.size() == 0) {
                     null;
                 } else {
-                    let tmp = ?buf.toArray();
+                    let tmp = ?Buffer.toArray(buf);
                     buf.clear();
                     tmp;
                 };
@@ -515,7 +515,7 @@ module {
                 if (indices.size() == 0) {
                     null;
                 } else if (cbns.size() == size) {
-                    let res = cbns.toArray();
+                    let res = Buffer.toArray(cbns);
                     ignore cbns.removeLast();
                     ?res;
                 } else {
@@ -922,7 +922,7 @@ module {
                         group.add(val);
                         nextGroup();
                     } else {
-                        let arr = group.toArray();
+                        let arr = Buffer.toArray(group);
 
                         group.clear();
                         group.add(val);
@@ -934,7 +934,7 @@ module {
                     if (group.size() == 0) {
                         null;
                     } else {
-                        let arr = group.toArray();
+                        let arr = Buffer.toArray(group);
 
                         group.clear();
 
@@ -1832,7 +1832,7 @@ module {
             };
         };
 
-        (firstGroup.toArray(), secondGroup.toArray());
+        (Buffer.toArray(firstGroup), Buffer.toArray(secondGroup));
     };
 
     /// Partitions an iterator in place so that the values that
@@ -2808,7 +2808,7 @@ module {
             buf2.add(b);
         };
 
-        (buf1.toArray(), buf2.toArray());
+        (Buffer.toArray(buf1), Buffer.toArray(buf2));
     };
 
     /// Zips two iterators into one iterator of tuples

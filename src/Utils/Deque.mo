@@ -2,7 +2,7 @@ import Buffer "mo:base/Buffer";
 import Deque "mo:base/Deque";
 
 module DequeUtils {
-    public func toArray<A>(dq: Deque.Deque<A>) : [A] {
+    public func toArray<A>(dq : Deque.Deque<A>) : [A] {
         var deque = dq;
         var buffer = Buffer.Buffer<A>(0);
 
@@ -11,21 +11,21 @@ module DequeUtils {
                 break l;
             };
 
-            switch(Deque.popFront(deque)) {
-                case (?(x, xs)){
+            switch (Deque.popFront(deque)) {
+                case (?(x, xs)) {
                     deque := xs;
                     buffer.add(x);
                 };
-                case (_){
+                case (_) {
                     break l;
                 };
             };
         };
 
-        return buffer.toArray();
+        return Buffer.toArray(buffer);
     };
 
-    public func fromArray<A>(array: [A]) : Deque.Deque<A> {
+    public func fromArray<A>(array : [A]) : Deque.Deque<A> {
         var deque = Deque.empty<A>();
 
         for (elem in array.vals()) {
