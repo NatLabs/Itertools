@@ -2534,46 +2534,6 @@ module {
         };
     };
 
-    /// Creates an iterator that returns returns elements from the given iter while the predicate is true.
-    ///
-    /// ### Example
-    /// ```motoko
-    ///
-    ///     let vals = Iter.fromArray([1, 2, 3, 4, 5]);
-    ///
-    ///     let lessThan3 = func (x: Int) : Bool { x < 3 };
-    ///     let it = Itertools.takeWhile(vals, lessThan3);
-    ///
-    ///     assert it.next() == ?1;
-    ///     assert it.next() == ?2;
-    ///     assert it.next() == null;
-    /// ```
-    public func takeWhile<A>(iter : Iter.Iter<A>, predicate : A -> Bool) : Iter.Iter<A> {
-        var iterate = true;
-        return object {
-            public func next() : ?A {
-                if (iterate) {
-                    switch (iter.next()) {
-                        case (?item) {
-                            if (predicate(item)) {
-                                ?item;
-                            } else {
-                                iterate := false;
-                                null;
-                            };
-                        };
-                        case (_) {
-                            iterate := false;
-                            return null;
-                        };
-                    };
-                } else {
-                    return null;
-                };
-            };
-        };
-    };
-
     /// Consumes an iterator and returns a tuple of cloned iterators.
     ///
     /// ### Example

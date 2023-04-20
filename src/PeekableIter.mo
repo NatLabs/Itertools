@@ -52,4 +52,57 @@ module {
             };
         };
     };
+
+    public func hasNext<T>(iter : PeekableIter<T>) : Bool {
+        switch (iter.peek()) {
+            case (?_) { true };
+            case (null) { false };
+        };
+    };
+
+    public func isNext<T>(iter : PeekableIter<T>, val : T, isEq: (T, T) -> Bool) : Bool {
+        switch (iter.peek()) {
+            case (?v) { isEq(v, val) };
+            case (null) { false };
+        };
+    };
+
+    /// Creates an iterator that returns returns elements from the given iter while the predicate is true.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = Iter.fromArray([1, 2, 3, 4, 5]);
+    ///
+    ///     let lessThan3 = func (x: Int) : Bool { x < 3 };
+    ///     let it = Itertools.takeWhile(vals, lessThan3);
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?2;
+    ///     assert it.next() == null;
+    /// ```
+    public func takeWhile<A>(iter : PeekableIter<A>, predicate : A -> Bool) : Iter.Iter<A> {
+        var iterate = true;
+
+        return object {
+            public func next() : ?A {
+                if (not iterate) return null;
+
+                let item = switch (iter.peek()) {
+                    case (?item) item;
+                    case (_) {
+                        iterate := false;
+                        return null;
+                    };
+                };
+
+                if (predicate(item)) {
+                    iter.next();
+                } else {
+                    iterate := false;
+                    null;
+                };
+            };
+        };
+    };
 };

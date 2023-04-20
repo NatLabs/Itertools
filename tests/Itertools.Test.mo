@@ -1655,20 +1655,7 @@ let success = run([
                     ]);
                 },
             ),
-            it(
-                "takeWhile",
-                do {
-                    let iter = [1, 2, 3, 4, 5].vals();
-                    let lessThan3 = func(x : Nat) : Bool { x < 3 };
-                    let it = Itertools.takeWhile(iter, lessThan3);
-
-                    assertAllTrue([
-                        it.next() == ?1,
-                        it.next() == ?2,
-                        it.next() == null,
-                    ]);
-                },
-            ),
+            
             it(
                 "tuples",
                 do {

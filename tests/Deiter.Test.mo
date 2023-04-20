@@ -1,3 +1,4 @@
+import Buffer "mo:base/Buffer";
 import Debug "mo:base/Debug";
 import Deque "mo:base/Deque";
 import Iter "mo:base/Iter";
@@ -47,6 +48,23 @@ let success = run([
                 do {
                     let arr = [var 1, 2, 3, 4, 5];
                     let deiter = Deiter.fromArrayMut<Nat>(arr);
+
+                    assertAllTrue([
+                        deiter.next() == ?1,
+                        deiter.next() == ?2,
+                        deiter.next_back() == ?5,
+                        deiter.next_back() == ?4,
+                        deiter.next() == ?3,
+                        deiter.next_back() == null,
+                        deiter.next() == null,
+                    ]);
+                },
+            ),
+            it(
+                "fromBuffer",
+                do {
+                    let buffer = Buffer.fromArray<Nat>([1, 2, 3, 4, 5]);
+                    let deiter = Deiter.fromBuffer<Nat>(buffer);
 
                     assertAllTrue([
                         deiter.next() == ?1,
