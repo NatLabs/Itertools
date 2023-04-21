@@ -67,6 +67,37 @@ module {
         };
     };
 
+    /// Skips elements continuously while the predicate is true.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let iter = [1, 2, 3, 4, 5].vals();
+    ///     let lessThan3 = func (a: Int) : Bool { a < 3 };
+    ///
+    ///     Itertools.skipWhile(iter, lessThan3);
+    ///
+    ///     assert Iter.toArray(iter) == [3, 4, 5];
+    ///
+    /// ```
+    public func skipWhile<A>(iter : PeekableIter<A>, pred : (A) -> Bool){
+
+        label l loop {
+            switch (iter.peek()) {
+                case (?val) {
+                    if (not pred(val)) {
+                        break l;
+                    };
+
+                    ignore iter.next();
+                };
+                case (_) {
+                    break l;
+                };
+            };
+        };
+    };
+
     /// Creates an iterator that returns returns elements from the given iter while the predicate is true.
     ///
     /// ### Example
@@ -81,7 +112,7 @@ module {
     ///     assert it.next() == ?2;
     ///     assert it.next() == null;
     /// ```
-    public func takeWhile<A>(iter : PeekableIter<A>, predicate : A -> Bool) : Iter.Iter<A> {
+    public func takeWhile<A>(iter : PeekableIter<A>, predicate : A -> Bool) : PeekableIter<A> {
         var iterate = true;
 
         return object {
@@ -103,6 +134,8 @@ module {
                     null;
                 };
             };
+
+            public func peek() : ?A  = iter.peek();
         };
     };
 };

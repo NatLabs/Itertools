@@ -2198,15 +2198,17 @@ module {
 
     /// Skips elements continuously while the predicate is true.
     ///
+    /// Note: Use the returned iterator instead of the original one. 
+    /// The original iterator will have advanced one element further than the skipped elements.
     /// ### Example
     /// ```motoko
     ///
     ///     let iter = [1, 2, 3, 4, 5].vals();
     ///     let lessThan3 = func (a: Int) : Bool { a < 3 };
     ///
-    ///     Itertools.skipWhile(iter, lessThan3);
+    ///     let apres = Itertools.skipWhile(iter, lessThan3);
     ///
-    ///     assert Iter.toArray(iter) == [3, 4, 5];
+    ///     assert Iter.toArray(apres) == [3, 4, 5];
     ///
     /// ```
     public func skipWhile<A>(iter : Iter.Iter<A>, pred : (A) -> Bool) : Iter.Iter<A> {

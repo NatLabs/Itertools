@@ -44,6 +44,20 @@ let success = run([
                     ]);
                 },
             ),
+             it(
+                "skipWhile",
+                do {
+                    let iter = PeekableIter.fromIter([1, 2, 3, 4, 5].vals());
+                    let lessThan3 = func(a : Int) : Bool { a < 3 };
+
+                    PeekableIter.skipWhile(iter, lessThan3);
+
+                    let res = Iter.toArray(iter);
+                    assertTrue(
+                        res == [3, 4, 5],
+                    );
+                },
+            ),
             it(
                 "takeWhile",
                 do {
