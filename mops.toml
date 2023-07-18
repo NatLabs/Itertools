@@ -3,6 +3,6 @@ base = "0.7.6"
 
 [package]
 name = "itertools"
-version = "0.1.1"
+version = "0.1.2"
 description = "A library with utility functions and data types for creating efficient iterators in Motoko."
 repository = "https://github.com/NatLabs/Itertools"

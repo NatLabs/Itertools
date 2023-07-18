@@ -2,7 +2,7 @@
 <html><head title="Motoko docs"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><div class="index-container"><h1 class="index-header">Index of modules</h1><ul class="index-listing"><li class="index-item"><a class="index-item-link" href="Deiter.html">Deiter</a><div class="index-item-comment"><p>Double Ended Iterator</p>
 <p>This type of iterator allows for both forward and backward iteration
 Double Ended Iterators are useful for iterating over data structures in reverse without allocating extra space for the reverse iteration.</p>
-<p>The <code>Deiter</code> type is an extension of the <code>Iter</code> type built in Motoko 
+<p>The <code>Deiter</code> type is an extension of the <code>Iter</code> type built in Motoko
 so it is compatible with all the function defined for the <code>Iter</code> type.</p>
 <p>The <code>Deiter</code> is intended to be used with functions for the <code>Iter</code> type to avoid rewriting similar functions for both types.</p>
 <ul><li>An example reversing a list of integers and breaking them into chunks of size <code>n</code>:</li></ul>
@@ -21,7 +21,7 @@ so it is compatible with all the function defined for the <code>Iter</code> type
 
   // Double Ended Iter gets typecasted to an Iter typw
   let chunks = Itertools.chunks(revDeiter, 3);
-  
+
   assert chunks.next() == ?[10, 9, 8];
   assert chunks.next() == ?[7, 6, 5];
   assert chunks.next() == ?[4, 3, 2];
@@ -72,6 +72,6 @@ efficient iterators for solving different problems:</p>
 
     assert Iter.toArray(iter) == [-2, 0, 4, 1, 2];</code></pre></div></li><li class="index-item"><a class="index-item-link" href="PeekableIter.html">PeekableIter</a><div class="index-item-comment"><p>Peekable Iterator</p>
 <p>An iterator equipped with a <code>peek</code> method that returns the next value without advancing the iterator.</p>
-<p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko 
+<p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko
 so it is compatible with all the function defined for the <code>Iter</code> type.</p>
-</div></li></ul></div></html>
+</div></li><li class="index-item"><a class="index-item-link" href="Utils/ArrayMut.html">Utils/ArrayMut</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/Deque.html">Utils/Deque</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/Nat.html">Utils/Nat</a><div class="index-item-comment"></div></li><li class="index-item"><a class="index-item-link" href="Utils/TrieMap.html">Utils/TrieMap</a><div class="index-item-comment"></div></li></ul></div></html>

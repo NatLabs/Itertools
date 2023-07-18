@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#type.PeekableIter">PeekableIter</a></li></li><li><li><a href="#fromIter">fromIter</a></li></li></ul></nav><div class="documentation"><h1>PeekableIter</h1><p>Peekable Iterator</p>
+<html><head title="Doc"><meta charset="UTF-8"/><link href="styles.css" rel="stylesheet"/></head><body><nav class="sidebar"><h3>Modules</h3><ul><li><li><a href="Deiter.html">Deiter</a></li></li><li><li><a href="Iter.html">Iter</a></li></li><li><li><a href="PeekableIter.html">PeekableIter</a></li></li><li><li><a href="Utils/ArrayMut.html">Utils/ArrayMut</a></li></li><li><li><a href="Utils/Deque.html">Utils/Deque</a></li></li><li><li><a href="Utils/Nat.html">Utils/Nat</a></li></li><li><li><a href="Utils/TrieMap.html">Utils/TrieMap</a></li></li></ul><h3>Declarations</h3><ul><li><li><a href="#type.PeekableIter">PeekableIter</a></li></li><li><li><a href="#fromIter">fromIter</a></li></li><li><li><a href="#hasNext">hasNext</a></li></li><li><li><a href="#isNext">isNext</a></li></li><li><li><a href="#skipWhile">skipWhile</a></li></li><li><li><a href="#takeWhile">takeWhile</a></li></li></ul></nav><div class="documentation"><h1>PeekableIter</h1><p>Peekable Iterator</p>
 <p>An iterator equipped with a <code>peek</code> method that returns the next value without advancing the iterator.</p>
-<p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko 
+<p>The <code>PeekableIter</code> type is an extension of the <code>Iter</code> type built in Motoko
 so it is compatible with all the function defined for the <code>Iter</code> type.</p>
 <div class="declaration"><h4 class="type-declaration" id="type.PeekableIter"><span class="keyword">type </span><span class="type">PeekableIter</span>&lt;<span class="type">T</span>&gt; = <span class="type">Iter.Iter</span>&lt;<span class="type">T</span>&gt; and { peek : () -&gt; ?<span class="type">T</span> }</h4><p><p>Peekable Iterator Type.</p>
 </p></div><div class="declaration"><h4 class="function" id="fromIter"><code><span class="keyword">public func </span><span class="fnname">fromIter</span>&lt;<span class="type">T</span>&gt;(<span class="parameter">iter</span> : <span class="type">Iter.Iter</span>&lt;<span class="type">T</span>&gt;) : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">T</span>&gt;</code></h4><p><p>Creates a <code>PeekableIter</code> from an <code>Iter</code>.</p>
@@ -19,4 +19,22 @@ assert peekableIter.next() == ?2;
 
 assert peekableIter.peek() == null;
 assert peekableIter.next() == null;</code></pre><p>```</p>
-</p></div></div></body></html>
+</p></div><div class="declaration"><h4 class="function" id="hasNext"><code><span class="keyword">public func </span><span class="fnname">hasNext</span>&lt;<span class="type">T</span>&gt;(<span class="parameter">iter</span> : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">T</span>&gt;) : <span class="type">Bool</span></code></h4><p></p></div><div class="declaration"><h4 class="function" id="isNext"><code><span class="keyword">public func </span><span class="fnname">isNext</span>&lt;<span class="type">T</span>&gt;(<br/>  <span class="parameter">iter</span> : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">T</span>&gt;, <br/>  <span class="parameter">val</span> : <span class="type">T</span>, <br/>  <span class="parameter">isEq</span> : (<span class="type">T</span>, <span class="type">T</span>) -&gt; <span class="type">Bool</span><br/>) : <span class="type">Bool</span></code></h4><p></p></div><div class="declaration"><h4 class="function" id="skipWhile"><code><span class="keyword">public func </span><span class="fnname">skipWhile</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">A</span>&gt;, <span class="parameter">pred</span> : (<span class="type">A</span>) -&gt; <span class="type">Bool</span>)</code></h4><p><p>Skips elements continuously while the predicate is true.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+    let iter = [1, 2, 3, 4, 5].vals();
+    let lessThan3 = func (a: Int) : Bool { a &lt; 3 };
+
+    Itertools.skipWhile(iter, lessThan3);
+
+    assert Iter.toArray(iter) == [3, 4, 5];
+
+</code></pre></p></div><div class="declaration"><h4 class="function" id="takeWhile"><code><span class="keyword">public func </span><span class="fnname">takeWhile</span>&lt;<span class="type">A</span>&gt;(<span class="parameter">iter</span> : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">A</span>&gt;, <span class="parameter">predicate</span> : <span class="type">A</span> -&gt; <span class="type">Bool</span>) : <a href="#type.PeekableIter"><span class="type">PeekableIter</span></a>&lt;<span class="type">A</span>&gt;</code></h4><p><p>Creates an iterator that returns elements from the given iter while the predicate is true.</p>
+<h3 id="Example">Example</h3><pre class="motoko"><code class="motoko">
+    let vals = Iter.fromArray([1, 2, 3, 4, 5]);
+
+    let lessThan3 = func (x: Int) : Bool { x &lt; 3 };
+    let it = Itertools.takeWhile(vals, lessThan3);
+
+    assert it.next() == ?1;
+    assert it.next() == ?2;
+    assert it.next() == null;</code></pre></p></div></div></body></html>

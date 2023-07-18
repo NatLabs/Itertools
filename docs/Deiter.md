@@ -4,7 +4,7 @@ Double Ended Iterator
 This type of iterator allows for both forward and backward iteration
 Double Ended Iterators are useful for iterating over data structures in reverse without allocating extra space for the reverse iteration.
 
-The `Deiter` type is an extension of the `Iter` type built in Motoko 
+The `Deiter` type is an extension of the `Iter` type built in Motoko
 so it is compatible with all the function defined for the `Iter` type.
 
 
@@ -27,7 +27,7 @@ The `Deiter` is intended to be used with functions for the `Iter` type to avoid 
 
   // Double Ended Iter gets typecasted to an Iter typw
   let chunks = Itertools.chunks(revDeiter, 3);
-  
+
   assert chunks.next() == ?[10, 9, 8];
   assert chunks.next() == ?[7, 6, 5];
   assert chunks.next() == ?[4, 3, 2];
@@ -108,7 +108,7 @@ Creates an iterator for the elements of an array.
 
   assert deiter.next() == ?1;
   assert deiter.next_back() == ?3;
-  assert deiter.next_back() == ?2;  
+  assert deiter.next_back() == ?2;
   assert deiter.next_back() == null;
   assert deiter.next() == null;
 
@@ -138,6 +138,12 @@ func toIter<T>(iter : Iter.Iter<T>) : Iter.Iter<T>
 ```
 
 Type Conversion from Deiter to Iter
+
+## Function `fromBuffer`
+``` motoko no-repl
+func fromBuffer<T>(buffer : GenericBuffer<T>) : Deiter<T>
+```
+
 
 ## Function `fromDeque`
 ``` motoko no-repl
