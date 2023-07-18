@@ -2206,9 +2206,9 @@ module {
     ///     let iter = [1, 2, 3, 4, 5].vals();
     ///     let lessThan3 = func (a: Int) : Bool { a < 3 };
     ///
-    ///     let apres = Itertools.skipWhile(iter, lessThan3);
+    ///     let skipped = Itertools.skipWhile(iter, lessThan3);
     ///
-    ///     assert Iter.toArray(apres) == [3, 4, 5];
+    ///     assert Iter.toArray(skipped) == [3, 4, 5];
     ///
     /// ```
     public func skipWhile<A>(iter : Iter.Iter<A>, pred : (A) -> Bool) : Iter.Iter<A> {
@@ -2536,6 +2536,49 @@ module {
         };
     };
 
+    /// Creates an iterator that returns returns elements from the given iter while the predicate is true.
+    ///
+    /// ### Example
+    /// ```motoko
+    ///
+    ///     let vals = Iter.fromArray([1, 2, 3, 4, 5]);
+    ///
+    ///     let lessThan3 = func (x: Int) : Bool { x < 3 };
+    ///     let it = Itertools.takeWhile(vals, lessThan3);
+    ///
+    ///     assert it.next() == ?1;
+    ///     assert it.next() == ?2;
+    ///     assert it.next() == null;
+    /// ```
+    ///
+    /// > Warning: That a side-effect occurs where the given iterator is advanced passes the first element that returns false.
+    /// > If you want the iterator to start from the first element that returns false, use the `takeWhile` function in the `PeekableIter` module.
+    public func takeWhile<A>(iter : Iter.Iter<A>, predicate : A -> Bool) : Iter.Iter<A> {
+        var iterate = true;
+
+        return object {
+            public func next() : ?A {
+                if (iterate) {
+                    switch (iter.next()) {
+                        case (?item) {
+                            if (predicate(item)) {
+                                ?item;
+                            } else {
+                                iterate := false;
+                                null;
+                            };
+                        };
+                        case (_) {
+                            iterate := false;
+                            return null;
+                        };
+                    };
+                } else {
+                    return null;
+                };
+            };
+        };
+    };
     /// Consumes an iterator and returns a tuple of cloned iterators.
     ///
     /// ### Example

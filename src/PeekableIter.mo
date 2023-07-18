@@ -98,7 +98,7 @@ module {
         };
     };
 
-    /// Creates an iterator that returns returns elements from the given iter while the predicate is true.
+    /// Creates an iterator that returns elements from the given iter while the predicate is true.
     ///
     /// ### Example
     /// ```motoko
