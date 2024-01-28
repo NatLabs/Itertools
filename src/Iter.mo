@@ -2551,30 +2551,32 @@ module {
     ///     assert it.next() == null;
     /// ```
     ///
+    /// > Warning: This function has a side-effect where the given iterator is advanced passes the first element that returns false.
+    /// > If you want the iterator to start from the first element that returns false, use the `takeWhile` function in the `PeekableIter` module.
     public func takeWhile<A>(iter : Iter.Iter<A>, predicate : A -> Bool) : Iter.Iter<A> {
-        let peekable_iter = peekable(iter);
         var iterate = true;
 
         return object {
             public func next() : ?A {
-                if (not iterate) return null;
-
-                let item = switch (peekable_iter.peek()) {
-                    case (?item) item;
-                    case (_) {
-                        iterate := false;
-                        return null;
+                if (iterate) {
+                    switch (iter.next()) {
+                        case (?item) {
+                            if (predicate(item)) {
+                                ?item;
+                            } else {
+                                iterate := false;
+                                null;
+                            };
+                        };
+                        case (_) {
+                            iterate := false;
+                            return null;
+                        };
                     };
-                };
-
-                if (predicate(item)) {
-                    peekable_iter.next();
                 } else {
-                    iterate := false;
-                    null;
+                    return null;
                 };
             };
-
         };
     };
 
