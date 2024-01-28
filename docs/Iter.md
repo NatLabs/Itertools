@@ -507,7 +507,7 @@ value and does not return an optional value.
 ```
 
 You can easily fold from the right to left using a
-[`Deiter`](Deiter.html) to reverse the iterator before folding.
+[`RevIter`](RevIter.html) to reverse the iterator before folding.
 
 ## Function `flatten`
 ``` motoko no-repl

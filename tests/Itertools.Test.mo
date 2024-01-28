@@ -15,9 +15,10 @@ import Trie "mo:base/Trie";
 
 import ActorSpec "./utils/ActorSpec";
 
-import DoubleEndedIter "../src/Deiter";
+import RevIter "../src/RevIter";
 import Itertools "../src/Iter";
 import PeekableIter "../src/PeekableIter";
+import DequeUtils "../src/Utils/Deque";
 
 let {
     assertTrue;
@@ -1428,7 +1429,7 @@ let success = run([
             it(
                 "range",
                 do {
-                    let iter = DoubleEndedIter.range(0, 5);
+                    let iter = RevIter.range(0, 5);
 
                     assertAllTrue([
                         iter.next() == ?0,
@@ -1443,7 +1444,7 @@ let success = run([
             it(
                 "intRange",
                 do {
-                    let iter = DoubleEndedIter.intRange(0, 5);
+                    let iter = RevIter.intRange(0, 5);
 
                     assertAllTrue([
                         iter.next() == ?0,

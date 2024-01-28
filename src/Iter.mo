@@ -95,7 +95,7 @@ import Deque "mo:base/Deque";
 import Prelude "mo:base/Prelude";
 
 import PeekableIter "PeekableIter";
-import Deiter "Deiter";
+import RevIter "RevIter";
 
 import ArrayMut_Utils "Utils/ArrayMut";
 import Nat_Utils "Utils/Nat";
@@ -544,7 +544,7 @@ module {
                         };
                     } else {
                         indices.add(
-                            indices.get(indices.size() - 1),
+                            indices.get(indices.size() - 1)
                         );
                         next();
                     };
@@ -810,7 +810,7 @@ module {
     /// ```
     ///
     /// You can easily fold from the right to left using a
-    /// [`Deiter`](Deiter.html) to reverse the iterator before folding.
+    /// [`RevIter`](RevIter.html) to reverse the iterator before folding.
 
     public func fold<A, B>(iter : Iter.Iter<A>, initial : B, f : (B, A) -> B) : B {
         var res = initial;
@@ -883,7 +883,7 @@ module {
                 func(arr : [A]) : Iter.Iter<A> {
                     arr.vals();
                 },
-            ),
+            )
         );
     };
 
@@ -2198,7 +2198,7 @@ module {
 
     /// Skips elements continuously while the predicate is true.
     ///
-    /// Note: Use the returned iterator instead of the original one. 
+    /// Note: Use the returned iterator instead of the original one.
     /// The original iterator will have advanced one element further than the skipped elements.
     /// ### Example
     /// ```motoko
@@ -2551,34 +2551,33 @@ module {
     ///     assert it.next() == null;
     /// ```
     ///
-    /// > Warning: That a side-effect occurs where the given iterator is advanced passes the first element that returns false.
-    /// > If you want the iterator to start from the first element that returns false, use the `takeWhile` function in the `PeekableIter` module.
     public func takeWhile<A>(iter : Iter.Iter<A>, predicate : A -> Bool) : Iter.Iter<A> {
+        let peekable_iter = peekable(iter);
         var iterate = true;
 
         return object {
             public func next() : ?A {
-                if (iterate) {
-                    switch (iter.next()) {
-                        case (?item) {
-                            if (predicate(item)) {
-                                ?item;
-                            } else {
-                                iterate := false;
-                                null;
-                            };
-                        };
-                        case (_) {
-                            iterate := false;
-                            return null;
-                        };
+                if (not iterate) return null;
+
+                let item = switch (peekable_iter.peek()) {
+                    case (?item) item;
+                    case (_) {
+                        iterate := false;
+                        return null;
                     };
+                };
+
+                if (predicate(item)) {
+                    peekable_iter.next();
                 } else {
-                    return null;
+                    iterate := false;
+                    null;
                 };
             };
+
         };
     };
+
     /// Consumes an iterator and returns a tuple of cloned iterators.
     ///
     /// ### Example
@@ -2906,9 +2905,9 @@ module {
         object {
             public func next() : ?EitherOr<A, B> {
                 switch (iterA.next(), iterB.next()) {
-                    case (?a, ?b) ?#both(a, b);
-                    case (?a, _) ?#left(a);
-                    case (_, ?b) ?#right(b);
+                    case (?a, ?b) ? #both(a, b);
+                    case (?a, _) ? #left(a);
+                    case (_, ?b) ? #right(b);
                     case (_, _) null;
                 };
             };
