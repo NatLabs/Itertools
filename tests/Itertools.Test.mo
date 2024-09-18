@@ -699,6 +699,7 @@ let success = run([
                     let nestedIter = [
                         [1].vals(),
                         [2, 3].vals(),
+                        [].vals(),
                         [4, 5, 6].vals(),
                     ].vals();
 
