@@ -855,7 +855,7 @@ module {
                         switch (nestedIter.next()) {
                             case (?_iter) {
                                 iter := _iter;
-                                iter.next();
+                                next();
                             };
                             case (_) null;
                         };
